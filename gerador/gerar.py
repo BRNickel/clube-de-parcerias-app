@@ -30,6 +30,7 @@ CATN = {"alimentacao": "Alimentação", "beleza": "Beleza", "saude": "Saúde e b
 PROIBIDOS = {"colaborador", "colaboradorEmail", "preenchidoPor", "contatoNome", "contatoEmail", "contatoTelefone",
              "contatoFone", "historico", "evidencia", "pacote", "area", "filial", "genero", "nota", "motivo"}
 RE_EMAIL = re.compile(r"[\w.+-]+@[\w-]+\.[\w.-]+")
+HORARIO_PADRAO = "Consultar horário de funcionamento"   # o mesmo texto do painel (HORARIO_PADRAO)
 
 
 def slug(txt):
@@ -93,7 +94,8 @@ def card_html(c, cidade):
     linha("tag", (card.get("detalhe") or "").strip())
     linha("shop", (c.get("atendimento") or "").strip())
     linha("pin", (card.get("endereco") or "").strip())
-    linha("clock", (card.get("horario") or "").strip())
+    # sem horário no formulário nem no card, o texto padrão (o MESMO do painel)
+    linha("clock", (card.get("horario") or "").strip() or HORARIO_PADRAO)
     acoes = []
     end = (card.get("endereco") or "").strip()
     if end:
