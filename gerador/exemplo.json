@@ -1,0 +1,30 @@
+{
+  "ok": true,
+  "geradoEm": "2026-09-15T00:00:00Z",
+  "total": 3,
+  "cards": [
+    {
+      "id": "exemplo-1", "estab": "Padaria Exemplo", "tipo": "alimentacao", "cidades": ["SJP"],
+      "atendimento": "Indo até o lugar", "condicao": "10% no café da manhã de segunda a sexta, apresentando o crachá.",
+      "site": "", "social": "",
+      "card": {"icone": "alimentacao", "titulo": "10% no café da manhã", "detalhe": "De segunda a sexta, apresentando o crachá.",
+               "endereco": "Rua Principal, 100, Centro", "horario": "Seg a Sáb, 06h às 19h", "telefone": "89999990000"},
+      "publicadaEm": "2026-09-15", "validaAte": "2027-03-15"
+    },
+    {
+      "id": "exemplo-2", "estab": "Oficina Modelo", "tipo": "automotivo", "cidades": ["TODAS"],
+      "atendimento": "Dos dois jeitos", "condicao": "15% em revisão completa, agendando com antecedência.",
+      "site": "", "social": "",
+      "card": {"icone": "automotivo", "titulo": "15% em revisão completa", "detalhe": "Agendando com antecedência.",
+               "endereco": "", "horario": "", "telefone": ""},
+      "publicadaEm": "2026-09-15", "validaAte": "2027-03-15"
+    },
+    {
+      "id": "exemplo-3", "estab": "Clínica Bem Viver", "tipo": "saude", "cidades": ["BHZ", "Teresina"],
+      "atendimento": "Indo até o lugar", "condicao": "",
+      "site": "", "social": "",
+      "card": {"icone": "saude", "titulo": "", "detalhe": "", "endereco": "Av. das Palmeiras, 500, Belo Horizonte", "horario": "", "telefone": ""},
+      "publicadaEm": "2026-09-15", "validaAte": null
+    }
+  ]
+}

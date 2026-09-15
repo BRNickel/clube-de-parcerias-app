@@ -1,0 +1,7 @@
+[
+  {"cod": "BHZ",   "nome": "Belo Horizonte",            "uf": "MG"},
+  {"cod": "CGO",   "nome": "Capitão Gervásio Oliveira", "uf": "PI"},
+  {"cod": "CAF",   "nome": "Campo Alegre do Fidalgo",   "uf": "PI"},
+  {"cod": "SJP",   "nome": "São João do Piauí",         "uf": "PI"},
+  {"cod": "TODAS", "nome": "Vale para todas",           "uf": ""}
+]

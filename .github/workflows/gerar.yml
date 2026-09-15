@@ -1,0 +1,44 @@
+# Regenera docs/index.html (o app público) a partir dos cards ATIVOS que a
+# função pública do Clube de Parcerias devolve. Roda a cada 15 minutos e à mão.
+#
+# Sem segredo nenhum: a função é pública (e só devolve campos do card) e o
+# commit usa o GITHUB_TOKEN automático do próprio repositório. É este o "plano
+# B" escolhido em 15/09/2026: publicar no painel reflete aqui em até ~15 min.
+#
+# ⚠ O GitHub DESLIGA rotinas agendadas em repositório sem atividade por 60
+# dias. Se o app parar de atualizar, abrir Actions → "Gerar app" → Run workflow
+# religa; qualquer commit também.
+name: Gerar app
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gerar-app
+  cancel-in-progress: false
+
+jobs:
+  gerar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Gerar a partir dos cards ativos
+        run: python3 gerador/gerar.py --saida docs/index.html
+
+      - name: Publicar se mudou
+        run: |
+          if git diff --quiet -- docs/index.html; then
+            echo "sem mudança em docs/index.html"
+            exit 0
+          fi
+          git config user.name "gerador-clube-de-parcerias"
+          git config user.email "gerador-clube-de-parcerias@users.noreply.github.com"
+          git add docs/index.html
+          git commit -m "Regenera o app: $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push
