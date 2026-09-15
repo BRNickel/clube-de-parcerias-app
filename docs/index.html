@@ -181,8 +181,23 @@ body.js .chips.on{display:flex}
 .chip .n{font-family:'DM Mono',monospace;font-size:11px;opacity:.7}
 
 /* ---------- cards de parceiro ---------- */
-.partners{display:grid;grid-template-columns:1fr;gap:12px;margin-top:14px}
+/* 🔴 `align-items:start` (15/09, achado dele na tela): sem isto o grid dá a
+   MESMA altura a todos os cards da linha, então abrir um esticava o vizinho e
+   o espaço em branco parecia um segundo card aberto e vazio. Cada card passa a
+   ter a altura do próprio conteúdo. */
+.partners{display:grid;grid-template-columns:1fr;gap:12px;margin-top:14px;align-items:start}
 @media(min-width:760px){.partners{grid-template-columns:1fr 1fr}}
+/* 🔴 NO COMPUTADOR NÃO HÁ EXPANSÃO (pedido dele, 15/09): com duas colunas sobra
+   espaço, e esconder o detalhe atrás de um clique só cria trabalho. O card já
+   vem aberto e a seta some. No celular, onde o espaço é caro, a expansão
+   continua. Quem liga é o JS (classe no body), porque <details> fechado não se
+   abre por CSS; sem JS o card continua fechado e abre no toque, que é o
+   comportamento de sempre e o que mantém o app vivo na pré-visualização do
+   iPhone. */
+body.sem-toggle .p-sum{cursor:default}
+body.sem-toggle .p-sum>.p-chev{display:none}
+body.sem-toggle .p-sum{grid-template-columns:auto minmax(0,1fr)}
+body.sem-toggle .p-mais{animation:none}
 .p-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:0;box-shadow:0 1px 8px rgba(27,45,37,.06);display:flex;flex-direction:column;gap:0;scroll-margin-top:90px;transition:border-color .15s,box-shadow .15s,transform .12s}
 .p-card:hover{border-color:rgba(0,232,131,.4);box-shadow:0 4px 16px rgba(27,45,37,.10);transform:translateY(-1px)}
 .p-card.off{display:none}
@@ -869,6 +884,28 @@ body.js .chips.on{display:flex}
     });
   });
 
+  /* ---- no computador o card já vem aberto; no celular, expande ----
+     O <details> continua sendo <details>: só o atributo `open` muda, então
+     nada quebra sem JS. `change` do matchMedia trata quem gira o celular ou
+     redimensiona a janela. */
+  var telaLarga = window.matchMedia('(min-width: 760px)');
+  function ajustarExpansao(){
+    var aberto = telaLarga.matches;
+    document.body.classList.toggle('sem-toggle', aberto);
+    Array.prototype.forEach.call(document.querySelectorAll('.p-det'), function(d){
+      if(aberto) d.setAttribute('open',''); else d.removeAttribute('open');
+    });
+  }
+  /* no computador, clicar no cabeçalho não fecha: o detalhe é para ficar à vista */
+  document.addEventListener('click', function(ev){
+    if(!telaLarga.matches) return;
+    var sum = ev.target.closest && ev.target.closest('.p-sum');
+    if(sum) ev.preventDefault();
+  });
+  if(telaLarga.addEventListener) telaLarga.addEventListener('change', ajustarExpansao);
+  else if(telaLarga.addListener) telaLarga.addListener(ajustarExpansao);
+  ajustarExpansao();
+
   /* ---- busca global (home) ---- */
   var inp = document.getElementById('search');
   var clr = document.getElementById('clearSearch');
@@ -903,6 +940,8 @@ body.js .chips.on{display:flex}
       var list = grp.querySelector('.partners');
       hits.filter(function(c){ return c.dataset.cidade === city; }).forEach(function(orig){
         var clone = orig.cloneNode(true);
+        /* o clone nasce com o mesmo `open` do original (cloneNode copia o
+           atributo), então a busca respeita computador x celular sozinha */
         clone.classList.remove('off');
         clone.style.cursor = 'pointer';
         clone.setAttribute('role','link');
