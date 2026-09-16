@@ -277,14 +277,11 @@ body.sem-toggle .p-mais{animation:none}
    no painel. Sublinhado discreto, verde no hover. */
 .d-row a.d-txt{color:var(--txt);text-decoration:underline;text-decoration-color:rgba(27,45,37,.28);text-underline-offset:3px;transition:color .15s,text-decoration-color .15s}
 .d-row a.d-txt:hover{color:var(--ben-txt);text-decoration-color:currentColor}
-.p-actions{display:flex;gap:8px;flex-wrap:wrap}
-.act-btn{display:inline-flex;align-items:center;gap:7px;border-radius:999px;padding:9px 16px;font-size:12.5px;font-weight:700;text-decoration:none;border:1px solid var(--line);transition:transform .12s,box-shadow .15s;cursor:pointer}
-.act-btn:hover{transform:translateY(-1px);box-shadow:0 3px 10px rgba(27,45,37,.12)}
-.act-btn:active{transform:scale(.95)}
-.act-btn .ic{width:15px;height:15px}
-.act-wa{background:var(--wa-bg);color:var(--wa-txt);border-color:var(--wa-bg)}
-.act-wa .ic{stroke:var(--wa-ico)}
-.act-map .ic{stroke:var(--txt)}
+/* 🔴 WHATSAPP É UM ÍCONE ao lado do número (16/09): redondo, verde, sem texto. O MESMO no painel. */
+.d-wa{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;
+  background:var(--wa-bg);margin-left:8px;vertical-align:middle;transition:transform .12s}
+.d-wa:hover{transform:scale(1.1)}
+.d-wa .ic{width:14px;height:14px;stroke:var(--wa-ico);margin-top:0}
 
 /* ---------- resultados de busca / vazio ---------- */
 .result-city{margin-bottom:22px}
@@ -413,7 +410,7 @@ body.sem-toggle .p-mais{animation:none}
         <div class="city-ico"><svg class="ic"><use href="#i-city"/></svg></div>
         <div class="city-info">
           <div class="city-name">Capitão Gervásio Oliveira <span class="uf-pill">PI</span></div>
-          <div class="city-sub">2 parceiros</div>
+          <div class="city-sub">3 parceiros</div>
         </div><svg class="ic chev"><use href="#i-chev"/></svg>
       </a>
       <a class="city-card" href="#c-campo-alegre-do-fidalgo">
@@ -483,10 +480,7 @@ body.sem-toggle .p-mais{animation:none}
           <div class="d-row"><svg class="ic"><use href="#i-shop"/></svg><span class="d-txt">Online ou presencial</span></div>
           <div class="d-row"><svg class="ic"><use href="#i-pin"/></svg><a class="d-txt" href="https://www.google.com/maps/search/?api=1&amp;query=rua%20pantojo%2C847%2C%20Belo%20Horizonte" target="_blank" rel="noopener" title="Abrir no Google Maps">rua pantojo,847</a></div>
           <div class="d-row"><svg class="ic"><use href="#i-clock"/></svg><span class="d-txt">Seg a Sex; Seg a Sáb</span></div>
-          <div class="d-row"><svg class="ic"><use href="#i-phone"/></svg><span class="d-txt">(11) 99695-5847</span></div>
-          <div class="p-actions">
-        <a class="act-btn act-wa" target="_blank" rel="noopener" href="https://wa.me/5511996955847"><svg class="ic"><use href="#i-wa"/></svg>WhatsApp</a>
-      </div>
+          <div class="d-row"><svg class="ic"><use href="#i-phone"/></svg><span class="d-txt">(11) 99695-5847<a class="d-wa" target="_blank" rel="noopener" title="Abrir conversa no WhatsApp" aria-label="WhatsApp" href="https://wa.me/5511996955847"><svg class="ic"><use href="#i-wa"/></svg></a></span></div>
         </div>
       </details>
     </article>
@@ -536,7 +530,7 @@ body.sem-toggle .p-mais{animation:none}
   <a class="back-btn" href="#home"><svg class="ic"><use href="#i-back"/></svg>Todas as cidades</a>
   <div class="city-head">
     <h2>Capitão Gervásio Oliveira <span class="uf-pill">PI</span></h2>
-    <div class="city-sub">2 parceiros disponíveis nesta cidade</div>
+    <div class="city-sub">3 parceiros disponíveis nesta cidade</div>
   </div>
   <div class="chips"></div>
   <div class="partners">
@@ -554,10 +548,7 @@ body.sem-toggle .p-mais{animation:none}
           <div class="d-row"><svg class="ic"><use href="#i-shop"/></svg><span class="d-txt">Online ou presencial</span></div>
           <div class="d-row"><svg class="ic"><use href="#i-pin"/></svg><a class="d-txt" href="https://www.google.com/maps/search/?api=1&amp;query=rua%20guari%2C123%2C%20Capit%C3%A3o%20Gerv%C3%A1sio%20Oliveira" target="_blank" rel="noopener" title="Abrir no Google Maps">rua guari,123</a></div>
           <div class="d-row"><svg class="ic"><use href="#i-clock"/></svg><span class="d-txt">Seg a Sex; Seg a Sáb</span></div>
-          <div class="d-row"><svg class="ic"><use href="#i-phone"/></svg><span class="d-txt">(11) 99695-5847</span></div>
-          <div class="p-actions">
-        <a class="act-btn act-wa" target="_blank" rel="noopener" href="https://wa.me/5511996955847"><svg class="ic"><use href="#i-wa"/></svg>WhatsApp</a>
-      </div>
+          <div class="d-row"><svg class="ic"><use href="#i-phone"/></svg><span class="d-txt">(11) 99695-5847<a class="d-wa" target="_blank" rel="noopener" title="Abrir conversa no WhatsApp" aria-label="WhatsApp" href="https://wa.me/5511996955847"><svg class="ic"><use href="#i-wa"/></svg></a></span></div>
         </div>
       </details>
     </article>
@@ -575,6 +566,23 @@ body.sem-toggle .p-mais{animation:none}
           <div class="d-row"><svg class="ic"><use href="#i-tag"/></svg><span class="d-txt">Na refeição</span></div>
           <div class="d-row"><svg class="ic"><use href="#i-shop"/></svg><span class="d-txt">Indo até o lugar</span></div>
           <div class="d-row"><svg class="ic"><use href="#i-pin"/></svg><span class="d-txt">Consultar endereço na internet</span></div>
+          <div class="d-row"><svg class="ic"><use href="#i-clock"/></svg><span class="d-txt">Consultar horário de funcionamento</span></div>
+        </div>
+      </details>
+    </article>
+
+    <article class="p-card" data-nome="teste" data-ramo="Saúde e bem-estar Online, por telefone ou entrega" data-cat="saude" data-cidade="Capitão Gervásio Oliveira" data-uf="PI">
+      <div class="p-agua" aria-hidden="true"><svg class="ic"><use href="#i-saude"/></svg></div>
+      <details class="p-det">
+        <summary class="p-sum">
+          <div class="p-ico"><svg class="ic"><use href="#i-saude"/></svg></div>
+          <div class="p-sum-txt"><div class="p-name">teste</div><div class="p-cat">Saúde e bem-estar <svg class="ic p-cat-ico"><use href="#i-saude"/></svg></div></div>
+          <div class="p-cond-box pendente"><div class="p-cond pendente">Condições a confirmar</div></div>
+          <svg class="ic p-chev"><use href="#i-chev"/></svg>
+        </summary>
+        <div class="p-mais">
+          <div class="d-row"><svg class="ic"><use href="#i-shop"/></svg><span class="d-txt">Online, por telefone ou entrega</span></div>
+          <div class="d-row"><svg class="ic"><use href="#i-pin"/></svg><a class="d-txt" href="https://www.google.com/maps/search/?api=1&amp;query=teste%2C%20Capit%C3%A3o%20Gerv%C3%A1sio%20Oliveira" target="_blank" rel="noopener" title="Abrir no Google Maps">teste</a></div>
           <div class="d-row"><svg class="ic"><use href="#i-clock"/></svg><span class="d-txt">Consultar horário de funcionamento</span></div>
         </div>
       </details>
