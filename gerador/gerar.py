@@ -80,6 +80,19 @@ def digitos_fone(t):
     return d if len(d) in (10, 11) else ""
 
 
+def telefone_bonito(v):
+    """o número do jeito que se lê em voz alta, e não colado: quem vai DIGITAR
+       num telefone precisa conseguir ler em pedaços. A MESMA regra do painel."""
+    n = re.sub(r"\D", "", str(v or ""))
+    if len(n) in (12, 13) and n.startswith("55"):
+        n = n[2:]
+    if len(n) == 11:
+        return "(%s) %s-%s" % (n[:2], n[2:7], n[7:])
+    if len(n) == 10:
+        return "(%s) %s-%s" % (n[:2], n[2:6], n[6:])
+    return str(v or "").strip()
+
+
 def card_html(c, cidade):
     tipo = c.get("tipo") if c.get("tipo") in CATN else "outros"
     card = c.get("card") or {}
@@ -96,6 +109,10 @@ def card_html(c, cidade):
     linha("pin", (card.get("endereco") or "").strip())
     # sem horário no formulário nem no card, o texto padrão (o MESMO do painel)
     linha("clock", (card.get("horario") or "").strip() or HORARIO_PADRAO)
+    # 🔴 O NÚMERO APARECE SEMPRE (16/09), como o endereço e o horário. Antes ele
+    # só existia dentro do botão de WhatsApp, então quem não usa WhatsApp, ou
+    # está no computador, não tinha o número: o card guardava e não mostrava.
+    linha("phone", telefone_bonito(card.get("telefone")))
     acoes = []
     end = (card.get("endereco") or "").strip()
     if end:
@@ -103,7 +120,10 @@ def card_html(c, cidade):
         acoes.append('        <a class="act-btn act-map" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=%s"><svg class="ic"><use href="#i-map"/></svg>Ver no mapa</a>'
                      % escape(urllib.request.quote(q), quote=True))
     fone = digitos_fone(card.get("telefone"))
-    if fone:
+    # 🔴 e o BOTÃO só quando alguém marcou "esse número é WhatsApp" no painel.
+    # Sem essa pergunta, telefone fixo de restaurante virava um botão que abre
+    # uma conversa que não existe, e quem clica conclui que o Clube está velho.
+    if fone and card.get("whatsapp"):
         acoes.append('        <a class="act-btn act-wa" target="_blank" rel="noopener" href="https://wa.me/55%s"><svg class="ic"><use href="#i-wa"/></svg>WhatsApp</a>' % fone)
     if acoes:
         linhas.append('          <div class="p-actions">\n%s\n      </div>' % "\n".join(acoes))
