@@ -315,6 +315,10 @@ select{background-image:url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http:
 /* a lista dos arquivos escolhidos (até 3) */
 /* ---- horário em linhas: o MESMO do painel ---- */
 /* ---- modo offline: a instrução de como o arquivo chega ao RH ---- */
+/* textos dos popups do modo offline (16/09) */
+.off-p{font-size:13.5px;line-height:1.65;color:var(--txt);margin:0 0 12px}
+.off-p.off-sub{font-size:12.5px;color:var(--muted)}
+.off-p a{color:var(--ok-txt);font-weight:600}
 .off-aviso{background:var(--grey);border:1px solid var(--line);border-radius:14px;
   padding:14px 16px;margin-bottom:14px;display:flex;flex-direction:column;gap:7px}
 .off-aviso p{font-size:13px;line-height:1.6;color:var(--txt)}
@@ -2174,7 +2178,10 @@ function ligarModoOffline(){
   var be = $('btnEntrar'); if(be) be.hidden = true;
   $('btnTxt').textContent = 'Baixar formulário';
   montarCampoDeArea();
-  montarInstrucoesOffline();
+  /* 🔴 A LEGENDA SAIU DA TELA (pedido dele, 16/09): virou o popup que aparece
+     DEPOIS de baixar, quando a instrução tem para o que servir. E ao entrar, um
+     convite: quem tem e-mail da empresa vai para o formulário do portal. */
+  abrirConviteLogin();
   /* 🔴 REPINTAR os avisos, e não só mudar as regras. Eles são escritos no
      arranque, ANTES daqui, então sem estas linhas a página pública ficava com
      "MODO DE TESTE: a indicação não chega a ninguém" em cima de um formulário
@@ -2200,7 +2207,9 @@ function montarCampoDeArea(){
   if($('offArea')) return false;
   var alvo = campoEl('colaborador');
   if(!alvo || !alvo.parentNode) return false;
-  var f = document.createElement('div'); f.className = 'campo';
+  /* `f wide`, como os campos vizinhos: com uma classe própria ele saía estreito
+     dentro da grade e o exemplo do placeholder aparecia cortado (print dele, 16/09) */
+  var f = document.createElement('div'); f.className = 'f wide'; f.dataset.campo = 'areaDeclarada';
   var lb = document.createElement('label'); lb.setAttribute('for','offArea');
   lb.textContent = 'Sua área ou empresa';
   var inp = document.createElement('input');
@@ -2211,7 +2220,7 @@ function montarCampoDeArea(){
   areasParaEscolher().forEach(function(a){
     var o = document.createElement('option'); o.value = a; dl.appendChild(o);
   });
-  var dica = document.createElement('div'); dica.className = 'dica';
+  var dica = document.createElement('div'); dica.className = 'hint';
   dica.textContent = 'Serve para o RH saber de onde veio a indicação. Se você não é da Brazilian Nickel, escreva o nome da sua empresa.';
   inp.addEventListener('input', function(){ R.areaDeclarada = inp.value; });
   f.appendChild(lb); f.appendChild(inp); f.appendChild(dl); f.appendChild(dica);
@@ -2220,36 +2229,82 @@ function montarCampoDeArea(){
 }
 
 /* 🔴 QUEM CHEGA AQUI NÃO TEM CONTA DA EMPRESA: não sabe o que é o brnapps, não
-   sabe quem é o RH e não tem a quem perguntar. Então a instrução fica na tela,
-   antes e depois do clique, com o endereço de e-mail ESCRITO. */
+   sabe quem é o RH e não tem a quem perguntar. A instrução tem o e-mail ESCRITO
+   e aparece no momento em que serve: depois de baixar. */
 var EMAIL_DO_RH = 'rh@brnickel.com';
 /* o formulário de dentro do portal, para quem tem login: é para onde o público
    manda quem tem e-mail da empresa */
 var URL_FORMULARIO_PORTAL = 'https://brnapps.brnickel.com/apps/clube-de-parcerias/formulario.html';
-function montarInstrucoesOffline(){
-  if($('offAviso')) return false;
-  var alvo = $('avisoEnvio'); if(!alvo || !alvo.parentNode) return false;
-  var b = document.createElement('div'); b.className = 'off-aviso'; b.id = 'offAviso';
-  var t1 = document.createElement('p');
-  t1.innerHTML = '<b>Como esta indicação chega ao RH.</b> Este formulário não envia nada sozinho. ' +
-    'Ao terminar, o botão abaixo <b>baixa um arquivo</b> para o seu computador. ' +
-    'Mande esse arquivo por e-mail para <b>' + EMAIL_DO_RH + '</b> e o RH cuida do resto.';
-  var t2 = document.createElement('p'); t2.className = 'off-sub';
-  t2.textContent = 'Se você tiver print da conversa ou foto do combinado, anexe o arquivo aqui ' +
-    'e ele vai junto. Arquivo grande não cabe em e-mail, por isso o limite aqui é menor: ' +
-    OFFLINE_EVID_MAX + ' arquivo de até ' + OFFLINE_EVID_MB + ' MB.';
-  /* 🔴 UM LINK SÓ NÃO DÁ (pergunta dele, 16/09): o formulário do portal fica atrás
-     do login da plataforma, e quem não tem e-mail da empresa nem chega a ver a
-     página. Então este, o público, é a porta de todos: quem TEM e-mail é mandado
-     para o do portal, que envia sozinho e sem e-mail no meio. */
-  var t3 = document.createElement('p'); t3.className = 'off-sub';
-  t3.appendChild(document.createTextNode('Tem e-mail da empresa? Prefira o '));
+var CHAVE_CONVITE = 'cp-convite-login';
+
+/* um popup simples com a MESMA roupa do termo (`.ov` + `.modal`) */
+function popupSimples(id, eyebrow, titulo){
+  var ov = document.getElementById(id);
+  if(ov) ov.remove();
+  ov = document.createElement('div'); ov.className = 'ov'; ov.id = id;
+  var m = document.createElement('div'); m.className = 'modal'; m.setAttribute('role','dialog'); m.setAttribute('aria-modal','true');
+  var h = document.createElement('div'); h.className = 'modal-h';
+  var hd = document.createElement('div');
+  var ey = document.createElement('div'); ey.className = 'eyebrow-modal'; ey.textContent = eyebrow;
+  var h3 = document.createElement('h3'); h3.textContent = titulo; h3.id = id + 'Titulo';
+  m.setAttribute('aria-labelledby', h3.id);
+  hd.appendChild(ey); hd.appendChild(h3); h.appendChild(hd);
+  var b = document.createElement('div'); b.className = 'modal-b';
+  var f = document.createElement('div'); f.className = 'modal-f';
+  m.appendChild(h); m.appendChild(b); m.appendChild(f);
+  ov.appendChild(m);
+  document.body.appendChild(ov);
+  return { ov:ov, corpo:b, rodape:f };
+}
+function paragrafo(pai, cls, texto){
+  var p = document.createElement('p'); if(cls) p.className = cls;
+  p.textContent = texto; pai.appendChild(p); return p;
+}
+
+/* 🔴 O CONVITE (pedido dele, 16/09): ao abrir o formulário público, perguntar se
+   a pessoa quer entrar com login. Com login a indicação é enviada na hora; sem
+   login ela baixa um arquivo. Lembrado por ABA (sessionStorage): quem disse
+   "continuar sem login" não é perguntado de novo a cada recarga. */
+function abrirConviteLogin(){
+  try { if(sessionStorage.getItem(CHAVE_CONVITE) === '1') return false; } catch(e){}
+  var p = popupSimples('ovConvite', 'Antes de começar', 'Quer entrar com o seu login?');
+  paragrafo(p.corpo, 'off-p', 'Com o login da Brazilian Nickel, a indicação é enviada na hora para o RH, sem arquivo e sem e-mail.');
+  paragrafo(p.corpo, 'off-p off-sub', 'Sem login, você preenche aqui, baixa um arquivo no fim e manda por e-mail para o RH. Serve para quem não tem e-mail da empresa.');
+  var seguir = document.createElement('button'); seguir.type = 'button'; seguir.id = 'btnConviteSeguir';
+  seguir.textContent = 'Continuar sem login';
+  seguir.addEventListener('click', function(){
+    try { sessionStorage.setItem(CHAVE_CONVITE, '1'); } catch(e){}
+    p.ov.classList.remove('on');
+  });
+  var entrar = document.createElement('button'); entrar.type = 'button'; entrar.className = 'pri'; entrar.id = 'btnConviteEntrar';
+  entrar.textContent = 'Entrar com meu login';
+  entrar.dataset.url = URL_FORMULARIO_PORTAL;
+  entrar.addEventListener('click', function(){ location.href = URL_FORMULARIO_PORTAL; });
+  p.rodape.appendChild(seguir); p.rodape.appendChild(entrar);
+  p.ov.classList.add('on');
+  return true;
+}
+
+/* 🔴 AS INSTRUÇÕES DEPOIS DE BAIXAR (pedido dele, 16/09): o arquivo já está no
+   computador da pessoa, e é agora que ela precisa saber o que fazer com ele. */
+function abrirInstrucoesOffline(pacote){
+  var p = popupSimples('ovInstrucoes', 'Falta um passo', 'Mande o arquivo para o RH');
+  var nome = pacote ? nomeDoArquivo(pacote) : '';
+  paragrafo(p.corpo, 'off-p', 'Este formulário não envia nada sozinho. O arquivo' + (nome ? ' "' + nome + '"' : '') +
+    ' foi baixado para o seu computador. Mande esse arquivo por e-mail para ' + EMAIL_DO_RH + ' e o RH cuida do resto.');
+  var forte = p.corpo.lastChild; forte.innerHTML = forte.innerHTML.replace(EMAIL_DO_RH, '<b>' + EMAIL_DO_RH + '</b>');
+  paragrafo(p.corpo, 'off-p off-sub', 'Se você anexou print da conversa ou foto do combinado, ele já está dentro do arquivo. ' +
+    'Arquivo grande não cabe em e-mail, por isso o limite aqui é ' + OFFLINE_EVID_MAX + ' arquivo de até ' + OFFLINE_EVID_MB + ' MB.');
+  var t3 = paragrafo(p.corpo, 'off-p off-sub', 'Tem e-mail da empresa? Na próxima vez, prefira o ');
   var a = document.createElement('a'); a.href = URL_FORMULARIO_PORTAL; a.textContent = 'formulário do portal';
   a.target = '_blank'; a.rel = 'noopener';
   t3.appendChild(a);
   t3.appendChild(document.createTextNode(': ele envia direto para o RH, sem arquivo nem e-mail.'));
-  b.appendChild(t1); b.appendChild(t2); b.appendChild(t3);
-  alvo.parentNode.insertBefore(b, alvo);
+  var ok = document.createElement('button'); ok.type = 'button'; ok.className = 'pri'; ok.id = 'btnInstrucoesOk';
+  ok.textContent = 'Entendi';
+  ok.addEventListener('click', function(){ p.ov.classList.remove('on'); });
+  p.rodape.appendChild(ok);
+  p.ov.classList.add('on');
   return true;
 }
 
@@ -2283,8 +2338,13 @@ function mostrarSucesso(pacote){
   $('tela').style.display = 'none';
   $('sucesso').classList.add('on');
 
-  $('sucTxt').textContent = 'O RH recebeu a sua indicação de parceria e vai entrar em contato com o ' +
-    'estabelecimento. Se faltar alguma informação, procuramos você pelo e-mail que você informou.';
+  /* 🔴 no modo offline o RH ainda NÃO recebeu nada: recebe quando o arquivo
+     chegar por e-mail. Dizer "recebeu" aqui seria mentir na tela mais lida. */
+  $('sucTxt').textContent = ENVIO.modo === 'arquivo'
+    ? 'O arquivo foi baixado para o seu computador. A indicação só chega ao RH quando você mandar esse ' +
+      'arquivo por e-mail para ' + EMAIL_DO_RH + '.'
+    : 'O RH recebeu a sua indicação de parceria e vai entrar em contato com o ' +
+      'estabelecimento. Se faltar alguma informação, procuramos você pelo e-mail que você informou.';
 
   var linhas = [
     ['Estabelecimento', pacote.estabelecimento],
@@ -2719,6 +2779,8 @@ function ligar(){
     var pacote = montarPacote();
     enviar(pacote).then(function(){
       mostrarSucesso(pacote);
+      /* 🔴 no modo offline, as instruções aparecem AGORA, com o arquivo já baixado */
+      if(ENVIO.modo === 'arquivo') abrirInstrucoesOffline(pacote);
       tocarSucesso();
     }).catch(function(err){
       btn.classList.remove('busy');
@@ -2746,6 +2808,7 @@ window.FP = {
   R: function(){ return R; },
   REGRAS: REGRAS, TIPOS: TIPOS, ATENDIMENTOS: ATENDIMENTOS, UNIDADES: UNIDADES, ENVIO: ENVIO,
   parResolvido: parResolvido,
+  abrirConviteLogin: abrirConviteLogin, abrirInstrucoesOffline: abrirInstrucoesOffline,
   PLATAFORMA: PLATAFORMA, naPlataforma: naPlataforma, destinoReal: destinoReal,
   corpoDoEnvio: corpoDoEnvio, cabecalhosAuth: cabecalhosAuth,
   arquivos: function(){ return arquivos; }, porArquivos: porArquivos, tipoAceito: tipoAceito,
@@ -3576,19 +3639,39 @@ function selftest(){
     /* a área é perguntada aqui porque não existe cadastro para ler */
     t('★ aparece o campo de área, com lista de sugestões',
       !!$('offArea') && !!$('offAreaLista') && $('offAreaLista').options.length > 5);
-    t('e a instrução explica como a indicação chega ao RH',
-      !!$('offAviso') && $('offAviso').textContent.indexOf(EMAIL_DO_RH) >= 0);
-    t('★ e manda quem tem e-mail da empresa para o formulário do portal, com o link (16/09)',
-      !!$('offAviso').querySelector('a[href="' + URL_FORMULARIO_PORTAL + '"]') &&
-      /brnapps\.brnickel\.com\/apps\/clube-de-parcerias\/formulario\.html/.test(URL_FORMULARIO_PORTAL));
+    t('★ o campo de área tem a largura dos outros (f wide), sem o exemplo cortado',
+      !!$('offArea').closest('.f.wide') && $('offArea').getBoundingClientRect().width >= $('colaborador').getBoundingClientRect().width - 2);
+    /* 🔴 A LEGENDA SAIU DA TELA (16/09): virou dois popups */
+    t('★ a legenda não fica mais no meio do formulário',
+      !$('offAviso') && typeof montarInstrucoesOffline === 'undefined');
+    t('★ ao entrar, o convite para entrar com login aparece, com o caminho para o formulário do portal',
+      !!$('ovConvite') && $('ovConvite').classList.contains('on') &&
+      $('btnConviteEntrar').dataset.url === URL_FORMULARIO_PORTAL &&
+      /brnapps\.brnickel\.com\/apps\/clube-de-parcerias\/formulario\.html/.test(URL_FORMULARIO_PORTAL) &&
+      /enviada na hora/.test($('ovConvite').textContent));
+    $('btnConviteSeguir').click();
+    t('★ "Continuar sem login" fecha o convite e ele não volta nesta aba',
+      !$('ovConvite').classList.contains('on') && sessionStorage.getItem(CHAVE_CONVITE) === '1' &&
+      abrirConviteLogin() === false);
+    sessionStorage.removeItem(CHAVE_CONVITE);
+    abrirInstrucoesOffline({ tipoCodigo:'alimentacao', colaborador:'Maria da Silva', enviadoEm:'2026-09-16T13:40:00.000Z' });
+    t('★ depois de baixar, o popup diz o e-mail do RH, o nome do arquivo e o limite de evidência',
+      !!$('ovInstrucoes') && $('ovInstrucoes').classList.contains('on') &&
+      $('ovInstrucoes').textContent.indexOf(EMAIL_DO_RH) >= 0 &&
+      /alimentacao - Maria da Silva - 2026-09-16\.json/.test($('ovInstrucoes').textContent) &&
+      /1 arquivo de até 3 MB/.test($('ovInstrucoes').textContent));
+    t('★ e manda quem tem e-mail da empresa para o formulário do portal, com o link',
+      !!$('ovInstrucoes').querySelector('a[href="' + URL_FORMULARIO_PORTAL + '"]'));
+    $('btnInstrucoesOk').click();
+    t('"Entendi" fecha o popup', !$('ovInstrucoes').classList.contains('on'));
 
     /* 🔴 o limite de evidência encolhe, e é ARITMÉTICA: o arquivo viaja dentro
        do JSON em base64, que infla um terço. Três de 10 MB virariam um e-mail
        de 40 MB, que a maioria dos servidores recusa. */
     t('★ a evidência fica menor, porque ela viaja dentro do arquivo',
       REGRAS.evidenciaMax === 1 && REGRAS.evidenciaMaxMB === 3);
-    t('e a tela diz esse limite, em vez de a pessoa descobrir no erro',
-      /1 arquivo de até 3 MB/.test($('offAviso').textContent));
+    t('e a tela diz esse limite no campo de evidência, em vez de a pessoa descobrir no erro',
+      /1 arquivo/.test($('arqDica').textContent) && /3 MB/.test($('arqDica').textContent));
 
     /* --- o nome do arquivo, do jeito que ele pediu: categoria, nome, data --- */
     var nome = nomeDoArquivo({ tipoCodigo:'alimentacao', colaborador:'Maria da Silva',
@@ -3634,7 +3717,8 @@ function selftest(){
     REGRAS.evidenciaMax = gMax; REGRAS.evidenciaMaxMB = gMB;
     document.body.classList.remove('offline');
     var oa = $('offArea'); if(oa && oa.parentNode && oa.parentNode.parentNode) oa.parentNode.parentNode.removeChild(oa.parentNode);
-    var ov = $('offAviso'); if(ov && ov.parentNode) ov.parentNode.removeChild(ov);
+    ['ovConvite','ovInstrucoes'].forEach(function(id){ var o = $(id); if(o) o.remove(); });
+    try { sessionStorage.removeItem(CHAVE_CONVITE); } catch(e){}
     $('btnTxt').textContent = 'Enviar indicação';
     /* repintar tambem na volta: restaurar a REGRA e deixar o TEXTO velho na tela
        foi exatamente o defeito que este bloco acabou de consertar, e ele quase
@@ -3644,7 +3728,7 @@ function selftest(){
     $('ajudaEvidenciaLimite').textContent = avisoEvidencia();
     $('evidencia').setAttribute('multiple','');
     aplicarIdentidade();
-    t('★ e o teste devolve a tela como encontrou', !$('offArea') && !$('offAviso') &&
+    t('★ e o teste devolve a tela como encontrou', !$('offArea') && !$('ovConvite') && !$('ovInstrucoes') &&
       ENVIO.modo === gModo && REGRAS.evidenciaMax === gMax);
   })();
 
