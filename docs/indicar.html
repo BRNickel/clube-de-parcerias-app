@@ -324,7 +324,7 @@ select{background-image:url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http:
 .hr-campo{display:flex;flex-direction:column;gap:8px}
 .hr-linhas{display:flex;flex-direction:column;gap:7px}
 .hr-linha{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
-.hr-dias,.hr-h,.hr-txt{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--txt);
+.hr-dias,.hr-h,.hr-txt,.en-txt,.en-rot{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--txt);
   background:var(--campo);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
 /* 🔴 BASE DECLARADA, não `auto` (pedido dele, 16/09). Com `flex:1 1 auto` numa
    linha que pode quebrar, o seletor de dias crescia até a largura inteira (686px
@@ -342,8 +342,11 @@ select{background-image:url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http:
   .hr-h{flex:1 1 calc(50% - 46px)}
 }
 .hr-txt{flex:1 1 auto;min-width:0}
+/* linhas de ENDEREÇO (16/09): endereço completo largo, nome curto estreito */
+.en-txt{flex:1 1 240px;min-width:0}
+.en-rot{flex:0 1 200px;min-width:130px}
 .hr-sep{flex:none;font-size:11.5px;color:var(--muted)}
-.hr-dias:focus,.hr-h:focus,.hr-txt:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px var(--ring)}
+.hr-dias:focus,.hr-h:focus,.hr-txt:focus,.en-txt:focus,.en-rot:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px var(--ring)}
 .hr-mais{align-self:flex-start;font-family:'DM Sans',sans-serif;font-size:11.5px;font-weight:700;
   color:var(--ok-txt);background:var(--green-dim);border:1px solid rgba(0,232,131,.34);
   border-radius:999px;padding:7px 14px;cursor:pointer}
@@ -652,10 +655,11 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
             <!-- 🔴 SEMPRE OPCIONAL (decisão dele, 16/09): parceria com REDE de unidades
                  não tem um endereço para listar. Vazio, o card diz para consultar na
                  internet. A regra que ligava o asterisco saiu inteira do script. -->
-            <label for="endereco">Endereço <span class="opt">(opcional)</span></label>
-            <div class="hint" id="hintEndereco">Rua, número, bairro e cidade. Rede com várias unidades pode deixar em
-              branco: o card vai dizer para consultar o endereço na internet.</div>
-            <input id="endereco" name="endereco" type="text" placeholder="Rua, número, bairro, cidade" maxlength="220">
+            <label>Endereço <span class="opt">(opcional)</span></label>
+            <div class="hint" id="hintEndereco">Rua, número, bairro e cidade. Rede com várias unidades: uma linha por
+              unidade, e o nome curto (ex.: "Buritis") vira o texto do botão do mapa. Em branco, o card diz para
+              consultar o endereço na internet.</div>
+            <div class="hr-campo" id="enderecos"></div>
             <div class="err" id="e_endereco"></div>
           </div>
           <div class="f" data-campo="site">
@@ -1099,7 +1103,7 @@ var $ = function(id){ return document.getElementById(id); };
 /* estado da resposta */
 var R = { colaborador:'', identificadoPor:'digitado', colaboradorEmail:null,
           areaDeclarada:'', semLogin:false,
-          tipo:'', tipoOutro:'', atendimento:'', estab:'', endereco:'',
+          tipo:'', tipoOutro:'', atendimento:'', estab:'', enderecos:[],
           site:'', social:'', horario:'', contatoNome:'', contatoEmail:'', contatoFone:'',
           unidades:[], cidadeOutra:'', condicao:'', consent:false };
 
@@ -1595,6 +1599,96 @@ function montarCampoDeHorario(){
   return true;
 }
 
+/* ---------- endereços: uma lista, como o horário ---------- */
+
+/* a lista de endereços do card: cada item é { endereco, rotulo }. Aceita o que
+   vier (texto solto, lista de textos, lixo) e devolve só itens com endereço, com
+   os espaços aparados. É a MESMA função no painel; a paridade cobra. */
+function limparEnderecos(lista){
+  if(typeof lista === 'string') lista = lista.trim() ? [{ endereco: lista, rotulo: '' }] : [];
+  if(!Array.isArray(lista)) return [];
+  return lista.map(function(e){
+    if(typeof e === 'string') e = { endereco: e, rotulo: '' };
+    return { endereco: String(e && e.endereco || '').replace(/\s+/g, ' ').trim(),
+             rotulo:   String(e && e.rotulo   || '').replace(/\s+/g, ' ').trim() };
+  }).filter(function(e){ return !!e.endereco; });
+}
+
+/* 🔴 VÁRIOS ENDEREÇOS (pedido dele, 16/09): parceria com rede de unidades.
+   Mesma interação das linhas de horário: uma linha por endereço, "+ Adicionar",
+   × para tirar. Cada linha tem o endereço completo (vira o link do mapa) e um
+   nome curto opcional, que vira o texto do botão no card ("Buritis" em vez de
+   "Ver no mapa"). O valor final vive em `R.enderecos`, já limpo. */
+function montarCampoDeEnderecos(){
+  var w = document.getElementById('enderecos');
+  if(!w) return false;
+  w.innerHTML = '';
+  var corpo = document.createElement('div'); corpo.className = 'hr-linhas';
+  w.appendChild(corpo);
+  var estado = limparEnderecos(R.enderecos);
+  if(!estado.length) estado.push({ endereco:'', rotulo:'' });
+
+  function lerLinhas(){
+    return Array.prototype.map.call(corpo.querySelectorAll('.hr-linha'), function(linha){
+      return { endereco: linha.querySelector('.en-txt').value, rotulo: linha.querySelector('.en-rot').value };
+    });
+  }
+  function guardar(){
+    estado = lerLinhas();
+    R.enderecos = limparEnderecos(estado);
+    atualizarProgresso();
+  }
+  function novo(tag, cls, txt){
+    var e = document.createElement(tag); if(cls) e.className = cls;
+    if(txt !== undefined && txt !== null) e.textContent = txt;
+    return e;
+  }
+  function desenharLinha(l, i){
+    var linha = novo('div','hr-linha en-linha');
+    var t = novo('input','en-txt'); t.type = 'text'; t.value = l.endereco || '';
+    t.placeholder = 'Rua, número, bairro, cidade'; t.maxLength = 220;
+    t.setAttribute('aria-label','Endereço completo');
+    t.addEventListener('input', guardar);
+    var r = novo('input','en-rot'); r.type = 'text'; r.value = l.rotulo || '';
+    r.placeholder = 'Nome curto (opcional), ex.: Buritis'; r.maxLength = 30;
+    r.setAttribute('aria-label','Nome curto do endereço, para o botão do mapa');
+    r.addEventListener('input', guardar);
+    linha.appendChild(t);
+    linha.appendChild(r);
+    var x = novo('button','hr-x','×'); x.type = 'button';
+    x.setAttribute('aria-label','Tirar este endereço');
+    x.hidden = estado.length < 2;
+    x.addEventListener('click', function(){
+      estado = lerLinhas(); estado.splice(i, 1);
+      if(!estado.length) estado.push({ endereco:'', rotulo:'' });
+      desenhar(); guardar();
+    });
+    linha.appendChild(x);
+    return linha;
+  }
+  function desenhar(){
+    corpo.innerHTML = '';
+    estado.forEach(function(l, i){ corpo.appendChild(desenharLinha(l, i)); });
+  }
+  desenhar();
+
+  var mais = novo('button','hr-mais','+ Adicionar endereço'); mais.type = 'button';
+  mais.addEventListener('click', function(){
+    estado = lerLinhas(); estado.push({ endereco:'', rotulo:'' });
+    desenhar(); guardar();
+  });
+  w.appendChild(mais);
+  return true;
+}
+/* linha com nome curto e sem endereço: o nome não tem para onde apontar */
+function enderecosIncompletos(){
+  var w = document.getElementById('enderecos');
+  if(!w) return 0;
+  return Array.prototype.filter.call(w.querySelectorAll('.hr-linha'), function(linha){
+    return linha.querySelector('.en-rot').value.trim() && !linha.querySelector('.en-txt').value.trim();
+  }).length;
+}
+
 /* ---------- marcação de campo, progresso e validação ---------- */
 
 function campoEl(nome){ return document.querySelector('[data-campo="'+nome+'"]'); }
@@ -1631,7 +1725,7 @@ function respondido(c){
     case 'tipoOutro':    return String(R.tipoOutro||'').trim().length >= 3;
     case 'atendimento':  return !!nomeAtendimento(R.atendimento);
     case 'estab':        return String(R.estab||'').trim().length >= 2;
-    case 'endereco':     return String(R.endereco||'').trim().length >= 8;
+    case 'endereco':     return limparEnderecos(R.enderecos).length > 0;
     case 'contatoNome':  return nomeContatoValido(R.contatoNome);
     case 'contato':      return parResolvido();
     case 'unidades':     return R.unidades.length > 0;
@@ -1677,9 +1771,11 @@ function validar(){
   if(String(R.estab||'').trim().length < 2) p('estab','Escreva o nome do estabelecimento.');
   else marcar('estab', true, '');
 
-  /* endereço é opcional para todo mundo (16/09): só conta como respondido
-     quando tem cara de endereço, e nunca barra o envio */
-  marcar('endereco', String(R.endereco||'').trim().length >= 8, '');
+  /* endereço é opcional para todo mundo (16/09) e é uma LISTA: só barra o envio
+     a linha que tem nome curto e não tem endereço, porque o nome não teria para
+     onde apontar */
+  if(enderecosIncompletos() > 0) p('endereco','Tem uma linha com nome curto e sem endereço: escreva o endereço ou tire a linha.');
+  else marcar('endereco', limparEnderecos(R.enderecos).length > 0, '');
 
   if(!siteValido(R.site)) p('site','Endereço de site inválido. Exemplo: www.exemplo.com.br');
   else marcar('site', String(R.site||'').trim() ? true : false, '');
@@ -1813,7 +1909,10 @@ function montarPacote(){
     atendimento: a ? a.nome : '',
     atendimentoCodigo: R.atendimento,
     estabelecimento: String(R.estab).replace(/\s+/g,' ').trim(),
-    endereco: String(R.endereco||'').replace(/\s+/g,' ').trim() || null,
+    /* 🔴 VÁRIOS ENDEREÇOS (16/09): a lista completa vai em `enderecos`; `endereco`
+       continua existindo e é o PRIMEIRO da lista, para quem lê o contrato antigo. */
+    endereco: limparEnderecos(R.enderecos).length ? limparEnderecos(R.enderecos)[0].endereco : null,
+    enderecos: limparEnderecos(R.enderecos),
     enderecoObrigatorio: false,   /* a chave fica no contrato v3; a regra que a ligava saiu em 16/09 */
     site: siteNormalizado(R.site),
     redeSocial: String(R.social||'').trim() || null,
@@ -2156,12 +2255,13 @@ function mostrarSucesso(pacote){
 
 function recomecar(){
   R = { colaborador:R.colaborador, tipo:'', tipoOutro:'', atendimento:'', estab:'',
-        endereco:'', site:'', social:'', horario:'', contatoNome:'', contatoEmail:'', contatoFone:'',
+        enderecos:[], site:'', social:'', horario:'', contatoNome:'', contatoEmail:'', contatoFone:'',
         unidades:[], cidadeOutra:'', condicao:'', consent:false };
   arquivos = [];
-  ['estab','endereco','site','social','contatoNome','contatoEmail','contatoFone','condicao','tipoOutro','cidadeOutra']
+  ['estab','site','social','contatoNome','contatoEmail','contatoFone','condicao','tipoOutro','cidadeOutra']
     .forEach(function(id){ $(id).value = ''; });
   montarCampoDeHorario();
+  montarCampoDeEnderecos();
   $('evidencia').value = '';
   Array.prototype.forEach.call(document.querySelectorAll('.f'), function(f){
     f.classList.remove('ok','bad');
@@ -2486,7 +2586,7 @@ function ligar(){
 
   // campos de texto simples
   [['colaborador','colaborador'],['tipoOutro','tipoOutro'],['cidadeOutra','cidadeOutra'],['estab','estab'],
-   ['endereco','endereco'],['site','site'],['social','social'],
+   ['site','site'],['social','social'],
    ['contatoNome','contatoNome'],['contatoEmail','contatoEmail']].forEach(function(par){
     $(par[0]).addEventListener('input', function(){ R[par[1]] = this.value; atualizarProgresso(); });
   });
@@ -2524,6 +2624,7 @@ function ligar(){
   // arquivo
   $('evidencia').addEventListener('change', function(){ porArquivos(this.files); this.value = ''; });
   montarCampoDeHorario();
+  montarCampoDeEnderecos();
 
   // leitura obrigatória do texto
   $('btnLerTermo').addEventListener('click', abrirTermo);
@@ -2698,7 +2799,7 @@ function selftest(){
     R.colaborador = 'Fulano de Tal'; R.identificadoPor = 'login';
     R.colaboradorEmail = 'fulano@brnickel.com';
     R.tipo = 'alimentacao'; R.atendimento = 'presencial';
-    R.estab = 'Cantina do Teste'; R.endereco = 'Rua 1, 100';
+    R.estab = 'Cantina do Teste'; R.enderecos = [{endereco:'Rua 1, 100', rotulo:''}];
     R.contatoNome = 'Zé'; R.contatoEmail = 'ze@x.com.br';
     R.condicao = '10% no almoço, de segunda a sexta.';
     R.unidades = (R.unidades && R.unidades.length) ? R.unidades : [UNIDADES[0].cod];
@@ -2824,12 +2925,49 @@ function selftest(){
       casos.every(function(c){ R.tipo = c[0]; R.atendimento = c[1]; return camposAtivos().indexOf('endereco') < 0; }));
     R.tipo = gT; R.atendimento = gA;
     t('★ o rótulo diz "(opcional)" e não tem asterisco',
-      /opcional/.test(document.querySelector('label[for="endereco"]').textContent) &&
-      !document.querySelector('label[for="endereco"] .req'));
+      /opcional/.test(document.querySelector('[data-campo="endereco"] label').textContent) &&
+      !document.querySelector('[data-campo="endereco"] label .req'));
     t('e a dica explica o caso da rede e o que o card vai dizer',
       /[Rr]ede/.test($('hintEndereco').textContent) && /internet/.test($('hintEndereco').textContent));
     t('a faixa verde que dizia por que o endereço era obrigatório saiu da marcação',
       !document.getElementById('notaEndereco'));
+    /* 🔴 VÁRIOS ENDEREÇOS (16/09): mesma interação do horário */
+    var gE = R.enderecos;
+    R.enderecos = []; montarCampoDeEnderecos();
+    var w = $('enderecos');
+    t('★ o campo de endereço é uma lista de linhas, como o horário',
+      !!w && w.querySelectorAll('.hr-linha').length === 1 && !!w.querySelector('.hr-mais') &&
+      !!w.querySelector('.en-txt') && !!w.querySelector('.en-rot'));
+    t('com uma linha só, tirar não aparece', w.querySelector('.hr-x').hidden === true);
+    w.querySelector('.hr-mais').click();
+    t('★ "+ Adicionar endereço" põe a segunda linha e o × aparece',
+      w.querySelectorAll('.hr-linha').length === 2 && w.querySelector('.hr-x').hidden === false);
+    var ls = w.querySelectorAll('.hr-linha');
+    ls[0].querySelector('.en-txt').value = 'Rua A, 10, Buritis, Belo Horizonte';
+    ls[0].querySelector('.en-rot').value = '  Buritis ';
+    ls[1].querySelector('.en-txt').value = 'Av. B, 200, Savassi, Belo Horizonte';
+    ls[1].querySelector('.en-txt').dispatchEvent(new Event('input'));
+    t('★ o estado guarda os dois, com o nome curto aparado e o segundo sem nome',
+      R.enderecos.length === 2 && R.enderecos[0].rotulo === 'Buritis' && R.enderecos[1].rotulo === '' &&
+      R.enderecos[1].endereco === 'Av. B, 200, Savassi, Belo Horizonte');
+    var pc2 = montarPacote();
+    t('★ o pacote leva a lista em `enderecos` e o PRIMEIRO em `endereco`, para o contrato antigo',
+      pc2.enderecos.length === 2 && pc2.endereco === 'Rua A, 10, Buritis, Belo Horizonte' && pc2.enderecos[0].rotulo === 'Buritis');
+    w.querySelectorAll('.hr-x')[0].click();
+    t('★ tirar a primeira linha deixa a segunda, e o pacote acompanha',
+      R.enderecos.length === 1 && montarPacote().endereco === 'Av. B, 200, Savassi, Belo Horizonte');
+    R.enderecos = []; montarCampoDeEnderecos();
+    t('linha vazia não entra no pacote: `endereco` nulo e lista vazia',
+      montarPacote().endereco === null && montarPacote().enderecos.length === 0);
+    $('enderecos').querySelector('.en-rot').value = 'Buritis';
+    t('★ nome curto sem endereço barra o envio, com a mensagem certa',
+      enderecosIncompletos() === 1 && validar().some(function(x){ return x.campo === 'endereco'; }));
+    $('enderecos').querySelector('.en-rot').value = '';
+    t('★ `limparEnderecos` aceita texto solto, lista de textos e lixo, e devolve só o que tem endereço',
+      limparEnderecos('Rua A').length === 1 && limparEnderecos(['Rua A', '', { endereco:' Rua B ', rotulo:' X ' }]).length === 2 &&
+      limparEnderecos([{ rotulo:'só nome' }]).length === 0 && limparEnderecos(null).length === 0 &&
+      limparEnderecos([{ endereco:' Rua  B ', rotulo:' X ' }])[0].endereco === 'Rua B');
+    R.enderecos = gE; montarCampoDeEnderecos();
   })();
 
   out.push('== A REGRA DO PAR: e-mail OU telefone ==');
@@ -3035,7 +3173,7 @@ function selftest(){
   (function(){
     var estado = JSON.parse(JSON.stringify(R)), lido = termoLido;
     R.colaborador=''; R.tipo=''; R.tipoOutro=''; R.atendimento=''; R.estab='';
-    R.endereco=''; R.site=''; R.social=''; R.contatoNome=''; R.contatoEmail='';
+    R.enderecos = []; R.site=''; R.social=''; R.contatoNome=''; R.contatoEmail='';
     R.contatoFone=''; R.unidades=[]; R.condicao=''; R.consent=false; termoLido=false;
     var pr = validar(), campos = pr.map(function(x){ return x.campo; });
     t('formulário vazio acusa problema',     pr.length > 0);
@@ -3058,17 +3196,17 @@ function selftest(){
     termoLido = true;
     R.colaborador='Fernando Leandro';
     R.tipo='alimentacao'; R.tipoOutro=''; R.atendimento='presencial';
-    R.estab='Madame Underground Club'; R.endereco='Rua das Flores, 120, Centro, Belo Horizonte';
+    R.estab='Madame Underground Club'; R.enderecos = [{endereco:'Rua das Flores, 120, Centro, Belo Horizonte', rotulo:''}];
     R.site='www.madameunderground.com.br'; R.social='@madameunderground';
     R.contatoNome='Ronald'; R.contatoEmail='ronald@madame.com.br'; R.contatoFone='';
     R.unidades=['BHZ']; R.condicao='20% de desconto no almoço de segunda a sexta, apresentando o crachá.';
     R.consent=true;
     t('formulário completo passa sem problema', validar().length === 0);
 
-    R.endereco = '';
+    R.enderecos = [];
     t('★ restaurante SEM endereço PASSA: endereço é opcional para todo mundo (16/09, redes de unidades)',
       validar().length === 0, validar().map(function(x){ return x.campo; }).join());
-    R.endereco = 'Rua das Flores, 120, Centro, Belo Horizonte';
+    R.enderecos = [{endereco:'Rua das Flores, 120, Centro, Belo Horizonte', rotulo:''}];
 
     R.contatoEmail = ''; R.contatoFone = '';
     var semContato = validar();

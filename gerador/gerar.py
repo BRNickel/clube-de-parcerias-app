@@ -96,6 +96,24 @@ def telefone_bonito(v):
     return str(v or "").strip()
 
 
+def lista_de_enderecos(card):
+    """a lista de endereços do card, [{endereco, rotulo}]; card antigo só tem
+       `endereco` (texto) e vira lista de um. A MESMA regra de `limparEnderecos`
+       do painel: só entra quem tem endereço, com os espaços aparados."""
+    ends = card.get("enderecos")
+    if not isinstance(ends, list):
+        e = (card.get("endereco") or "").strip()
+        ends = [{"endereco": e, "rotulo": ""}] if e else []
+    out = []
+    for e in ends:
+        if isinstance(e, str): e = {"endereco": e, "rotulo": ""}
+        if not isinstance(e, dict): continue
+        end = re.sub(r"\s+", " ", str(e.get("endereco") or "")).strip()
+        rot = re.sub(r"\s+", " ", str(e.get("rotulo") or "")).strip()
+        if end: out.append({"endereco": end, "rotulo": rot})
+    return out
+
+
 def card_html(c, cidade):
     tipo = c.get("tipo") if c.get("tipo") in CATN else "outros"
     card = c.get("card") or {}
@@ -109,7 +127,11 @@ def card_html(c, cidade):
         if txt: linhas.append('          <div class="d-row"><svg class="ic"><use href="#i-%s"/></svg><span class="d-txt">%s</span></div>' % (simbolo, escape(txt)))
     linha("tag", (card.get("detalhe") or "").strip())
     linha("shop", (c.get("atendimento") or "").strip())
-    linha("pin", (card.get("endereco") or "").strip() or ENDERECO_PADRAO)
+    # 🔴 VÁRIOS ENDEREÇOS (16/09): uma linha por endereço, com o nome curto na
+    # frente para casar com o botão; sem nenhum, o texto padrão (o MESMO do painel)
+    ends = lista_de_enderecos(card)
+    if not ends: linha("pin", ENDERECO_PADRAO)
+    for e in ends: linha("pin", (e["rotulo"] + ": " + e["endereco"]) if e["rotulo"] else e["endereco"])
     # sem horário no formulário nem no card, o texto padrão (o MESMO do painel)
     linha("clock", (card.get("horario") or "").strip() or HORARIO_PADRAO)
     # 🔴 O NÚMERO APARECE SEMPRE (16/09), como o endereço e o horário. Antes ele
@@ -117,11 +139,12 @@ def card_html(c, cidade):
     # está no computador, não tinha o número: o card guardava e não mostrava.
     linha("phone", telefone_bonito(card.get("telefone")))
     acoes = []
-    end = (card.get("endereco") or "").strip()
-    if end:
+    # um botão de mapa por endereço; o nome curto é o texto do botão
+    for e in ends:
+        end = e["endereco"]
         q = end if slug(cidade["nome"]) in slug(end) else end + ", " + cidade["nome"]
-        acoes.append('        <a class="act-btn act-map" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=%s"><svg class="ic"><use href="#i-map"/></svg>Ver no mapa</a>'
-                     % escape(urllib.request.quote(q), quote=True))
+        acoes.append('        <a class="act-btn act-map" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=%s"><svg class="ic"><use href="#i-map"/></svg>%s</a>'
+                     % (escape(urllib.request.quote(q), quote=True), escape(e["rotulo"] or "Ver no mapa")))
     fone = digitos_fone(card.get("telefone"))
     # 🔴 e o BOTÃO só quando alguém marcou "esse número é WhatsApp" no painel.
     # Sem essa pergunta, telefone fixo de restaurante virava um botão que abre
