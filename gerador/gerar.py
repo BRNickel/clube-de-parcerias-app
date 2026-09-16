@@ -152,16 +152,14 @@ def card_html(c, cidade):
     # 🔴 O NÚMERO APARECE SEMPRE (16/09), como o endereço e o horário. Antes ele
     # só existia dentro do botão de WhatsApp, então quem não usa WhatsApp, ou
     # está no computador, não tinha o número: o card guardava e não mostrava.
-    linha("phone", telefone_bonito(card.get("telefone")))
-    acoes = []
+    # 🔴 WHATSAPP AO LADO DO NÚMERO (16/09): o link é só o ícone, na mesma linha;
+    # saiu o botão de baixo. Continua só quando o painel marcou que é WhatsApp:
+    # telefone fixo virava uma conversa que não existe.
+    fone_txt = telefone_bonito(card.get("telefone"))
     fone = digitos_fone(card.get("telefone"))
-    # 🔴 e o BOTÃO só quando alguém marcou "esse número é WhatsApp" no painel.
-    # Sem essa pergunta, telefone fixo de restaurante virava um botão que abre
-    # uma conversa que não existe, e quem clica conclui que o Clube está velho.
-    if fone and card.get("whatsapp"):
-        acoes.append('        <a class="act-btn act-wa" target="_blank" rel="noopener" href="https://wa.me/55%s"><svg class="ic"><use href="#i-wa"/></svg>WhatsApp</a>' % fone)
-    if acoes:
-        linhas.append('          <div class="p-actions">\n%s\n      </div>' % "\n".join(acoes))
+    if fone_txt:
+        wa = ('<a class="d-wa" target="_blank" rel="noopener" title="Abrir conversa no WhatsApp" aria-label="WhatsApp" href="https://wa.me/55%s"><svg class="ic"><use href="#i-wa"/></svg></a>' % fone) if (fone and card.get("whatsapp")) else ""
+        linhas.append('          <div class="d-row"><svg class="ic"><use href="#i-phone"/></svg><span class="d-txt">%s%s</span></div>' % (escape(fone_txt), wa))
     return '''    <article class="p-card" data-nome="%(nome)s" data-ramo="%(ramo)s" data-cat="%(tipo)s" data-cidade="%(cidade)s" data-uf="%(uf)s">
       <div class="p-agua" aria-hidden="true"><svg class="ic"><use href="#i-%(tipo)s"/></svg></div>
       <details class="p-det">
