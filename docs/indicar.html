@@ -219,16 +219,6 @@ input[readonly]{background:var(--grey);cursor:default;color:var(--txt);
   background-repeat:no-repeat;background-position:right 12px center;background-size:16px 16px}
 input[readonly]:focus{border-color:var(--line);box-shadow:none}
 /* o interruptor do RH: tracejado e cinza para dizer "exceção", não "campo" */
-.por-outro{margin-top:10px}
-.por-outro[hidden]{display:none}
-.po-lab{display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer;padding:10px 13px;
-  border:1px dashed var(--line);border-radius:12px;background:var(--grey);color:var(--txt)}
-.po-lab input{width:17px;height:17px;accent-color:var(--ok-txt);cursor:pointer;flex-shrink:0}
-.po-campos{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:10px}
-.po-campos[hidden]{display:none}
-.po-campos label{display:flex;flex-direction:column;gap:6px}
-.po-campos label>span{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700}
-.po-dica{grid-column:1/-1;font-size:11.5px;color:var(--muted);line-height:1.5;margin:0}
 
 select{background-image:url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231B2D25' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
   background-repeat:no-repeat;background-position:right 12px center;background-size:17px;padding-right:38px;cursor:pointer}
@@ -977,14 +967,9 @@ var REGRAS = {
    modo 'livre' = nem tenta (é o que vale abrindo o arquivo do disco). */
 var IDENTIDADE = {
   modo: 'sso',
-  /* 🔴 QUEM É DO RH, e por isso pode preencher POR OUTRA PESSOA (decisão de
-     15/09). Contexto: quem não tem e-mail profissional não entra aqui; preenche
-     um formulário FÍSICO e o RH digita. Sem esta trava, qualquer colaborador
-     enviaria em nome de outro.
-     ⚠ Esta lista é PROVISÓRIA: quando o formulário estiver na plataforma, ela
-     sai e entra a concessão de acesso do brnapps (a mesma que abre o painel).
-     Até lá, para testar na sua máquina, ponha o seu e-mail aqui. */
-  rh: [],
+  /* 🔴 a lista `rh` que morava aqui SAIU em 16/09 junto com o modo "preenchendo
+     por outra pessoa". Quem não tem e-mail corporativo usa o formulário público
+     e manda o arquivo; o RH não digita mais por ninguém. */
   /* o Supabase guarda a sessão em `sb-<projeto>-auth-token`. O nome do
      projeto muda, então se procura pelo formato, não pela chave exata. */
   chaveSessao: /^sb-.+-auth-token$/
@@ -1095,9 +1080,12 @@ var PLATAFORMA = {
    acusa antes de chegar em produção. Pacote de versão diferente não é lido em
    silêncio: um campo que mudou de sentido sem ninguém notar é pior que um campo
    ausente. */
-/* v2 (15/09): entram `preenchidoPor`, `identificadoPor:'rh'` e área/filial/gênero
-   DIGITADOS quando o RH preenche por alguém sem e-mail profissional. O painel
-   tem a mesma constante e acusa se o formato divergir. */
+/* v2 (15/09): entraram `preenchidoPor`, `identificadoPor:'rh'` e área/filial/gênero
+   DIGITADOS quando o RH preenchia por alguém sem e-mail profissional.
+   🔴 Em 16/09 esse modo SAIU (decisão dele): quem não tem e-mail usa o
+   formulário público e manda o arquivo. `preenchidoPor` viaja sempre nulo e
+   `identificadoPor` nunca mais sai como 'rh' daqui; o painel continua LENDO os
+   dois, porque há linha antiga gravada assim. */
 /* v3 (15/09): `evidencias` (lista, até 3, com áudio) e `horario` opcional. Os
    campos `evidenciaNome/Tipo/Bytes` continuam com o PRIMEIRO arquivo, para quem
    lê o pacote antigo. O painel aceita v2 e v3. */
@@ -1111,7 +1099,7 @@ var $ = function(id){ return document.getElementById(id); };
 
 /* estado da resposta */
 var R = { colaborador:'', identificadoPor:'digitado', colaboradorEmail:null,
-          porOutro:false, preenchidoPor:null, rhArea:'', semLogin:false,
+          areaDeclarada:'', semLogin:false,
           tipo:'', tipoOutro:'', atendimento:'', estab:'', endereco:'',
           site:'', social:'', horario:'', contatoNome:'', contatoEmail:'', contatoFone:'',
           unidades:[], cidadeOutra:'', condicao:'', consent:false };
@@ -1827,15 +1815,16 @@ function montarPacote(){
     /* 🔴 v2: quem DIGITOU, quando não é quem indicou. E área/filial/gênero só
        viajam no modo RH: no login eles vêm do cadastro, e mandar daqui seria
        deixar duas fontes brigarem. */
-    preenchidoPor: R.porOutro ? R.preenchidoPor : null,
-    /* 🔴 a ÁREA viaja quando NÃO HÁ LOGIN de onde tirá-la, e só aí. São dois
-       casos: o RH preenchendo por outra pessoa, e o modo offline, onde a pessoa
-       não tem conta da empresa. Para quem entra pelo login ela continua vindo do
-       cadastro, porque mandar daqui deixaria duas fontes brigando pela mesma
-       coluna. ⚠ Este `|| R.semLogin` foi achado pela bateria: sem ele o offline
-       baixava um arquivo bonito, o painel importava sem erro, e a área
-       simplesmente não estava lá. */
-    area:   (R.porOutro || R.semLogin) ? (String(R.rhArea||'').trim() || null) : null,
+    /* 🔴 `preenchidoPor` viaja sempre nulo desde 16/09: o modo "por outra pessoa"
+       saiu. A chave fica no pacote para o contrato não mudar de forma. */
+    preenchidoPor: null,
+    /* 🔴 a ÁREA viaja quando NÃO HÁ LOGIN de onde tirá-la, e só aí: é o modo
+       offline, onde a pessoa não tem conta da empresa e digita. Para quem entra
+       pelo login ela continua vindo do cadastro, porque mandar daqui deixaria
+       duas fontes brigando pela mesma coluna. ⚠ Este `R.semLogin` foi achado
+       pela bateria: sem ele o offline baixava um arquivo bonito, o painel
+       importava sem erro, e a área simplesmente não estava lá. */
+    area:   R.semLogin ? (String(R.areaDeclarada||'').trim() || null) : null,
     /* 🔴 FILIAL SAIU do painel em 15/09, junto com o gênero: o campo do Azure
        que a alimentaria repete o departamento em 78% das pessoas, e qualquer
        origem ligada por e-mail cobriria 99% de BH contra 42% do Piauí. Deixou
@@ -1919,8 +1908,10 @@ function ligarPlataforma(){
       try{ history.replaceState(null, '', location.pathname + location.search); }catch(e){}
     }
     $('entrada').hidden = true; $('btnEnviar').disabled = false;
-    /* quem é do RH? A resposta vem do servidor, pela concessão do app: a lista
-       IDENTIDADE.rh fica só para teste local. */
+    /* a função de acesso devolve as OPÇÕES (a lista de áreas do RM) e o nível
+       de quem entrou. Desde 16/09 o formulário não decide mais nada por "ser do
+       RH": o modo "preenchendo por outra pessoa" saiu. A resposta continua
+       sendo lida porque a lista de áreas do modo offline sai dela. */
     return fetch(PLATAFORMA.funcaoAcesso, { headers: cabecalhosAuth() })
       .then(function(resp){ return resp.ok ? resp.json() : null; })
       .then(function(j){ acessoAtual = (j && j.ok) ? j : null; return true; })
@@ -2117,7 +2108,7 @@ function montarCampoDeArea(){
   });
   var dica = document.createElement('div'); dica.className = 'dica';
   dica.textContent = 'Serve para o RH saber de onde veio a indicação. Se você não é da Brazilian Nickel, escreva o nome da sua empresa.';
-  inp.addEventListener('input', function(){ R.rhArea = inp.value; });
+  inp.addEventListener('input', function(){ R.areaDeclarada = inp.value; });
   f.appendChild(lb); f.appendChild(inp); f.appendChild(dl); f.appendChild(dica);
   alvo.parentNode.insertBefore(f, alvo.nextSibling);
   return true;
@@ -2336,18 +2327,16 @@ function usuarioDoPortal(){
 
 /* preenche e TRAVA o campo do nome quando há login. Sem login não mexe em
    nada: o formulário continua como é hoje, com a pessoa digitando. */
-/* 🔴 RH PODE PREENCHER POR OUTRA PESSOA. Três regras que não podem cair:
-   1. o interruptor só aparece para quem é do RH (ver IDENTIDADE.rh);
-   2. o registro guarda as DUAS identidades: `colaborador` é quem indicou,
-      `preenchidoPor` é o RH que digitou, e `identificadoPor` vira 'rh';
-   3. a ÁREA é digitada do papel, porque para essa pessoa não existe cadastro
-      alcançável pelo e-mail. Filial e gênero saíram em 15/09. */
-function ehRH(u){
-  if(!u || !u.email) return false;
-  /* na plataforma quem responde é o servidor, pela concessão do app */
-  if(acessoAtual && acessoAtual.email === u.email) return !!acessoAtual.rh;
-  return IDENTIDADE.rh.some(function(e){ return String(e).toLowerCase() === u.email; });
-}
+/* 🔴 O MODO "PREENCHENDO POR OUTRA PESSOA" SAIU (decisão dele, 16/09). Ele
+   existia para o RH digitar um formulário de PAPEL de quem não tem e-mail. Não
+   vai mais haver papel: essa pessoa usa o formulário público (modo offline),
+   baixa o arquivo e manda por e-mail, e o RH importa no painel. Saíram junto
+   `ehRH`, a lista `IDENTIDADE.rh`, o interruptor, o bloco de campos e o
+   `preenchidoPor` viajando no pacote. O painel continua lendo linha antiga
+   gravada como 'rh', porque ler memória não é peça morta.
+   Se um dia voltar a existir papel, o caminho é o RH abrir o formulário
+   público, digitar, baixar e importar: um caminho só, e a autoria fica no
+   histórico como "importado por". */
 
 /* 🔴 AS ÁREAS E FILIAIS REAIS DA BRN. Publicado, elas vêm da TABELA do app
    (`config_opcao`), carregada do RM por `comum/carregar_opcoes_do_rm.py` e
@@ -2371,97 +2360,15 @@ function areasParaEscolher(){
    imutável e continua carregada do RM. O formulário simplesmente não lê mais:
    a filial saiu em 15/09. Não é sobra, é a origem viva de um campo aposentado. */
 
-/* o bloco é montado UMA vez e só mostrado/escondido depois: montar de novo a
-   cada chamada duplicava os campos e perdia o que a pessoa já tinha digitado. */
-function blocoPorOutro(){
-  var b = $('porOutroBloco');
-  if(b) return b;
-  b = document.createElement('div'); b.id = 'porOutroBloco'; b.className = 'por-outro'; b.hidden = true;
-  var lab = document.createElement('label'); lab.className = 'po-lab';
-  var cx = document.createElement('input'); cx.type = 'checkbox'; cx.id = 'porOutro';
-  lab.appendChild(cx);
-  var sp = document.createElement('span');
-  sp.textContent = 'Estou preenchendo por outra pessoa (formulário físico)';
-  lab.appendChild(sp);
-  b.appendChild(lab);
-
-  var campos = document.createElement('div'); campos.id = 'porOutroCampos';
-  campos.className = 'po-campos'; campos.hidden = true;
-  function campo(id, rot, lista, chaveR, ehSelect){
-    var l = document.createElement('label'); l.setAttribute('for', id);
-    var t = document.createElement('span'); t.textContent = rot; l.appendChild(t);
-    var inp;
-    if(ehSelect){
-      inp = document.createElement('select'); inp.id = id;
-      var o0 = document.createElement('option'); o0.value = ''; o0.textContent = 'Não informado'; inp.appendChild(o0);
-      lista.forEach(function(v){ var o = document.createElement('option'); o.value = v; o.textContent = v; inp.appendChild(o); });
-      inp.addEventListener('change', function(){ R[chaveR] = inp.value; });
-    } else {
-      inp = document.createElement('input'); inp.type = 'text'; inp.id = id; inp.maxLength = 60;
-      inp.setAttribute('list', id + 'Lista'); inp.autocomplete = 'off';
-      var dl = document.createElement('datalist'); dl.id = id + 'Lista';
-      lista.forEach(function(v){ var o = document.createElement('option'); o.value = v; dl.appendChild(o); });
-      l.appendChild(dl);
-      inp.addEventListener('input', function(){ R[chaveR] = inp.value; });
-    }
-    l.appendChild(inp);
-    campos.appendChild(l);
-  }
-  campo('rhArea',   'Área de quem indicou',   areasParaEscolher(),   'rhArea',   false);
-  var dica = document.createElement('p'); dica.className = 'po-dica';
-  dica.textContent = 'Copie do formulário físico. O que não estiver no papel pode ficar em branco: o painel mostra "não informado".';
-  campos.appendChild(dica);
-  b.appendChild(campos);
-
-  cx.addEventListener('change', function(){ R.porOutro = cx.checked; aplicarIdentidade(); });
-  return b;
-}
-
-/* as listas chegam com a resposta da função, depois de o bloco já estar na tela:
-   repintar é mais simples (e mais seguro) do que adiar a montagem do bloco. */
-function pintarListasDoRH(){
-  var pares = [['rhArea', areasParaEscolher()]];
-  pares.forEach(function(par){
-    var dl = document.getElementById(par[0] + 'Lista');
-    if(!dl) return;
-    var atual = Array.prototype.map.call(dl.options, function(o){ return o.value; }).join('|');
-    if(atual === par[1].join('|')) return;
-    dl.innerHTML = '';
-    par[1].forEach(function(v){
-      var o = document.createElement('option'); o.value = v; dl.appendChild(o);
-    });
-  });
-  return true;
-}
+/* `blocoPorOutro` e `pintarListasDoRH` SAÍRAM em 16/09 com o modo "por outra
+   pessoa" (ver o comentário acima). O campo de área que sobrou é o do modo
+   offline, em `montarCampoDeArea`. */
+/* 🔴 UM CAMINHO SÓ de identidade desde 16/09: com login, o nome vem do login e
+   TRAVA; sem login (site público), a pessoa digita nome e área. O modo em que o
+   RH destravava o nome para digitar por outra pessoa saiu. */
 function aplicarIdentidade(){
   var u = usuarioDoPortal();
   var campo = $('colaborador'), aviso = $('avisoLogin');
-  var bloco = blocoPorOutro();
-  pintarListasDoRH();
-  if(!bloco.parentNode) aviso.parentNode.insertBefore(bloco, aviso.nextSibling);
-  var rh = ehRH(u);
-  bloco.hidden = !rh;
-  if(!rh) R.porOutro = false;
-  $('porOutro').checked = !!R.porOutro;
-  $('porOutroCampos').hidden = !R.porOutro;
-
-  if(R.porOutro && u){
-    /* modo RH: o nome DESTRAVA e esvazia (é o nome de quem indicou, não o do
-       RH), e a identidade do RH fica guardada à parte */
-    R.identificadoPor = 'rh';
-    R.preenchidoPor = u.email;
-    R.colaboradorEmail = null;
-    if(campo.readOnly){ campo.value = ''; R.colaborador = ''; }
-    campo.readOnly = false;
-    campo.removeAttribute('aria-readonly');
-    campo.title = '';
-    aviso.querySelector('span').textContent =
-      'Você (' + u.email + ') está preenchendo por outra pessoa. O nome abaixo é de QUEM INDICOU.';
-    aviso.classList.add('on');
-    return true;
-  }
-
-  R.preenchidoPor = null;
   R.identificadoPor = u ? 'login' : 'digitado';
   R.colaboradorEmail = u ? u.email : null;
   if(!u || !u.nome){
@@ -2719,7 +2626,6 @@ window.FP = {
   corpoDoEnvio: corpoDoEnvio, cabecalhosAuth: cabecalhosAuth,
   arquivos: function(){ return arquivos; }, porArquivos: porArquivos, tipoAceito: tipoAceito,
   areasParaEscolher: areasParaEscolher,
-  pintarListasDoRH: pintarListasDoRH,
   validar: validar,
   montarPacote: montarPacote,
   indicacoesLocais: function(){
@@ -2766,86 +2672,53 @@ function selftest(){
   var salvo = JSON.parse(JSON.stringify(R));
   var salvoArquivo = arquivos.slice();
 
-  out.push('== O RH pode preencher por outra pessoa ==');
+  out.push('== O modo "por outra pessoa" saiu: um caminho só de identidade ==');
   (function(){
-    var K = 'sb-teste-auth-token', tinhaRH = IDENTIDADE.rh.slice();
+    var K = 'sb-teste-auth-token';
+    /* 🔴 DECISÃO DELE (16/09): não vai mais haver papel. Quem não tem e-mail
+       usa o formulário público, baixa e manda; o RH importa. Este bloco existe
+       para que o interruptor não volte pela porta dos fundos. */
     try{ localStorage.removeItem(K); }catch(e){}
     aplicarIdentidade();
-    t('sem login, o interruptor não aparece', $('porOutroBloco').hidden === true);
+    t('★ não existe mais interruptor "preenchendo por outra pessoa"',
+      !$('porOutroBloco') && !$('porOutro') && !$('porOutroCampos'));
+    t('★ nem a lista local de quem é do RH, nem a função que a lia',
+      typeof IDENTIDADE.rh === 'undefined' && typeof window.FP.pintarListasDoRH === 'undefined');
+    t('sem login o nome fica livre para digitar', $('colaborador').readOnly === false);
 
-    /* 🔴 colaborador COMUM logado: nada de interruptor. Sem esta trava qualquer
-       um enviaria em nome de outro. */
+    /* colaborador logado: nome travado, e NADA que o destrave */
     try{ localStorage.setItem(K, JSON.stringify({user:{email:'alguem@brnickel.com', user_metadata:{full_name:'Alguém Comum'}}})); }catch(e){}
     aplicarIdentidade();
-    t('★ colaborador comum logado NÃO vê o interruptor', $('porOutroBloco').hidden === true);
-    t('e o nome dele continua travado', $('colaborador').readOnly === true);
+    t('★ logado, o nome vem do login e trava, e não há como destravar',
+      $('colaborador').readOnly === true && $('colaborador').value === 'Alguém Comum');
+    var p = montarPacote();
+    t('★ o pacote nunca mais sai como digitado pelo RH: preenchidoPor é sempre nulo',
+      p.identificadoPor === 'login' && p.preenchidoPor === null);
+    t('e a área NÃO viaja para quem entra pelo login: ela vem do cadastro', p.area === null);
 
-    /* quem é do RH */
-    IDENTIDADE.rh.push('rh.teste@brnickel.com');
-    try{ localStorage.setItem(K, JSON.stringify({user:{email:'rh.teste@brnickel.com', user_metadata:{full_name:'Pessoa do RH'}}})); }catch(e){}
-    aplicarIdentidade();
-    t('★ quem é do RH vê o interruptor', $('porOutroBloco').hidden === false);
-    /* 🔴 as áreas sugeridas são as REAIS do RM, não uma lista inventada */
+    /* 🔴 as áreas sugeridas continuam vivas: o modo offline usa a lista para o
+       campo de área. São as REAIS do RM, não uma lista inventada. */
     t('★ as áreas sugeridas são as do cadastro da BRN, não inventadas',
       AREAS_SUGERIDAS.length === 23 && AREAS_SUGERIDAS.indexOf('Human Resources') >= 0 &&
       AREAS_SUGERIDAS.indexOf('Recovery and Refining') >= 0 && AREAS_SUGERIDAS.indexOf('Operações') < 0);
     t('e a lista está em ordem alfabética, para achar',
       AREAS_SUGERIDAS.slice().sort(function(a,b){ return a.localeCompare(b,'pt-BR'); }).join('|') === AREAS_SUGERIDAS.join('|'));
-    /* 🔴 publicado, as listas vêm da TABELA (carregada do RM); a lista do
-       arquivo é só a reserva, para o dia em que a função não responder. */
     var aSalvo = acessoAtual;
     acessoAtual = null;
-    t('sem resposta da função, vale a lista do arquivo',
-      areasParaEscolher() === AREAS_SUGERIDAS);
-    acessoAtual = { ok:true, email:'rh.teste@brnickel.com', rh:true,
-                    opcoes:{ areas:['Área Nova do RM','Outra Área'], filiais:['Belo Horizonte','Piauí','Filial Nova'] } };
+    t('sem resposta da função, vale a lista do arquivo', areasParaEscolher() === AREAS_SUGERIDAS);
+    acessoAtual = { ok:true, email:'x@brnickel.com', opcoes:{ areas:['Área Nova do RM','Outra Área'], filiais:['Belo Horizonte'] } };
     t('★ com a resposta da função, vale a lista do RM',
       areasParaEscolher().join('|') === 'Área Nova do RM|Outra Área');
-    /* 🔴 a função continua mandando `filiais` e o formulário IGNORA: a filial
-       saiu em 15/09. Se alguém religar o campo sem decidir, isto reprova. */
-    t('★ e a filial NÃO é mais perguntada, mesmo a função mandando a lista',
+    t('★ e a filial NÃO é perguntada, mesmo a função mandando a lista',
       !$('rhFilial') && typeof window.FP.filiaisParaEscolher === 'undefined');
-    pintarListasDoRH();
-    var dlA = document.getElementById('rhAreaLista');
-    t('★ e a lista da TELA é repintada, não só a variável',
-      !!dlA && Array.prototype.map.call(dlA.options, function(o){ return o.value; }).join('|') === 'Área Nova do RM|Outra Área');
-    acessoAtual = { ok:true, email:'rh.teste@brnickel.com', rh:true, opcoes:{ areas:[], filiais:[] } };
+    t('★ e gênero NÃO é perguntado', !$('rhGenero'));
+    acessoAtual = { ok:true, email:'x@brnickel.com', opcoes:{ areas:[], filiais:[] } };
     t('lista vazia da função não apaga a reserva', areasParaEscolher() === AREAS_SUGERIDAS);
-    acessoAtual = aSalvo; pintarListasDoRH();
-    t('e, desligado, o nome continua travado no dela',
-      $('colaborador').readOnly === true && $('colaborador').value === 'Pessoa do RH');
-    $('porOutro').checked = true; $('porOutro').dispatchEvent(new Event('change'));
-    t('★ ligado, o nome DESTRAVA e esvazia: é o nome de quem indicou, não o do RH',
-      $('colaborador').readOnly === false && $('colaborador').value === '');
-    t('e aparece a área para digitar do papel',
-      $('porOutroCampos').hidden === false && !!$('rhArea'));
-    /* 🔴 gênero SAIU (15/09): sem origem alcançável, o corte mediria só quem
-       preenche papel, que é justamente quem não tem e-mail. */
-    t('★ e gênero NÃO é mais perguntado', !$('rhGenero'));
-    t('e o aviso diz que o nome abaixo é de QUEM INDICOU', /QUEM INDICOU/.test($('avisoLogin').textContent));
+    acessoAtual = aSalvo;
 
-    $('colaborador').value = 'Fulano de Papel'; R.colaborador = 'Fulano de Papel';
-    $('rhArea').value = 'Operações';   $('rhArea').dispatchEvent(new Event('input'));
-    var p = montarPacote();
-    t('★ o pacote guarda as DUAS identidades',
-      p.colaborador === 'Fulano de Papel' && p.preenchidoPor === 'rh.teste@brnickel.com');
-    t('e diz que foi o RH quem digitou', p.identificadoPor === 'rh');
-    t('e não inventa e-mail para quem não tem', p.colaboradorEmail === null);
-    t('★ a área vai digitada, e filial e gênero vão nulos',
-      p.area === 'Operações' && p.filial === null && p.genero === null);
-    t('★ o contrato é a versão atual (3: lista de evidências e horário)', p.contratoVersao === CONTRATO_VERSAO && CONTRATO_VERSAO === 3);
-
-    /* desligar volta ao normal, sem rastro */
-    $('porOutro').checked = false; $('porOutro').dispatchEvent(new Event('change'));
-    t('★ desligado, volta o nome do login, travado',
-      $('colaborador').readOnly === true && $('colaborador').value === 'Pessoa do RH');
-    var p2 = montarPacote();
-    t('e o pacote volta a ser de login: sem preenchidoPor, sem área digitada',
-      p2.identificadoPor === 'login' && p2.preenchidoPor === null && p2.area === null);
-
-    IDENTIDADE.rh.length = 0; tinhaRH.forEach(function(e){ IDENTIDADE.rh.push(e); });
     try{ localStorage.removeItem(K); }catch(e){}
-    R.porOutro = false; aplicarIdentidade();
+    aplicarIdentidade();
+    t('★ o contrato continua na versão 3', CONTRATO_VERSAO === 3 && montarPacote().contratoVersao === 3);
   })();
 
   out.push('== O contrato com o painel ==');
@@ -3388,14 +3261,9 @@ function selftest(){
     var uP = usuarioDoPortal();
     t('★ a identidade vem da SESSÃO quando ela existe, com o e-mail em minúsculas',
       IDENTIDADE.modo !== 'sso' || (uP && uP.email === 'teste@brnickel.com' && uP.nome === 'Pessoa Teste'));
-    /* RH pela concessão do servidor */
-    var aA = acessoAtual;
-    acessoAtual = { ok:true, email:'teste@brnickel.com', nivel:'admin', rh:true };
-    t('★ quem o servidor diz que é do RH, é do RH', ehRH({ email:'teste@brnickel.com' }) === true);
-    acessoAtual = { ok:true, email:'teste@brnickel.com', nivel:null, rh:false };
-    t('★ e quem o servidor diz que não é, não é, mesmo que estivesse na lista local',
-      (function(){ IDENTIDADE.rh.push('teste@brnickel.com'); var r = ehRH({ email:'teste@brnickel.com' }); IDENTIDADE.rh.pop(); return r === false; })());
-    acessoAtual = aA; sessaoAtual = sA;
+    /* `ehRH` saiu em 16/09 com o modo "por outra pessoa": não há mais nada
+       que dependa de saber, no formulário, se quem está logado é do RH. */
+    sessaoAtual = sA;
     /* o corpo do envio */
     var c1 = corpoDoEnvio({ a:1 }, []), c2 = corpoDoEnvio({ a:1 }, [{ nome:'x.png', tipo:'image/png', tamanho:3, dados:'data:image/png;base64,AAA' }]);
     t('sem arquivo o corpo é o pacote, sem chave evidencias', !('evidencias' in c1) && c1.a === 1);
@@ -3544,9 +3412,9 @@ function selftest(){
       /sem nome/.test(nomeDoArquivo({ enviadoEm:'2026-09-16T00:00:00Z' })));
 
     /* --- e o pacote é o MESMO que a função receberia --- */
-    var gc = R.colaborador, ge = R.estab, gt = R.tipo, gar = R.rhArea,
+    var gc = R.colaborador, ge = R.estab, gt = R.tipo, gar = R.areaDeclarada,
         gcon = R.condicao, gcid = R.cidades, gat = R.atendimento, gcs = R.consent;
-    R.colaborador = 'Maria da Silva'; R.estab = 'Padaria do Bairro'; R.rhArea = 'Padaria Souza';
+    R.colaborador = 'Maria da Silva'; R.estab = 'Padaria do Bairro'; R.areaDeclarada = 'Padaria Souza';
     R.tipo = 'alimentacao'; R.condicao = '10% no pão de queijo';
     R.cidades = ['BHZ']; R.atendimento = 'local'; R.consent = true;
     var pac = montarPacote();
@@ -3564,7 +3432,7 @@ function selftest(){
     t('★ a autoria vai como DIGITADA, nunca como identificada por login',
       pac.identificadoPor === 'digitado' && pac.colaboradorEmail === null,
       pac.identificadoPor + ' | e-mail: ' + pac.colaboradorEmail);
-    R.colaborador = gc; R.estab = ge; R.tipo = gt; R.rhArea = gar;
+    R.colaborador = gc; R.estab = ge; R.tipo = gt; R.areaDeclarada = gar;
     R.condicao = gcon; R.cidades = gcid; R.atendimento = gat; R.consent = gcs;
 
     /* desliga e devolve a tela como estava: teste que deixa sujeira contamina
