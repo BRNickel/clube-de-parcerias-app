@@ -2223,6 +2223,9 @@ function montarCampoDeArea(){
    sabe quem é o RH e não tem a quem perguntar. Então a instrução fica na tela,
    antes e depois do clique, com o endereço de e-mail ESCRITO. */
 var EMAIL_DO_RH = 'rh@brnickel.com';
+/* o formulário de dentro do portal, para quem tem login: é para onde o público
+   manda quem tem e-mail da empresa */
+var URL_FORMULARIO_PORTAL = 'https://brnapps.brnickel.com/apps/clube-de-parcerias/formulario.html';
 function montarInstrucoesOffline(){
   if($('offAviso')) return false;
   var alvo = $('avisoEnvio'); if(!alvo || !alvo.parentNode) return false;
@@ -2235,7 +2238,17 @@ function montarInstrucoesOffline(){
   t2.textContent = 'Se você tiver print da conversa ou foto do combinado, anexe o arquivo aqui ' +
     'e ele vai junto. Arquivo grande não cabe em e-mail, por isso o limite aqui é menor: ' +
     OFFLINE_EVID_MAX + ' arquivo de até ' + OFFLINE_EVID_MB + ' MB.';
-  b.appendChild(t1); b.appendChild(t2);
+  /* 🔴 UM LINK SÓ NÃO DÁ (pergunta dele, 16/09): o formulário do portal fica atrás
+     do login da plataforma, e quem não tem e-mail da empresa nem chega a ver a
+     página. Então este, o público, é a porta de todos: quem TEM e-mail é mandado
+     para o do portal, que envia sozinho e sem e-mail no meio. */
+  var t3 = document.createElement('p'); t3.className = 'off-sub';
+  t3.appendChild(document.createTextNode('Tem e-mail da empresa? Prefira o '));
+  var a = document.createElement('a'); a.href = URL_FORMULARIO_PORTAL; a.textContent = 'formulário do portal';
+  a.target = '_blank'; a.rel = 'noopener';
+  t3.appendChild(a);
+  t3.appendChild(document.createTextNode(': ele envia direto para o RH, sem arquivo nem e-mail.'));
+  b.appendChild(t1); b.appendChild(t2); b.appendChild(t3);
   alvo.parentNode.insertBefore(b, alvo);
   return true;
 }
@@ -3565,6 +3578,9 @@ function selftest(){
       !!$('offArea') && !!$('offAreaLista') && $('offAreaLista').options.length > 5);
     t('e a instrução explica como a indicação chega ao RH',
       !!$('offAviso') && $('offAviso').textContent.indexOf(EMAIL_DO_RH) >= 0);
+    t('★ e manda quem tem e-mail da empresa para o formulário do portal, com o link (16/09)',
+      !!$('offAviso').querySelector('a[href="' + URL_FORMULARIO_PORTAL + '"]') &&
+      /brnapps\.brnickel\.com\/apps\/clube-de-parcerias\/formulario\.html/.test(URL_FORMULARIO_PORTAL));
 
     /* 🔴 o limite de evidência encolhe, e é ARITMÉTICA: o arquivo viaja dentro
        do JSON em base64, que infla um terço. Três de 10 MB virariam um e-mail

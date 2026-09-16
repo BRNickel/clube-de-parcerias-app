@@ -34,6 +34,8 @@ HORARIO_PADRAO = "Consultar horário de funcionamento"   # o mesmo texto do pain
 # 🔴 endereço é OPCIONAL desde 16/09 (parceria com rede de unidades não tem um
 # endereço para listar): vazio, o card diz isto, e não tem botão de mapa.
 ENDERECO_PADRAO = "Consultar endereço na internet"    # o mesmo texto do painel (ENDERECO_PADRAO)
+# 🔴 no card, o atendimento fala a língua de quem usa (16/09): o MESMO mapa do painel
+ATENDIMENTO_NO_CARD = {"Dos dois jeitos": "Online ou presencial"}
 
 
 def slug(txt):
@@ -127,7 +129,8 @@ def card_html(c, cidade):
     def linha(simbolo, txt):
         if txt: linhas.append('          <div class="d-row"><svg class="ic"><use href="#i-%s"/></svg><span class="d-txt">%s</span></div>' % (simbolo, escape(txt)))
     linha("tag", (card.get("detalhe") or "").strip())
-    linha("shop", (c.get("atendimento") or "").strip())
+    at = (c.get("atendimento") or "").strip()
+    linha("shop", ATENDIMENTO_NO_CARD.get(at, at))
     # 🔴 VÁRIOS ENDEREÇOS (16/09): uma linha por endereço, com o nome curto na
     # frente para casar com o botão; sem nenhum, o texto padrão (o MESMO do painel)
     # 🔴 ENDEREÇO DENTRO DA CIDADE (16/09): esta seção é UMA cidade, então só os
