@@ -103,14 +103,15 @@ def lista_de_enderecos(card):
     ends = card.get("enderecos")
     if not isinstance(ends, list):
         e = (card.get("endereco") or "").strip()
-        ends = [{"endereco": e, "rotulo": ""}] if e else []
+        ends = [{"endereco": e, "rotulo": "", "cidade": ""}] if e else []
     out = []
     for e in ends:
-        if isinstance(e, str): e = {"endereco": e, "rotulo": ""}
+        if isinstance(e, str): e = {"endereco": e, "rotulo": "", "cidade": ""}
         if not isinstance(e, dict): continue
         end = re.sub(r"\s+", " ", str(e.get("endereco") or "")).strip()
         rot = re.sub(r"\s+", " ", str(e.get("rotulo") or "")).strip()
-        if end: out.append({"endereco": end, "rotulo": rot})
+        cid = re.sub(r"\s+", " ", str(e.get("cidade") or "")).strip()
+        if end: out.append({"endereco": end, "rotulo": rot, "cidade": cid})
     return out
 
 
@@ -129,7 +130,9 @@ def card_html(c, cidade):
     linha("shop", (c.get("atendimento") or "").strip())
     # 🔴 VÁRIOS ENDEREÇOS (16/09): uma linha por endereço, com o nome curto na
     # frente para casar com o botão; sem nenhum, o texto padrão (o MESMO do painel)
-    ends = lista_de_enderecos(card)
+    # 🔴 ENDEREÇO DENTRO DA CIDADE (16/09): esta seção é UMA cidade, então só os
+    # endereços dela entram; endereço sem cidade (dado antigo) entra em todas.
+    ends = [e for e in lista_de_enderecos(card) if not e["cidade"] or e["cidade"] == cidade["cod"]]
     if not ends: linha("pin", ENDERECO_PADRAO)
     for e in ends: linha("pin", (e["rotulo"] + ": " + e["endereco"]) if e["rotulo"] else e["endereco"])
     # sem horário no formulário nem no card, o texto padrão (o MESMO do painel)

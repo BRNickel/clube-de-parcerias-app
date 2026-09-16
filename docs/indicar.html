@@ -342,8 +342,13 @@ select{background-image:url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http:
   .hr-h{flex:1 1 calc(50% - 46px)}
 }
 .hr-txt{flex:1 1 auto;min-width:0}
-/* linhas de ENDEREÇO (16/09): só o endereço; o nome curto do botão é do RH, no painel */
+/* linhas de ENDEREÇO (16/09): só o endereço; o nome curto do botão é do RH, no painel.
+   Um GRUPO por cidade marcada: o endereço nasce dentro da cidade dele. */
 .en-txt{flex:1 1 240px;min-width:0}
+#enderecos{display:flex;flex-direction:column;gap:8px}
+.en-grupo{display:flex;flex-direction:column;gap:7px;padding:10px 12px;border:1px dashed var(--line);border-radius:12px}
+.en-grupo-t{font-size:12.5px;font-weight:600;color:var(--txt)}
+.en-vazio{font-size:12.5px;color:var(--muted)}
 .hr-sep{flex:none;font-size:11.5px;color:var(--muted)}
 .hr-dias:focus,.hr-h:focus,.hr-txt:focus,.en-txt:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px var(--ring)}
 .hr-mais{align-self:flex-start;font-family:'DM Sans',sans-serif;font-size:11.5px;font-weight:700;
@@ -642,7 +647,7 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
 
       <!-- 3. o estabelecimento -->
       <div class="sec">
-        <div class="sec-h"><div class="sec-n">3</div><div class="sec-t">O estabelecimento</div></div>
+        <div class="sec-h"><div class="sec-n">3</div><div class="sec-t">O estabelecimento e onde vale</div></div>
         <div class="grid">
           <div class="f wide" data-campo="estab">
             <label for="estab">Nome do estabelecimento<span class="req">*</span></label>
@@ -650,13 +655,30 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
             <input id="estab" name="estab" type="text" placeholder="Exemplo: Madame Underground Club" maxlength="140">
             <div class="err" id="e_estab"></div>
           </div>
+          <!-- 🔴 ONDE VALE + ENDEREÇOS, JUNTOS (pedido dele, 16/09): a pessoa marca as
+               cidades e, sob cada uma, abre a lista de endereços daquela cidade. Antes
+               as cidades ficavam na seção 5 e o endereço era uma lista solta, e o app,
+               que agrupa por cidade, não sabia de qual cidade era cada endereço.
+               Endereço continua OPCIONAL (rede sem endereço para listar): vazio, o card
+               diz para consultar na internet. -->
+          <div class="f wide" data-campo="unidades">
+            <label>Em que cidade o benefício vale?<span class="req">*</span></label>
+            <div class="hint">Pode marcar mais de uma. São as cidades que já existem no Clube de
+            Parcerias; se for outra, marque a última opção e escreva o nome.</div>
+            <div class="ops duas" id="opsUnidades" role="group" aria-label="Em que cidade o benefício vale"></div>
+            <div class="err" id="e_unidades"></div>
+          </div>
+          <div class="f wide" data-campo="cidadeOutra" hidden>
+            <label for="cidadeOutra">Qual cidade?<span class="req">*</span></label>
+            <div class="hint">Escreva a cidade e o estado. Ela ainda não existe no Clube de
+            Parcerias, então o RH vai precisar criar a seção.</div>
+            <input id="cidadeOutra" name="cidadeOutra" type="text" placeholder="Exemplo: Petrolina - PE" maxlength="80">
+            <div class="err" id="e_cidadeOutra"></div>
+          </div>
           <div class="f wide" data-campo="endereco">
-            <!-- 🔴 SEMPRE OPCIONAL (decisão dele, 16/09): parceria com REDE de unidades
-                 não tem um endereço para listar. Vazio, o card diz para consultar na
-                 internet. A regra que ligava o asterisco saiu inteira do script. -->
-            <label>Endereço <span class="opt">(opcional)</span></label>
-            <div class="hint" id="hintEndereco">Rua, número, bairro e cidade. Rede com várias unidades: uma linha por
-              unidade. Em branco, o card diz para consultar o endereço na internet.</div>
+            <label>Endereços <span class="opt">(opcional)</span></label>
+            <div class="hint" id="hintEndereco">Um por linha, dentro da cidade dele. Rede com várias unidades: uma
+              linha por unidade. Em branco, o card diz para consultar o endereço na internet.</div>
             <div class="hr-campo" id="enderecos"></div>
             <div class="err" id="e_endereco"></div>
           </div>
@@ -719,20 +741,6 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
       <div class="sec">
         <div class="sec-h"><div class="sec-n">5</div><div class="sec-t">A condição combinada</div></div>
         <div class="grid">
-          <div class="f wide" data-campo="unidades">
-            <label>Em que cidade o benefício vale?<span class="req">*</span></label>
-            <div class="hint">Pode marcar mais de uma. São as cidades que já existem no Clube de
-            Parcerias; se for outra, marque a última opção e escreva o nome.</div>
-            <div class="ops duas" id="opsUnidades" role="group" aria-label="Em que cidade o benefício vale"></div>
-            <div class="err" id="e_unidades"></div>
-          </div>
-          <div class="f wide" data-campo="cidadeOutra" hidden>
-            <label for="cidadeOutra">Qual cidade?<span class="req">*</span></label>
-            <div class="hint">Escreva a cidade e o estado. Ela ainda não existe no Clube de
-            Parcerias, então o RH vai precisar criar a seção.</div>
-            <input id="cidadeOutra" name="cidadeOutra" type="text" placeholder="Exemplo: Petrolina - PE" maxlength="80">
-            <div class="err" id="e_cidadeOutra"></div>
-          </div>
           <div class="f wide destaque" data-campo="condicao">
             <div class="rot">
               <label for="condicao">Qual é a condição?<span class="req">*</span></label>
@@ -922,19 +930,15 @@ var ATENDIMENTOS = [
    `data-cidade` dos cards de lá. É isso que faz a indicação chegar já
    no lugar certo, sem ninguém traduzir na mão. Há asserção conferindo.
 
-   `todas: true` é a opção que EXCLUI as outras (marcar "todas" desmarca
-   as cidades, e marcar uma cidade desmarca "todas").
    `outra: true` abre um campo de texto para a pessoa escrever uma cidade
-   que ainda não existe no app. */
+   que ainda não existe no app.
+   🔴 "Vale para todas" SAIU (decisão dele, 16/09): o endereço passou a
+   morar dentro da cidade, e "todas" não tinha onde pendurar endereço. */
 var UNIDADES = [
   { cod:'BHZ',   nome:'Belo Horizonte',            uf:'MG' },
   { cod:'CGO',   nome:'Capitão Gervásio Oliveira', uf:'PI' },
   { cod:'CAF',   nome:'Campo Alegre do Fidalgo',   uf:'PI' },
   { cod:'SJP',   nome:'São João do Piauí',         uf:'PI' },
-  /* 🔴 MESMO nome do painel ("Vale para todas"): o verificador de paridade em
-     comum/paridade.py acusa se divergir. O rótulo do campo já diz "onde o
-     benefício vale", e a forma longa não cabe na linha do card. */
-  { cod:'TODAS', nome:'Vale para todas', todas:true },
   { cod:'OUTRA', nome:'Outra cidade',               outra:true }
 ];
 
@@ -1126,10 +1130,6 @@ function unidadePorCod(cod){
   for(var i=0;i<UNIDADES.length;i++) if(UNIDADES[i].cod === cod) return UNIDADES[i];
   return null;
 }
-function codTodas(){
-  for(var i=0;i<UNIDADES.length;i++) if(UNIDADES[i].todas) return UNIDADES[i].cod;
-  return '';
-}
 function codOutra(){
   for(var i=0;i<UNIDADES.length;i++) if(UNIDADES[i].outra) return UNIDADES[i].cod;
   return '';
@@ -1143,7 +1143,29 @@ function unidadesEscolhidas(){
 }
 function unidadesTexto(){
   return UNIDADES.filter(function(u){ return R.unidades.indexOf(u.cod) >= 0; })
-                 .map(function(u){ return u.nome; }).join(' | ');
+                 .map(function(u){ return u.outra ? (String(R.cidadeOutra||'').trim() || u.nome) : u.nome; }).join(' | ');
+}
+/* 🔴 no PACOTE (16/09), "outra cidade" vai pelo NOME digitado, não pelo código
+   OUTRA: o painel e o app só entendem código da lista ou nome. `cidades` e os
+   endereços passam pela MESMA tradução, então um endereço nunca aponta para
+   uma cidade que o pacote não declarou. */
+function cidadeDoPacote(cod){
+  return cod === codOutra() ? String(R.cidadeOutra||'').replace(/\s+/g,' ').trim() : cod;
+}
+function cidadesDoPacote(){
+  return unidadesEscolhidas().map(cidadeDoPacote).filter(Boolean);
+}
+function enderecosDoPacote(){
+  var validas = cidadesDoPacote();
+  return limparEnderecos(R.enderecos).map(function(e){
+    return { endereco: e.endereco, rotulo: '', cidade: cidadeDoPacote(e.cidade) };
+  }).filter(function(e){ return validas.indexOf(e.cidade) >= 0; });
+}
+/* o nome da cidade para os títulos dos grupos; "outra" mostra o que foi digitado */
+function nomeDaCidade(cod){
+  var u = unidadePorCod(cod);
+  if(u && u.outra) return String(R.cidadeOutra||'').trim() || 'outra cidade';
+  return u ? u.nome : cod;
 }
 
 /* ---------- validadores ---------- */
@@ -1288,20 +1310,19 @@ function montarUnidades(){
 }
 
 function alternarUnidade(cod){
-  var todas = codTodas();
   var i = R.unidades.indexOf(cod);
-  if(i >= 0) R.unidades.splice(i,1);
-  else {
-    if(cod === todas) R.unidades = [todas];                 // "todas" limpa as cidades
-    else R.unidades = R.unidades.filter(function(c){ return c !== todas; }).concat([cod]);
-  }
+  if(i >= 0) R.unidades.splice(i,1); else R.unidades.push(cod);
   /* desmarcar "outra cidade" tem de limpar o texto, senão fica resposta
      órfã no dado. Mesma regra do campo do tipo "Outros". */
   if(!pediuOutraCidade() && R.cidadeOutra){
     R.cidadeOutra = ''; if($('cidadeOutra')) $('cidadeOutra').value = '';
   }
+  /* 🔴 o endereço mora DENTRO da cidade (16/09): desmarcar a cidade leva os
+     endereços dela junto, senão fica endereço órfão no dado */
+  R.enderecos = limparEnderecos(R.enderecos).filter(function(e){ return R.unidades.indexOf(e.cidade) >= 0; });
   pintarUnidades();
   revelarCidadeOutra();
+  montarCampoDeEnderecos();
   marcar('unidades', R.unidades.length > 0, '');
   atualizarProgresso();
 }
@@ -1603,12 +1624,13 @@ function montarCampoDeHorario(){
    vier (texto solto, lista de textos, lixo) e devolve só itens com endereço, com
    os espaços aparados. É a MESMA função no painel; a paridade cobra. */
 function limparEnderecos(lista){
-  if(typeof lista === 'string') lista = lista.trim() ? [{ endereco: lista, rotulo: '' }] : [];
+  if(typeof lista === 'string') lista = lista.trim() ? [{ endereco: lista, rotulo: '', cidade: '' }] : [];
   if(!Array.isArray(lista)) return [];
   return lista.map(function(e){
-    if(typeof e === 'string') e = { endereco: e, rotulo: '' };
+    if(typeof e === 'string') e = { endereco: e, rotulo: '', cidade: '' };
     return { endereco: String(e && e.endereco || '').replace(/\s+/g, ' ').trim(),
-             rotulo:   String(e && e.rotulo   || '').replace(/\s+/g, ' ').trim() };
+             rotulo:   String(e && e.rotulo   || '').replace(/\s+/g, ' ').trim(),
+             cidade:   String(e && e.cidade   || '').replace(/\s+/g, ' ').trim() };
   }).filter(function(e){ return !!e.endereco; });
 }
 
@@ -1621,56 +1643,88 @@ function montarCampoDeEnderecos(){
   var w = document.getElementById('enderecos');
   if(!w) return false;
   w.innerHTML = '';
-  var corpo = document.createElement('div'); corpo.className = 'hr-linhas';
-  w.appendChild(corpo);
-  var estado = limparEnderecos(R.enderecos);
-  if(!estado.length) estado.push({ endereco:'', rotulo:'' });
-
-  function lerLinhas(){
-    return Array.prototype.map.call(corpo.querySelectorAll('.hr-linha'), function(linha){
-      return { endereco: linha.querySelector('.en-txt').value, rotulo: '' };
-    });
-  }
-  function guardar(){
-    estado = lerLinhas();
-    R.enderecos = limparEnderecos(estado);
-    atualizarProgresso();
-  }
   function novo(tag, cls, txt){
     var e = document.createElement(tag); if(cls) e.className = cls;
     if(txt !== undefined && txt !== null) e.textContent = txt;
     return e;
   }
-  function desenharLinha(l, i){
+  var cidades = unidadesEscolhidas();
+  /* 🔴 SEM CIDADE, SEM ENDEREÇO (16/09): o endereço nasce dentro da cidade */
+  if(!cidades.length){
+    w.appendChild(novo('div','en-vazio','Marque acima em que cidade o benefício vale: os endereços entram dentro de cada cidade.'));
+    R.enderecos = [];
+    return true;
+  }
+  /* o estado bruto guarda a ORDEM e as linhas vazias; R.enderecos guarda só o limpo */
+  var estado = limparEnderecos(R.enderecos).filter(function(e){ return cidades.indexOf(e.cidade) >= 0; });
+
+  function lerTudo(){
+    var lidas = [];
+    Array.prototype.forEach.call(w.querySelectorAll('.en-grupo'), function(g){
+      Array.prototype.forEach.call(g.querySelectorAll('.hr-linha'), function(linha){
+        lidas.push({ endereco: linha.querySelector('.en-txt').value, rotulo: '', cidade: g.dataset.cidade });
+      });
+    });
+    return lidas;
+  }
+  function guardar(){
+    estado = lerTudo();
+    R.enderecos = limparEnderecos(estado);
+    atualizarProgresso();
+  }
+  function linhasDe(cid){
+    var l = estado.filter(function(e){ return e.cidade === cid; });
+    return l.length ? l : [{ endereco:'', rotulo:'', cidade:cid }];
+  }
+  function desenharLinha(l, grupo){
     var linha = novo('div','hr-linha en-linha');
     var t = novo('input','en-txt'); t.type = 'text'; t.value = l.endereco || '';
-    t.placeholder = 'Rua, número, bairro, cidade'; t.maxLength = 220;
-    t.setAttribute('aria-label','Endereço completo');
+    t.placeholder = 'Rua, número, bairro'; t.maxLength = 220;
+    t.setAttribute('aria-label','Endereço em ' + nomeDaCidade(grupo.dataset.cidade));
     t.addEventListener('input', guardar);
     linha.appendChild(t);
     var x = novo('button','hr-x','×'); x.type = 'button';
     x.setAttribute('aria-label','Tirar este endereço');
-    x.hidden = estado.length < 2;
     x.addEventListener('click', function(){
-      estado = lerLinhas(); estado.splice(i, 1);
-      if(!estado.length) estado.push({ endereco:'', rotulo:'' });
+      /* tira ESTA linha: a posição dela dentro do grupo é a posição entre os
+         endereços da mesma cidade no estado */
+      estado = lerTudo();
+      var cid = grupo.dataset.cidade;
+      var pos = Array.prototype.indexOf.call(grupo.querySelectorAll('.hr-linha'), linha);
+      var vistos = -1;
+      estado = estado.filter(function(e){ if(e.cidade !== cid) return true; vistos++; return vistos !== pos; });
       desenhar(); guardar();
     });
     linha.appendChild(x);
     return linha;
   }
   function desenhar(){
-    corpo.innerHTML = '';
-    estado.forEach(function(l, i){ corpo.appendChild(desenharLinha(l, i)); });
+    w.innerHTML = '';
+    cidades.forEach(function(cid){
+      var g = novo('div','en-grupo'); g.dataset.cidade = cid;
+      var tit = novo('div','en-grupo-t');
+      tit.appendChild(document.createTextNode('Endereços em '));
+      tit.appendChild(novo('span','en-titulo-nome', nomeDaCidade(cid)));
+      tit.appendChild(document.createTextNode(' '));
+      tit.appendChild(novo('span','opt','(opcional)'));
+      g.appendChild(tit);
+      var corpo = novo('div','hr-linhas');
+      var ls = linhasDe(cid);
+      ls.forEach(function(l){ corpo.appendChild(desenharLinha(l, g)); });
+      g.appendChild(corpo);
+      /* tirar só aparece com mais de uma linha no grupo: com uma, o campo é
+         opcional por outro caminho (deixar em branco) */
+      Array.prototype.forEach.call(corpo.querySelectorAll('.hr-x'), function(x){ x.hidden = ls.length < 2; });
+      var mais = novo('button','hr-mais','+ Adicionar endereço'); mais.type = 'button';
+      mais.addEventListener('click', function(){
+        estado = lerTudo(); estado.push({ endereco:'', rotulo:'', cidade:cid });
+        desenhar(); guardar();
+      });
+      g.appendChild(mais);
+      w.appendChild(g);
+    });
   }
   desenhar();
-
-  var mais = novo('button','hr-mais','+ Adicionar endereço'); mais.type = 'button';
-  mais.addEventListener('click', function(){
-    estado = lerLinhas(); estado.push({ endereco:'', rotulo:'' });
-    desenhar(); guardar();
-  });
-  w.appendChild(mais);
   return true;
 }
 
@@ -1696,10 +1750,10 @@ function camposAtivos(){
   var l = ['colaborador','tipo'];
   if(ehOutros()) l.push('tipoOutro');
   if(nomeTipo(R.tipo)) l.push('atendimento');
-  l.push('estab');
-  l.push('contatoNome','contato','unidades');
+  /* ordem da TELA (16/09): cidades e endereços ficam na seção 3, com o estabelecimento */
+  l.push('estab','unidades');
   if(pediuOutraCidade()) l.push('cidadeOutra');
-  l.push('condicao','consent');
+  l.push('contatoNome','contato','condicao','consent');
   return l;
 }
 
@@ -1893,8 +1947,8 @@ function montarPacote(){
     estabelecimento: String(R.estab).replace(/\s+/g,' ').trim(),
     /* 🔴 VÁRIOS ENDEREÇOS (16/09): a lista completa vai em `enderecos`; `endereco`
        continua existindo e é o PRIMEIRO da lista, para quem lê o contrato antigo. */
-    endereco: limparEnderecos(R.enderecos).length ? limparEnderecos(R.enderecos)[0].endereco : null,
-    enderecos: limparEnderecos(R.enderecos),
+    endereco: enderecosDoPacote().length ? enderecosDoPacote()[0].endereco : null,
+    enderecos: enderecosDoPacote(),
     enderecoObrigatorio: false,   /* a chave fica no contrato v3; a regra que a ligava saiu em 16/09 */
     site: siteNormalizado(R.site),
     redeSocial: String(R.social||'').trim() || null,
@@ -1904,7 +1958,8 @@ function montarPacote(){
     /* `cidades` traz os códigos; `cidadesTexto` traz os nomes EXATAMENTE
        como o app Clube de Parceiros escreve em `data-cidade`, que é o que
        permite publicar o parceiro na seção certa sem traduzir na mão. */
-    cidades: unidadesEscolhidas(),
+    /* 🔴 (16/09) "outra cidade" vai pelo NOME digitado, e cada endereço traz a cidade dele */
+    cidades: cidadesDoPacote(),
     cidadesTexto: unidadesTexto(),
     cidadeOutra: pediuOutraCidade() ? String(R.cidadeOutra||'').trim() : null,
     condicao: String(R.condicao).trim(),
@@ -2572,6 +2627,11 @@ function ligar(){
    ['contatoNome','contatoNome'],['contatoEmail','contatoEmail']].forEach(function(par){
     $(par[0]).addEventListener('input', function(){ R[par[1]] = this.value; atualizarProgresso(); });
   });
+  /* o título do grupo de endereços de "outra cidade" acompanha o nome digitado */
+  $('cidadeOutra').addEventListener('input', function(){
+    var t = document.querySelector('#enderecos .en-grupo[data-cidade="' + codOutra() + '"] .en-titulo-nome');
+    if(t) t.textContent = nomeDaCidade(codOutra());
+  });
 
   $('condicao').addEventListener('input', function(){
     R.condicao = this.value; contarCondicao(); atualizarProgresso();
@@ -2913,38 +2973,67 @@ function selftest(){
       /[Rr]ede/.test($('hintEndereco').textContent) && /internet/.test($('hintEndereco').textContent));
     t('a faixa verde que dizia por que o endereço era obrigatório saiu da marcação',
       !document.getElementById('notaEndereco'));
-    /* 🔴 VÁRIOS ENDEREÇOS (16/09): mesma interação do horário */
-    var gE = R.enderecos;
-    R.enderecos = []; montarCampoDeEnderecos();
+    /* 🔴 ENDEREÇO DENTRO DA CIDADE (pedido dele, 16/09): a pessoa marca as
+       cidades e, sob cada uma, abre a lista de endereços daquela cidade. */
+    var gE = R.enderecos, gU = R.unidades.slice(), gO = R.cidadeOutra;
+    R.unidades = []; R.cidadeOutra = ''; R.enderecos = []; revelarCidadeOutra(); montarCampoDeEnderecos();
     var w = $('enderecos');
-    t('★ o campo de endereço é uma lista de linhas, como o horário, e SEM nome curto (isso é do RH)',
-      !!w && w.querySelectorAll('.hr-linha').length === 1 && !!w.querySelector('.hr-mais') &&
-      !!w.querySelector('.en-txt') && !w.querySelector('.en-rot'));
+    t('★ sem cidade marcada não há linha de endereço, só o aviso para marcar a cidade',
+      !!w && w.querySelectorAll('.hr-linha').length === 0 && !!w.querySelector('.en-vazio'));
+    alternarUnidade('BHZ');
+    t('★ marcar uma cidade abre o grupo de endereços dela, com uma linha, "+ Adicionar" e SEM nome curto',
+      w.querySelectorAll('.en-grupo').length === 1 && w.querySelector('.en-grupo').dataset.cidade === 'BHZ' &&
+      w.querySelectorAll('.hr-linha').length === 1 && !!w.querySelector('.hr-mais') &&
+      /Belo Horizonte/.test(w.querySelector('.en-grupo-t').textContent) && !w.querySelector('.en-rot'));
     t('com uma linha só, tirar não aparece', w.querySelector('.hr-x').hidden === true);
-    w.querySelector('.hr-mais').click();
-    t('★ "+ Adicionar endereço" põe a segunda linha e o × aparece',
-      w.querySelectorAll('.hr-linha').length === 2 && w.querySelector('.hr-x').hidden === false);
-    var ls = w.querySelectorAll('.hr-linha');
-    ls[0].querySelector('.en-txt').value = '  Rua A, 10,  Buritis, Belo Horizonte ';
-    ls[1].querySelector('.en-txt').value = 'Av. B, 200, Savassi, Belo Horizonte';
-    ls[1].querySelector('.en-txt').dispatchEvent(new Event('input'));
-    t('★ o estado guarda os dois, com espaços aparados e rótulo vazio (o RH decide o nome curto)',
-      R.enderecos.length === 2 && R.enderecos[0].endereco === 'Rua A, 10, Buritis, Belo Horizonte' &&
-      R.enderecos[0].rotulo === '' && R.enderecos[1].rotulo === '');
+    alternarUnidade('SJP');
+    t('★ a segunda cidade abre o segundo grupo, na ordem da lista',
+      Array.prototype.map.call(w.querySelectorAll('.en-grupo'), function(g){ return g.dataset.cidade; }).join() === 'BHZ,SJP');
+    var gBH = w.querySelector('.en-grupo[data-cidade="BHZ"]');
+    gBH.querySelector('.hr-mais').click();
+    /* o clique REDESENHA o bloco: o grupo guardado antes é um elemento morto */
+    gBH = w.querySelector('.en-grupo[data-cidade="BHZ"]');
+    t('★ "+ Adicionar endereço" põe a segunda linha NAQUELE grupo e o × aparece',
+      gBH.querySelectorAll('.hr-linha').length === 2 && gBH.querySelector('.hr-x').hidden === false &&
+      w.querySelector('.en-grupo[data-cidade="SJP"]').querySelectorAll('.hr-linha').length === 1);
+    var lsBH = gBH.querySelectorAll('.hr-linha');
+    lsBH[0].querySelector('.en-txt').value = '  Rua A, 10,  Buritis ';
+    lsBH[1].querySelector('.en-txt').value = 'Av. B, 200, Savassi';
+    w.querySelector('.en-grupo[data-cidade="SJP"] .en-txt').value = 'Praça C, 3, Centro';
+    lsBH[1].querySelector('.en-txt').dispatchEvent(new Event('input'));
+    t('★ cada endereço nasce com a cidade do grupo em que foi escrito, aparado e sem nome curto',
+      R.enderecos.length === 3 && R.enderecos[0].cidade === 'BHZ' && R.enderecos[1].cidade === 'BHZ' &&
+      R.enderecos[2].cidade === 'SJP' && R.enderecos[0].endereco === 'Rua A, 10, Buritis' && R.enderecos[0].rotulo === '');
     var pc2 = montarPacote();
-    t('★ o pacote leva a lista em `enderecos` e o PRIMEIRO em `endereco`, para o contrato antigo',
-      pc2.enderecos.length === 2 && pc2.endereco === 'Rua A, 10, Buritis, Belo Horizonte' && pc2.enderecos[0].rotulo === '');
-    w.querySelectorAll('.hr-x')[0].click();
-    t('★ tirar a primeira linha deixa a segunda, e o pacote acompanha',
-      R.enderecos.length === 1 && montarPacote().endereco === 'Av. B, 200, Savassi, Belo Horizonte');
-    R.enderecos = []; montarCampoDeEnderecos();
-    t('linha vazia não entra no pacote: `endereco` nulo e lista vazia',
+    t('★ o pacote leva a lista com a cidade em cada endereço, o PRIMEIRO em `endereco` e as cidades',
+      pc2.enderecos.length === 3 && pc2.enderecos[2].cidade === 'SJP' && pc2.endereco === 'Rua A, 10, Buritis' &&
+      pc2.cidades.join() === 'BHZ,SJP');
+    gBH = w.querySelector('.en-grupo[data-cidade="BHZ"]');
+    gBH.querySelectorAll('.hr-x')[0].click();
+    t('★ tirar a primeira linha de Belo Horizonte deixa a segunda e não mexe em São João',
+      R.enderecos.length === 2 && R.enderecos[0].endereco === 'Av. B, 200, Savassi' && R.enderecos[1].cidade === 'SJP');
+    alternarUnidade('SJP');
+    t('★ desmarcar a cidade leva os endereços dela junto: nada de endereço órfão',
+      R.enderecos.length === 1 && R.enderecos[0].cidade === 'BHZ' && $('enderecos').querySelectorAll('.en-grupo').length === 1);
+    /* "outra cidade": o endereço vai com o NOME digitado, não com o código */
+    alternarUnidade('OUTRA'); R.cidadeOutra = 'Petrolina - PE';
+    var gOu = $('enderecos').querySelector('.en-grupo[data-cidade="OUTRA"]');
+    gOu.querySelector('.en-txt').value = 'Rua D, 4, Centro';
+    gOu.querySelector('.en-txt').dispatchEvent(new Event('input'));
+    var pc3 = montarPacote();
+    t('★ "outra cidade" vai no pacote pelo nome digitado, em `cidades` e no endereço dela, nunca como OUTRA',
+      pc3.cidades.join() === 'BHZ,Petrolina - PE' &&
+      pc3.enderecos.filter(function(e){ return e.cidade === 'Petrolina - PE'; }).length === 1 &&
+      pc3.enderecos.every(function(e){ return e.cidade !== 'OUTRA'; }) && pc3.cidadeOutra === 'Petrolina - PE');
+    t('e o texto das cidades usa o nome digitado', /Petrolina - PE/.test(pc3.cidadesTexto));
+    R.unidades = ['BHZ']; R.enderecos = [];
+    t('linha vazia não entra no pacote: sem endereço, `endereco` nulo e lista vazia',
       montarPacote().endereco === null && montarPacote().enderecos.length === 0);
-    t('★ `limparEnderecos` aceita texto solto, lista de textos e lixo, e devolve só o que tem endereço',
-      limparEnderecos('Rua A').length === 1 && limparEnderecos(['Rua A', '', { endereco:' Rua B ', rotulo:' X ' }]).length === 2 &&
+    t('★ `limparEnderecos` aceita texto solto, lista de textos e lixo, e devolve só o que tem endereço, com a cidade',
+      limparEnderecos('Rua A').length === 1 && limparEnderecos(['Rua A', '', { endereco:' Rua B ', rotulo:' X ', cidade:' BHZ ' }]).length === 2 &&
       limparEnderecos([{ rotulo:'só nome' }]).length === 0 && limparEnderecos(null).length === 0 &&
-      limparEnderecos([{ endereco:' Rua  B ', rotulo:' X ' }])[0].endereco === 'Rua B');
-    R.enderecos = gE; montarCampoDeEnderecos();
+      limparEnderecos([{ endereco:' Rua  B ', cidade:' BHZ ' }])[0].cidade === 'BHZ' && limparEnderecos('Rua A')[0].cidade === '');
+    R.unidades = gU; R.cidadeOutra = gO; R.enderecos = gE; revelarCidadeOutra(); pintarUnidades(); montarCampoDeEnderecos();
   })();
 
   out.push('== A REGRA DO PAR: e-mail OU telefone ==');
@@ -2975,23 +3064,22 @@ function selftest(){
     t('as cidades do formulário são as MESMAS do app, letra por letra',
       nomes.slice().sort().join('|') === cidadesNoApp.slice().sort().join('|'));
     t('e são as quatro, nenhuma a mais nem a menos', nomes.length === 4);
-    t('existe exatamente uma opção "todas" e uma "outra"',
-      UNIDADES.filter(function(u){ return u.todas; }).length === 1 &&
+    t('existe exatamente uma opção "outra", e nenhuma "todas" (saiu em 16/09)',
+      UNIDADES.filter(function(u){ return u.todas; }).length === 0 &&
       UNIDADES.filter(function(u){ return u.outra; }).length === 1);
-    t('"todas" e "outra" são as duas últimas, depois das cidades de verdade',
-      UNIDADES[UNIDADES.length-1].outra === true && UNIDADES[UNIDADES.length-2].todas === true);
+    t('★ "outra" é a última, depois das cidades de verdade, e "vale para todas" não existe mais (16/09)',
+      UNIDADES[UNIDADES.length-1].outra === true && !UNIDADES.some(function(u){ return u.todas || u.cod === 'TODAS'; }) &&
+      typeof codTodas === 'undefined');
 
     R.unidades = []; R.cidadeOutra = '';
     alternarUnidade('BHZ');
     t('marca uma cidade',                   R.unidades.join() === 'BHZ');
     alternarUnidade('SJP');
     t('marca duas cidades',                 R.unidades.length === 2);
-    alternarUnidade('TODAS');
-    t('"todas" limpa as cidades',           R.unidades.join() === 'TODAS');
+    alternarUnidade('SJP');
+    t('clicar de novo desmarca',            R.unidades.join() === 'BHZ');
     alternarUnidade('BHZ');
-    t('marcar cidade tira o "todas"',       R.unidades.join() === 'BHZ');
-    alternarUnidade('BHZ');
-    t('clicar de novo desmarca',            R.unidades.length === 0);
+    t('e desmarcar a última zera',          R.unidades.length === 0);
     R.unidades = ['SJP','BHZ','CAF'];
     t('a ordem gravada é a da LISTA, não a do clique',
       unidadesEscolhidas().join() === 'BHZ,CAF,SJP');
@@ -3579,8 +3667,7 @@ function selftest(){
     var uc = UNIDADES.map(function(u){ return u.cod; });
     t('não há código de unidade repetido',
       uc.length === uc.filter(function(c,i){ return uc.indexOf(c) === i; }).length);
-    t('existe exatamente uma opção "todas"',
-      UNIDADES.filter(function(u){ return u.todas; }).length === 1);
+    t('a opção "todas" não existe mais (saiu em 16/09)', UNIDADES.filter(function(u){ return u.todas || u.cod === 'TODAS'; }).length === 0);
   })();
 
   out.push('== Texto da tela ==');
