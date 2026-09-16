@@ -185,7 +185,10 @@ body.js .chips.on{display:flex}
    MESMA altura a todos os cards da linha, então abrir um esticava o vizinho e
    o espaço em branco parecia um segundo card aberto e vazio. Cada card passa a
    ter a altura do próprio conteúdo. */
-.partners{display:grid;grid-template-columns:1fr;gap:12px;margin-top:14px;align-items:start}
+/* 🔴 CARDS DA MESMA ALTURA na fileira (pedido dele, 16/09): `stretch` em vez de
+   `start`. Card com menos informação fica mais alto por causa do vizinho, e foi
+   isso que ele pediu: fileira alinhada vale mais que card justo. */
+.partners{display:grid;grid-template-columns:1fr;gap:12px;margin-top:14px;align-items:stretch}
 @media(min-width:760px){.partners{grid-template-columns:1fr 1fr}}
 /* 🔴 NO COMPUTADOR NÃO HÁ EXPANSÃO (pedido dele, 15/09): com duas colunas sobra
    espaço, e esconder o detalhe atrás de um clique só cria trabalho. O card já
@@ -206,7 +209,8 @@ body.sem-toggle .p-mais{animation:none}
 /* ---------- card expansível ----------
    `<details>` nativo: abre e fecha SEM JavaScript, que é o que mantém o app
    funcionando na pré-visualização de arquivo do iPhone, onde script não roda. */
-.p-det{width:100%}
+.p-det{width:100%;flex:1;display:flex;flex-direction:column}
+.p-det[open] .p-mais{flex:1}
 .p-sum{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:3px 13px;align-items:center;
   padding:15px 17px;cursor:pointer;list-style:none;outline:none}
 .p-sum::-webkit-details-marker{display:none}
@@ -269,6 +273,10 @@ body.sem-toggle .p-mais{animation:none}
 .d-row{display:flex;align-items:flex-start;gap:9px;font-size:13px;line-height:1.45;color:var(--txt)}
 .d-row .ic{width:15px;height:15px;stroke:var(--muted);flex-shrink:0;margin-top:2px}
 .d-row .d-txt{flex:1;min-width:0;overflow-wrap:anywhere}
+/* 🔴 ENDEREÇO É LINK (16/09): a própria linha abre o mapa; saiu o botão. O MESMO
+   no painel. Sublinhado discreto, verde no hover. */
+.d-row a.d-txt{color:var(--txt);text-decoration:underline;text-decoration-color:rgba(27,45,37,.28);text-underline-offset:3px;transition:color .15s,text-decoration-color .15s}
+.d-row a.d-txt:hover{color:var(--ben-txt);text-decoration-color:currentColor}
 .p-actions{display:flex;gap:8px;flex-wrap:wrap}
 .act-btn{display:inline-flex;align-items:center;gap:7px;border-radius:999px;padding:9px 16px;font-size:12.5px;font-weight:700;text-decoration:none;border:1px solid var(--line);transition:transform .12s,box-shadow .15s;cursor:pointer}
 .act-btn:hover{transform:translateY(-1px);box-shadow:0 3px 10px rgba(27,45,37,.12)}
@@ -276,7 +284,6 @@ body.sem-toggle .p-mais{animation:none}
 .act-btn .ic{width:15px;height:15px}
 .act-wa{background:var(--wa-bg);color:var(--wa-txt);border-color:var(--wa-bg)}
 .act-wa .ic{stroke:var(--wa-ico)}
-.act-map{background:var(--card);color:var(--txt)}
 .act-map .ic{stroke:var(--txt)}
 
 /* ---------- resultados de busca / vazio ---------- */
@@ -474,11 +481,10 @@ body.sem-toggle .p-mais{animation:none}
         </summary>
         <div class="p-mais">
           <div class="d-row"><svg class="ic"><use href="#i-shop"/></svg><span class="d-txt">Online ou presencial</span></div>
-          <div class="d-row"><svg class="ic"><use href="#i-pin"/></svg><span class="d-txt">Buritis: rua pantojo,847</span></div>
+          <div class="d-row"><svg class="ic"><use href="#i-pin"/></svg><a class="d-txt" href="https://www.google.com/maps/search/?api=1&amp;query=rua%20pantojo%2C847%2C%20Belo%20Horizonte" target="_blank" rel="noopener" title="Abrir no Google Maps">rua pantojo,847</a></div>
           <div class="d-row"><svg class="ic"><use href="#i-clock"/></svg><span class="d-txt">Seg a Sex; Seg a Sáb</span></div>
           <div class="d-row"><svg class="ic"><use href="#i-phone"/></svg><span class="d-txt">(11) 99695-5847</span></div>
           <div class="p-actions">
-        <a class="act-btn act-map" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=rua%20pantojo%2C847%2C%20Belo%20Horizonte"><svg class="ic"><use href="#i-map"/></svg>Buritis</a>
         <a class="act-btn act-wa" target="_blank" rel="noopener" href="https://wa.me/5511996955847"><svg class="ic"><use href="#i-wa"/></svg>WhatsApp</a>
       </div>
         </div>
@@ -497,11 +503,8 @@ body.sem-toggle .p-mais{animation:none}
         <div class="p-mais">
           <div class="d-row"><svg class="ic"><use href="#i-tag"/></svg><span class="d-txt">Apresente o crachá e consulte o benefício no estabelecimento ou com o RH.</span></div>
           <div class="d-row"><svg class="ic"><use href="#i-shop"/></svg><span class="d-txt">Indo até o lugar</span></div>
-          <div class="d-row"><svg class="ic"><use href="#i-pin"/></svg><span class="d-txt">BR-356, 3.049 – Piso Nova Lima · BH Shopping</span></div>
+          <div class="d-row"><svg class="ic"><use href="#i-pin"/></svg><a class="d-txt" href="https://www.google.com/maps/search/?api=1&amp;query=BR-356%2C%203.049%20%E2%80%93%20Piso%20Nova%20Lima%20%C2%B7%20BH%20Shopping%2C%20Belo%20Horizonte" target="_blank" rel="noopener" title="Abrir no Google Maps">BR-356, 3.049 – Piso Nova Lima · BH Shopping</a></div>
           <div class="d-row"><svg class="ic"><use href="#i-clock"/></svg><span class="d-txt">Consultar horário de funcionamento</span></div>
-          <div class="p-actions">
-        <a class="act-btn act-map" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=BR-356%2C%203.049%20%E2%80%93%20Piso%20Nova%20Lima%20%C2%B7%20BH%20Shopping%2C%20Belo%20Horizonte"><svg class="ic"><use href="#i-map"/></svg>Ver no mapa</a>
-      </div>
         </div>
       </details>
     </article>
@@ -518,11 +521,8 @@ body.sem-toggle .p-mais{animation:none}
         <div class="p-mais">
           <div class="d-row"><svg class="ic"><use href="#i-tag"/></svg><span class="d-txt">Apresente o crachá e consulte o benefício no estabelecimento ou com o RH.</span></div>
           <div class="d-row"><svg class="ic"><use href="#i-shop"/></svg><span class="d-txt">Indo até o lugar</span></div>
-          <div class="d-row"><svg class="ic"><use href="#i-pin"/></svg><span class="d-txt">Av. Luiz Paulo Franco, 721 · Belvedere</span></div>
+          <div class="d-row"><svg class="ic"><use href="#i-pin"/></svg><a class="d-txt" href="https://www.google.com/maps/search/?api=1&amp;query=Av.%20Luiz%20Paulo%20Franco%2C%20721%20%C2%B7%20Belvedere%2C%20Belo%20Horizonte" target="_blank" rel="noopener" title="Abrir no Google Maps">Av. Luiz Paulo Franco, 721 · Belvedere</a></div>
           <div class="d-row"><svg class="ic"><use href="#i-clock"/></svg><span class="d-txt">Consultar horário de funcionamento</span></div>
-          <div class="p-actions">
-        <a class="act-btn act-map" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=Av.%20Luiz%20Paulo%20Franco%2C%20721%20%C2%B7%20Belvedere%2C%20Belo%20Horizonte"><svg class="ic"><use href="#i-map"/></svg>Ver no mapa</a>
-      </div>
         </div>
       </details>
     </article>
@@ -552,11 +552,10 @@ body.sem-toggle .p-mais{animation:none}
         </summary>
         <div class="p-mais">
           <div class="d-row"><svg class="ic"><use href="#i-shop"/></svg><span class="d-txt">Online ou presencial</span></div>
-          <div class="d-row"><svg class="ic"><use href="#i-pin"/></svg><span class="d-txt">Senhor k: rua guari,123</span></div>
+          <div class="d-row"><svg class="ic"><use href="#i-pin"/></svg><a class="d-txt" href="https://www.google.com/maps/search/?api=1&amp;query=rua%20guari%2C123%2C%20Capit%C3%A3o%20Gerv%C3%A1sio%20Oliveira" target="_blank" rel="noopener" title="Abrir no Google Maps">rua guari,123</a></div>
           <div class="d-row"><svg class="ic"><use href="#i-clock"/></svg><span class="d-txt">Seg a Sex; Seg a Sáb</span></div>
           <div class="d-row"><svg class="ic"><use href="#i-phone"/></svg><span class="d-txt">(11) 99695-5847</span></div>
           <div class="p-actions">
-        <a class="act-btn act-map" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=rua%20guari%2C123%2C%20Capit%C3%A3o%20Gerv%C3%A1sio%20Oliveira"><svg class="ic"><use href="#i-map"/></svg>Senhor k</a>
         <a class="act-btn act-wa" target="_blank" rel="noopener" href="https://wa.me/5511996955847"><svg class="ic"><use href="#i-wa"/></svg>WhatsApp</a>
       </div>
         </div>
