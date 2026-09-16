@@ -31,6 +31,9 @@ PROIBIDOS = {"colaborador", "colaboradorEmail", "preenchidoPor", "contatoNome", 
              "contatoFone", "historico", "evidencia", "pacote", "area", "filial", "genero", "nota", "motivo"}
 RE_EMAIL = re.compile(r"[\w.+-]+@[\w-]+\.[\w.-]+")
 HORARIO_PADRAO = "Consultar horário de funcionamento"   # o mesmo texto do painel (HORARIO_PADRAO)
+# 🔴 endereço é OPCIONAL desde 16/09 (parceria com rede de unidades não tem um
+# endereço para listar): vazio, o card diz isto, e não tem botão de mapa.
+ENDERECO_PADRAO = "Consultar endereço na internet"    # o mesmo texto do painel (ENDERECO_PADRAO)
 
 
 def slug(txt):
@@ -106,7 +109,7 @@ def card_html(c, cidade):
         if txt: linhas.append('          <div class="d-row"><svg class="ic"><use href="#i-%s"/></svg><span class="d-txt">%s</span></div>' % (simbolo, escape(txt)))
     linha("tag", (card.get("detalhe") or "").strip())
     linha("shop", (c.get("atendimento") or "").strip())
-    linha("pin", (card.get("endereco") or "").strip())
+    linha("pin", (card.get("endereco") or "").strip() or ENDERECO_PADRAO)
     # sem horário no formulário nem no card, o texto padrão (o MESMO do painel)
     linha("clock", (card.get("horario") or "").strip() or HORARIO_PADRAO)
     # 🔴 O NÚMERO APARECE SEMPRE (16/09), como o endereço e o horário. Antes ele

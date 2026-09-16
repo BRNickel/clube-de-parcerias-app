@@ -567,7 +567,7 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
       <li>O nome do estabelecimento e o nome de quem você firmou a parceria;</li>
       <li>Um contato do responsável: <b>e-mail ou telefone</b>, pelo menos um dos dois;</li>
       <li>A condição combinada, escrita com a maior quantidade de detalhes;</li>
-      <li>Se for um lugar para ir, o endereço.</li>
+      <li>O endereço, se for um lugar só. Rede com várias unidades pode deixar em branco.</li>
     </ul>
 
     <div class="callout">
@@ -631,13 +631,8 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
           </div>
           <div class="f wide" data-campo="atendimento" hidden>
             <label>Como o colaborador usa o benefício?<span class="req">*</span></label>
-            <div class="hint">É isto que diz se o endereço é obrigatório: quem vai até o lugar precisa
-            saber onde ele fica.</div>
+            <div class="hint">Vai escrito no card: é assim que o colaborador sabe se precisa ir até lá.</div>
             <div class="ops" id="opsAtendimento" role="group" aria-label="Como o colaborador usa o benefício"></div>
-            <div class="nota" id="notaEndereco">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>
-              <span id="notaEnderecoTxt"></span>
-            </div>
             <div class="err" id="e_atendimento"></div>
           </div>
         </div>
@@ -654,9 +649,12 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
             <div class="err" id="e_estab"></div>
           </div>
           <div class="f wide" data-campo="endereco">
-            <label for="endereco">Endereço<span class="req" id="reqEndereco">*</span>
-              <span class="opt" id="optEndereco" hidden>(opcional)</span></label>
-            <div class="hint" id="hintEndereco">Rua, número, bairro e cidade.</div>
+            <!-- 🔴 SEMPRE OPCIONAL (decisão dele, 16/09): parceria com REDE de unidades
+                 não tem um endereço para listar. Vazio, o card diz para consultar na
+                 internet. A regra que ligava o asterisco saiu inteira do script. -->
+            <label for="endereco">Endereço <span class="opt">(opcional)</span></label>
+            <div class="hint" id="hintEndereco">Rua, número, bairro e cidade. Rede com várias unidades pode deixar em
+              branco: o card vai dizer para consultar o endereço na internet.</div>
             <input id="endereco" name="endereco" type="text" placeholder="Rua, número, bairro, cidade" maxlength="220">
             <div class="err" id="e_endereco"></div>
           </div>
@@ -883,32 +881,30 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
    aparecer antes de "Serviço", senão todo salão vira serviço. `Outros`
    é sempre o último, e há asserção guardando isso.
 
-   `sempreEndereco: true` quer dizer "isto é sempre um lugar para ir",
-   então o endereço é obrigatório mesmo que a pergunta de atendimento
-   diga outra coisa. Restaurante é o ÚNICO caso, que é a regra pedida.
-   Nos demais quem decide é a pergunta de atendimento do bloco 1.2, e
-   isso é de propósito: existe salão que atende em casa e oficina que
-   busca o carro, e marcá-los como sempre presenciais cobraria endereço
-   de quem não tem. */
+   🔴 ENDEREÇO NUNCA É OBRIGATÓRIO (decisão dele, 16/09): existe parceria com
+   REDE de unidades, e não dá para listar todos os endereços. Vazio, o card
+   diz "Consultar endereço na internet". A marca `sempreEndereco` que vivia
+   aqui (restaurante sempre exigia endereço) saiu junto com a regra. */
 var TIPOS = [
-  { cod:'alimentacao', nome:'Restaurante e alimentação', sempreEndereco:true  },
-  { cod:'beleza',      nome:'Beleza e estética',         sempreEndereco:false },
+  { cod:'alimentacao', nome:'Restaurante e alimentação' },
+  { cod:'beleza',      nome:'Beleza e estética' },
   /* 🔴 "Saúde e bem-estar" é separada de "Beleza e estética" (pedido dele,
      15/09): academia, nutricionista e dentista não são a mesma coisa que salão,
      e juntas viravam um balaio onde ninguém achava o que procurava.
      A lista aqui e a do PAINEL são a MESMA: divergir faz o filtro do RH perder
      indicação sem avisar. */
-  { cod:'saude',       nome:'Saúde e bem-estar',         sempreEndereco:false },
-  { cod:'automotivo',  nome:'Automotivo',                sempreEndereco:false },
-  { cod:'construcao',  nome:'Construção e reforma',      sempreEndereco:false },
-  { cod:'compras',     nome:'Compras',                   sempreEndereco:false },
-  { cod:'servico',     nome:'Serviço',                   sempreEndereco:false },
-  { cod:'outros',      nome:'Outros',                    sempreEndereco:false }
+  { cod:'saude',       nome:'Saúde e bem-estar' },
+  { cod:'automotivo',  nome:'Automotivo' },
+  { cod:'construcao',  nome:'Construção e reforma' },
+  { cod:'compras',     nome:'Compras' },
+  { cod:'servico',     nome:'Serviço' },
+  { cod:'outros',      nome:'Outros' }
 ];
 
 /* --- 1.2 COMO O COLABORADOR USA O BENEFÍCIO ----------------------
-   `presencial: true` torna o endereço obrigatório. É a única outra
-   coisa, além do `sempreEndereco` acima, que liga essa exigência. */
+   A resposta vai escrita no card ("Indo até o lugar", "Online..."). Desde
+   16/09 ela NÃO liga mais exigência de endereço: endereço é sempre opcional.
+   `presencial` fica só como descrição da opção. */
 var ATENDIMENTOS = [
   { cod:'presencial', nome:'Indo até o lugar',
     desc:'Loja, restaurante, clínica, oficina: tem endereço físico.', presencial:true },
@@ -1212,24 +1208,11 @@ function mascaraFone(v){
 
 /* ---------- a regra do endereço ---------- */
 
-/* Duas coisas ligam a exigência, e basta uma:
-   1. o tipo é sempre um lugar físico (restaurante e companhia);
-   2. a resposta de atendimento inclui ir até o lugar.
-   Sem a 1, "Restaurante" marcado como online escaparia da regra. */
-function exigeEndereco(){
-  var t = tipoPorCod(R.tipo);
-  if(t && t.sempreEndereco) return true;
-  var a = atendimentoPorCod(R.atendimento);
-  return !!(a && a.presencial);
-}
-
-function motivoEndereco(){
-  var t = tipoPorCod(R.tipo);
-  if(t && t.sempreEndereco) return 'Como é ' + t.nome.toLowerCase() + ', o endereço é obrigatório.';
-  var a = atendimentoPorCod(R.atendimento);
-  if(a && a.presencial) return 'Como o colaborador vai até o lugar, o endereço é obrigatório.';
-  return '';
-}
+/* 🔴 NÃO EXISTE MAIS (decisão dele, 16/09). Havia `exigeEndereco()` e
+   `motivoEndereco()`: restaurante e atendimento presencial tornavam o endereço
+   obrigatório, com faixa verde dizendo por quê. Saiu porque existe parceria com
+   REDE de unidades e não dá para listar todos os endereços. O campo é opcional
+   para todo mundo; vazio, o card diz "Consultar endereço na internet". */
 
 /* ---------- a regra do par e-mail OU telefone ---------- */
 
@@ -1353,7 +1336,6 @@ function revelar(){
     campoEl('atendimento').setAttribute('hidden','');
     if(R.atendimento){ R.atendimento = ''; pintarAtendimento(); }
   }
-  pintarEndereco();
 }
 
 function pintarAtendimento(){
@@ -1361,20 +1343,6 @@ function pintarAtendimento(){
   Array.prototype.forEach.call(box.children, function(o){
     o.setAttribute('aria-pressed', o.dataset.valor === R.atendimento ? 'true' : 'false');
   });
-}
-
-/* o rótulo do endereço muda de "obrigatório" para "opcional" conforme a
-   regra, e a nota verde diz POR QUE ele virou obrigatório */
-function pintarEndereco(){
-  var pede = exigeEndereco();
-  $('reqEndereco').hidden = !pede;
-  $('optEndereco').hidden = pede;
-  var m = motivoEndereco();
-  $('notaEnderecoTxt').textContent = m;
-  $('notaEndereco').classList.toggle('on', !!m);
-  $('hintEndereco').textContent = pede
-    ? 'Rua, número, bairro e cidade. É o que o colaborador vai usar para chegar lá.'
-    : 'Rua, número, bairro e cidade. Se o estabelecimento tiver um endereço, informe mesmo assim.';
 }
 
 function pintarPar(){
@@ -1650,7 +1618,6 @@ function camposAtivos(){
   if(ehOutros()) l.push('tipoOutro');
   if(nomeTipo(R.tipo)) l.push('atendimento');
   l.push('estab');
-  if(exigeEndereco()) l.push('endereco');
   l.push('contatoNome','contato','unidades');
   if(pediuOutraCidade()) l.push('cidadeOutra');
   l.push('condicao','consent');
@@ -1680,7 +1647,6 @@ function atualizarProgresso(){
   l.forEach(function(c){ if(respondido(c)) feitos++; });
   $('progFill').style.width = Math.round(feitos/l.length*100)+'%';
   $('progNum').textContent = feitos+' de '+l.length;
-  pintarEndereco();
   pintarPar();
   return { feitos:feitos, total:l.length };
 }
@@ -1711,9 +1677,9 @@ function validar(){
   if(String(R.estab||'').trim().length < 2) p('estab','Escreva o nome do estabelecimento.');
   else marcar('estab', true, '');
 
-  if(exigeEndereco() && String(R.endereco||'').trim().length < 8)
-    p('endereco','Endereço obrigatório. ' + motivoEndereco());
-  else marcar('endereco', String(R.endereco||'').trim().length >= 8, '');
+  /* endereço é opcional para todo mundo (16/09): só conta como respondido
+     quando tem cara de endereço, e nunca barra o envio */
+  marcar('endereco', String(R.endereco||'').trim().length >= 8, '');
 
   if(!siteValido(R.site)) p('site','Endereço de site inválido. Exemplo: www.exemplo.com.br');
   else marcar('site', String(R.site||'').trim() ? true : false, '');
@@ -1848,7 +1814,7 @@ function montarPacote(){
     atendimentoCodigo: R.atendimento,
     estabelecimento: String(R.estab).replace(/\s+/g,' ').trim(),
     endereco: String(R.endereco||'').replace(/\s+/g,' ').trim() || null,
-    enderecoObrigatorio: exigeEndereco(),
+    enderecoObrigatorio: false,   /* a chave fica no contrato v3; a regra que a ligava saiu em 16/09 */
     site: siteNormalizado(R.site),
     redeSocial: String(R.social||'').trim() || null,
     contatoNome: String(R.contatoNome).replace(/\s+/g,' ').trim(),
@@ -2465,7 +2431,7 @@ function ligar(){
   });
 
   montarOpcoes($('opsTipo'), TIPOS, 'tipo', function(){ revelar(); });
-  montarOpcoes($('opsAtendimento'), ATENDIMENTOS, 'atendimento', function(){ pintarEndereco(); });
+  montarOpcoes($('opsAtendimento'), ATENDIMENTOS, 'atendimento', function(){});
   montarUnidades();
 
   $('duvida').innerHTML = '';
@@ -2623,7 +2589,6 @@ ligar();
 window.FP = {
   R: function(){ return R; },
   REGRAS: REGRAS, TIPOS: TIPOS, ATENDIMENTOS: ATENDIMENTOS, UNIDADES: UNIDADES, ENVIO: ENVIO,
-  exigeEndereco: exigeEndereco,
   parResolvido: parResolvido,
   PLATAFORMA: PLATAFORMA, naPlataforma: naPlataforma, destinoReal: destinoReal,
   corpoDoEnvio: corpoDoEnvio, cabecalhosAuth: cabecalhosAuth,
@@ -2843,26 +2808,28 @@ function selftest(){
   t('não mexe no que já tem http', siteNormalizado('http://x.com') === 'http://x.com');
   t('vazio normaliza para nulo', siteNormalizado('') === null);
 
-  out.push('== A REGRA DO ENDEREÇO ==');
+  out.push('== O ENDEREÇO É SEMPRE OPCIONAL (16/09) ==');
   (function(){
-    R.tipo = 'alimentacao'; R.atendimento = '';
-    t('restaurante já exige endereço antes de responder o atendimento', exigeEndereco() === true);
-    R.atendimento = 'remoto';
-    t('restaurante marcado como online CONTINUA exigindo endereço', exigeEndereco() === true);
-    R.tipo = 'servico'; R.atendimento = 'remoto';
-    t('serviço online não exige endereço', exigeEndereco() === false);
-    R.atendimento = 'presencial';
-    t('serviço presencial exige endereço', exigeEndereco() === true);
-    R.atendimento = 'ambos';
-    t('serviço dos dois jeitos exige endereço', exigeEndereco() === true);
-    R.tipo = ''; R.atendimento = '';
-    t('sem nenhuma resposta, não exige', exigeEndereco() === false);
-    t('o motivo em texto acompanha a regra', (function(){
-        R.tipo = 'alimentacao';
-        var a = motivoEndereco().length > 0;
-        R.tipo = 'servico'; R.atendimento = 'remoto';
-        var b = motivoEndereco() === '';
-        R.tipo=''; R.atendimento=''; return a && b; })());
+    /* 🔴 decisão dele: existe parceria com REDE de unidades. A regra antiga
+       (restaurante e atendimento presencial exigiam endereço) saiu inteira. */
+    t('★ a regra antiga não existe mais no código',
+      typeof exigeEndereco === 'undefined' && typeof motivoEndereco === 'undefined' &&
+      typeof pintarEndereco === 'undefined');
+    t('★ nenhum tipo carrega a marca "sempre exige endereço"',
+      TIPOS.every(function(x){ return x.sempreEndereco === undefined; }));
+    var gT = R.tipo, gA = R.atendimento;
+    var casos = [['alimentacao','presencial'],['alimentacao','remoto'],['servico','presencial'],
+                 ['servico','ambos'],['compras','remoto'],['outros','presencial']];
+    t('★ em nenhuma combinação de tipo e atendimento o endereço entra na conta do progresso',
+      casos.every(function(c){ R.tipo = c[0]; R.atendimento = c[1]; return camposAtivos().indexOf('endereco') < 0; }));
+    R.tipo = gT; R.atendimento = gA;
+    t('★ o rótulo diz "(opcional)" e não tem asterisco',
+      /opcional/.test(document.querySelector('label[for="endereco"]').textContent) &&
+      !document.querySelector('label[for="endereco"] .req'));
+    t('e a dica explica o caso da rede e o que o card vai dizer',
+      /[Rr]ede/.test($('hintEndereco').textContent) && /internet/.test($('hintEndereco').textContent));
+    t('a faixa verde que dizia por que o endereço era obrigatório saiu da marcação',
+      !document.getElementById('notaEndereco'));
   })();
 
   out.push('== A REGRA DO PAR: e-mail OU telefone ==');
@@ -2995,8 +2962,8 @@ function selftest(){
     t('serviço online: endereço fica FORA da conta',
       camposAtivos().indexOf('endereco') < 0);
     R.tipo = 'alimentacao';
-    t('restaurante: endereço entra na conta',
-      camposAtivos().indexOf('endereco') >= 0);
+    t('restaurante: endereço TAMBÉM fica fora da conta (opcional para todo mundo desde 16/09)',
+      camposAtivos().indexOf('endereco') < 0);
     t('o par de contato conta como UM item, não dois',
       camposAtivos().filter(function(c){ return c === 'contato'; }).length === 1 &&
       camposAtivos().indexOf('contatoEmail') < 0);
@@ -3099,7 +3066,8 @@ function selftest(){
     t('formulário completo passa sem problema', validar().length === 0);
 
     R.endereco = '';
-    t('restaurante SEM endereço é barrado', validar().some(function(x){ return x.campo==='endereco'; }));
+    t('★ restaurante SEM endereço PASSA: endereço é opcional para todo mundo (16/09, redes de unidades)',
+      validar().length === 0, validar().map(function(x){ return x.campo; }).join());
     R.endereco = 'Rua das Flores, 120, Centro, Belo Horizonte';
 
     R.contatoEmail = ''; R.contatoFone = '';
@@ -3133,7 +3101,7 @@ function selftest(){
     t('normaliza o site com https',       pc.site === 'https://www.madameunderground.com.br');
     t('telefone vai só com dígitos',      pc.contatoTelefone === '3133331234');
     t('e-mail do contato vazio vira nulo, não string vazia', pc.contatoEmail === null);
-    t('grava se o endereço era obrigatório', pc.enderecoObrigatorio === true);
+    t('a chave enderecoObrigatorio continua no pacote, sempre falsa (contrato v3)', pc.enderecoObrigatorio === false);
     t('cidades vão como lista E como texto que o app entende',
       pc.cidades.join() === 'BHZ' && pc.cidadesTexto === 'Belo Horizonte');
     t('sem "outra cidade", o campo à mão vai nulo', pc.cidadeOutra === null);
@@ -3481,9 +3449,8 @@ function selftest(){
       catsNoApp.indexOf('servico') >= 0 && catsNoApp.indexOf('compras') >= 0);
     t('★ e nada aqui falta no app: a lista dos dois lados é a mesma',
       soAqui.length === 0, soAqui.join(', ') || 'nada');
-    t('só Restaurante exige endereço pelo TIPO; nos outros quem decide é o atendimento',
-      TIPOS.filter(function(x){ return x.sempreEndereco; }).map(function(x){ return x.cod; })
-           .join() === 'alimentacao');
+    t('nenhum tipo exige endereço: a marca sempreEndereco saiu junto com a regra (16/09)',
+      TIPOS.every(function(x){ return x.sempreEndereco === undefined; }));
     t('"Outros" é o último da lista, para não virar a saída fácil',
       codigos[codigos.length-1] === 'outros');
     t('o específico vem antes do genérico, senão todo salão vira "Serviço"',
