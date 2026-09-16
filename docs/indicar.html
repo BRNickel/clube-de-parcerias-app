@@ -2079,6 +2079,19 @@ function ligarModoOffline(){
   $('btnTxt').textContent = 'Baixar formulário';
   montarCampoDeArea();
   montarInstrucoesOffline();
+  /* 🔴 REPINTAR os avisos, e não só mudar as regras. Eles são escritos no
+     arranque, ANTES daqui, então sem estas linhas a página pública ficava com
+     "MODO DE TESTE: a indicação não chega a ninguém" em cima de um formulário
+     que funciona, e com o limite de evidência de dentro do portal logo abaixo
+     de um campo que aceita bem menos.
+     A bateria não pegou porque ela perguntava às FUNÇÕES, que sempre
+     responderam certo; quem pegou foi abrir o endereço publicado e ler o que
+     estava escrito lá. Bateria verde não substitui a foto. */
+  $('avisoEnvio').textContent = textoAviso();
+  $('arqDica').textContent = avisoEvidencia();
+  $('ajudaEvidenciaLimite').textContent = avisoEvidencia();
+  /* um arquivo só: deixar `multiple` seria a tela prometer o que a regra recusa */
+  var ev = $('evidencia'); if(ev) ev.removeAttribute('multiple');
   return true;
 }
 
@@ -3482,6 +3495,20 @@ function selftest(){
       destinoReal() === true && !/MODO DE TESTE/.test(textoAviso()));
     t('e o aviso diz o que fazer com o arquivo, com o e-mail escrito',
       /baixe o arquivo/i.test(textoAviso()) && textoAviso().indexOf(EMAIL_DO_RH) >= 0);
+    /* 🔴 e o que está ESCRITO NA TELA acompanha, não só o que a função devolve.
+       Este par de asserções nasceu de um defeito real: a página publicada dizia
+       "MODO DE TESTE" em cima de um formulário que funciona, porque o aviso é
+       escrito no arranque, antes de o modo offline ligar. A bateria perguntava
+       à função, que respondia certo, e ninguém perguntava ao pixel. */
+    t('★ e a TELA acompanha: nada de "modo de teste" num formulário que funciona',
+      !/MODO DE TESTE/.test($('avisoEnvio').textContent) &&
+      $('avisoEnvio').textContent.indexOf(EMAIL_DO_RH) >= 0,
+      $('avisoEnvio').textContent.slice(0, 70));
+    t('★ e o limite de evidência escrito na tela é o do offline, não o de dentro',
+      /1 arquivo/.test($('arqDica').textContent) && /3 MB/.test($('arqDica').textContent),
+      $('arqDica').textContent.slice(0, 70));
+    t('★ e o campo para de aceitar vários arquivos, em vez de prometer o que a regra recusa',
+      !$('evidencia').hasAttribute('multiple'));
     t('★ a entrada pelo portal some: ela levaria a pessoa a um login de uma empresa que não é dela',
       $('entrada').hidden === true);
     t('o botão passa a dizer que BAIXA', $('btnTxt').textContent === 'Baixar formulário');
@@ -3548,6 +3575,13 @@ function selftest(){
     var oa = $('offArea'); if(oa && oa.parentNode && oa.parentNode.parentNode) oa.parentNode.parentNode.removeChild(oa.parentNode);
     var ov = $('offAviso'); if(ov && ov.parentNode) ov.parentNode.removeChild(ov);
     $('btnTxt').textContent = 'Enviar indicação';
+    /* repintar tambem na volta: restaurar a REGRA e deixar o TEXTO velho na tela
+       foi exatamente o defeito que este bloco acabou de consertar, e ele quase
+       se repetiu aqui, ao contrario. */
+    $('avisoEnvio').textContent = textoAviso();
+    $('arqDica').textContent = avisoEvidencia();
+    $('ajudaEvidenciaLimite').textContent = avisoEvidencia();
+    $('evidencia').setAttribute('multiple','');
     aplicarIdentidade();
     t('★ e o teste devolve a tela como encontrou', !$('offArea') && !$('offAviso') &&
       ENVIO.modo === gModo && REGRAS.evidenciaMax === gMax);
