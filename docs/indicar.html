@@ -468,8 +468,11 @@ select{background-image:url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http:
 @keyframes draw{to{stroke-dashoffset:0}}
 #sucesso h2{font-size:24px;font-weight:700;letter-spacing:-.02em;margin-bottom:9px;animation:up .45s .55s both}
 #sucesso .txt{font-size:14px;color:var(--muted);max-width:48ch;margin:0 auto 22px;animation:up .45s .62s both}
-.resumo{display:inline-block;text-align:left;background:var(--grey);border-radius:14px;padding:16px 20px;
-  margin-bottom:20px;max-width:44ch;animation:up .45s .68s both}
+/* 🔴 LARGURA MÍNIMA (pedido dele, 16/09): inline-block se ajusta ao conteúdo, e
+   com valores curtos a caixa virava um quadradinho. Agora ela tem pelo menos a
+   largura do parágrafo acima e cresce até o teto para condições longas. */
+.resumo{display:inline-block;text-align:left;background:var(--grey);border-radius:14px;padding:16px 22px;
+  margin-bottom:20px;min-width:min(100%,540px);max-width:min(100%,680px);animation:up .45s .68s both}
 .resumo div{font-size:12.5px;line-height:1.7}
 .resumo b{font-weight:600}
 .sair{font-size:13.5px;font-weight:600;color:var(--txt);margin-bottom:6px;animation:up .45s .74s both}
@@ -3286,7 +3289,10 @@ function selftest(){
     (function(){
       var l0 = $('horario').querySelector('.hr-linha');
       var alt = l0.getBoundingClientRect().height;
-      if(window.innerWidth >= 700){
+      /* 🔴 o limiar é o DO CSS (16/09): a quebra de propósito mora em max-width:560px.
+         A sonda usava 700, um chute meu, e entre 560 e 700 cobrava uma quebra que o
+         CSS, certo, não faz. Sonda com limiar próprio mente na borda. */
+      if(!matchMedia('(max-width:560px)').matches){
         t('★ dias e horas ficam na MESMA linha', alt < 60, alt.toFixed(0) + 'px de altura');
         t('e o seletor de dias divide a linha em vez de tomá-la',
           l0.querySelector('.hr-dias').getBoundingClientRect().width < l0.getBoundingClientRect().width * 0.75);
