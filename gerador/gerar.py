@@ -126,8 +126,14 @@ def card_html(c, cidade):
     cond = titulo or "Condições a confirmar"
     cls_logo, ico = icone_html(card, tipo)
     linhas = []
-    def linha(simbolo, txt):
-        if txt: linhas.append('          <div class="d-row"><svg class="ic"><use href="#i-%s"/></svg><span class="d-txt">%s</span></div>' % (simbolo, escape(txt)))
+    def linha(simbolo, txt, href=None):
+        if not txt: return
+        if href:
+            # 🔴 ENDEREÇO É LINK (16/09): a própria linha abre o mapa; saiu o botão
+            linhas.append('          <div class="d-row"><svg class="ic"><use href="#i-%s"/></svg><a class="d-txt" href="%s" target="_blank" rel="noopener" title="Abrir no Google Maps">%s</a></div>'
+                          % (simbolo, escape(href, quote=True), escape(txt)))
+        else:
+            linhas.append('          <div class="d-row"><svg class="ic"><use href="#i-%s"/></svg><span class="d-txt">%s</span></div>' % (simbolo, escape(txt)))
     linha("tag", (card.get("detalhe") or "").strip())
     at = (c.get("atendimento") or "").strip()
     linha("shop", ATENDIMENTO_NO_CARD.get(at, at))
@@ -137,7 +143,10 @@ def card_html(c, cidade):
     # endereços dela entram; endereço sem cidade (dado antigo) entra em todas.
     ends = [e for e in lista_de_enderecos(card) if not e["cidade"] or e["cidade"] == cidade["cod"]]
     if not ends: linha("pin", ENDERECO_PADRAO)
-    for e in ends: linha("pin", (e["rotulo"] + ": " + e["endereco"]) if e["rotulo"] else e["endereco"])
+    for e in ends:
+        end = e["endereco"]
+        q = end if slug(cidade["nome"]) in slug(end) else end + ", " + cidade["nome"]
+        linha("pin", end, "https://www.google.com/maps/search/?api=1&query=" + urllib.request.quote(q))
     # sem horário no formulário nem no card, o texto padrão (o MESMO do painel)
     linha("clock", (card.get("horario") or "").strip() or HORARIO_PADRAO)
     # 🔴 O NÚMERO APARECE SEMPRE (16/09), como o endereço e o horário. Antes ele
@@ -145,12 +154,6 @@ def card_html(c, cidade):
     # está no computador, não tinha o número: o card guardava e não mostrava.
     linha("phone", telefone_bonito(card.get("telefone")))
     acoes = []
-    # um botão de mapa por endereço; o nome curto é o texto do botão
-    for e in ends:
-        end = e["endereco"]
-        q = end if slug(cidade["nome"]) in slug(end) else end + ", " + cidade["nome"]
-        acoes.append('        <a class="act-btn act-map" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=%s"><svg class="ic"><use href="#i-map"/></svg>%s</a>'
-                     % (escape(urllib.request.quote(q), quote=True), escape(e["rotulo"] or "Ver no mapa")))
     fone = digitos_fone(card.get("telefone"))
     # 🔴 e o BOTÃO só quando alguém marcou "esse número é WhatsApp" no painel.
     # Sem essa pergunta, telefone fixo de restaurante virava um botão que abre

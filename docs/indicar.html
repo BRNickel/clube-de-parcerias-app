@@ -2221,7 +2221,7 @@ function montarCampoDeArea(){
     var o = document.createElement('option'); o.value = a; dl.appendChild(o);
   });
   var dica = document.createElement('div'); dica.className = 'hint';
-  dica.textContent = 'Serve para o RH saber de onde veio a indicação. Se você não é da Brazilian Nickel, escreva o nome da sua empresa.';
+  dica.textContent = 'Se você não é da Brazilian Nickel, escreva o nome da sua empresa.';
   inp.addEventListener('input', function(){ R.areaDeclarada = inp.value; });
   f.appendChild(lb); f.appendChild(inp); f.appendChild(dl); f.appendChild(dica);
   alvo.parentNode.insertBefore(f, alvo.nextSibling);
@@ -2268,8 +2268,7 @@ function paragrafo(pai, cls, texto){
 function abrirConviteLogin(){
   try { if(sessionStorage.getItem(CHAVE_CONVITE) === '1') return false; } catch(e){}
   var p = popupSimples('ovConvite', 'Antes de começar', 'Quer entrar com o seu login?');
-  paragrafo(p.corpo, 'off-p', 'Com o login da Brazilian Nickel, a indicação é enviada na hora para o RH, sem arquivo e sem e-mail.');
-  paragrafo(p.corpo, 'off-p off-sub', 'Sem login, você preenche aqui, baixa um arquivo no fim e manda por e-mail para o RH. Serve para quem não tem e-mail da empresa.');
+  paragrafo(p.corpo, 'off-p', 'Com o login da Brazilian Nickel, a indicação é enviada na hora para o RH.');
   var seguir = document.createElement('button'); seguir.type = 'button'; seguir.id = 'btnConviteSeguir';
   seguir.textContent = 'Continuar sem login';
   seguir.addEventListener('click', function(){
@@ -2290,11 +2289,10 @@ function abrirConviteLogin(){
 function abrirInstrucoesOffline(pacote){
   var p = popupSimples('ovInstrucoes', 'Falta um passo', 'Mande o arquivo para o RH');
   var nome = pacote ? nomeDoArquivo(pacote) : '';
-  paragrafo(p.corpo, 'off-p', 'Este formulário não envia nada sozinho. O arquivo' + (nome ? ' "' + nome + '"' : '') +
+  paragrafo(p.corpo, 'off-p', 'O arquivo' + (nome ? ' "' + nome + '"' : '') +
     ' foi baixado para o seu computador. Mande esse arquivo por e-mail para ' + EMAIL_DO_RH + ' e o RH cuida do resto.');
   var forte = p.corpo.lastChild; forte.innerHTML = forte.innerHTML.replace(EMAIL_DO_RH, '<b>' + EMAIL_DO_RH + '</b>');
-  paragrafo(p.corpo, 'off-p off-sub', 'Se você anexou print da conversa ou foto do combinado, ele já está dentro do arquivo. ' +
-    'Arquivo grande não cabe em e-mail, por isso o limite aqui é ' + OFFLINE_EVID_MAX + ' arquivo de até ' + OFFLINE_EVID_MB + ' MB.');
+  /* sem explicação de limite nem de anexo (pedido dele): só o que fazer agora */
   var t3 = paragrafo(p.corpo, 'off-p off-sub', 'Tem e-mail da empresa? Na próxima vez, prefira o ');
   var a = document.createElement('a'); a.href = URL_FORMULARIO_PORTAL; a.textContent = 'formulário do portal';
   a.target = '_blank'; a.rel = 'noopener';
@@ -2316,8 +2314,9 @@ function destinoReal(){
   return (ENVIO.modo === 'api' || ENVIO.modo === 'funcao') && !!ENVIO.url;
 }
 function textoAviso(){
-  if(ENVIO.modo === 'arquivo')
-    return 'Ao terminar, baixe o arquivo e mande para ' + EMAIL_DO_RH + '. Ele não é enviado sozinho.';
+  /* no offline não há legenda embaixo do botão (pedido dele, 16/09): o popup
+     depois de baixar diz o que fazer, na hora em que serve */
+  if(ENVIO.modo === 'arquivo') return '';
   if(destinoReal()) return '';
   return 'MODO DE TESTE: a indicação fica só neste navegador e não chega ao RH.';
 }
@@ -3614,16 +3613,15 @@ function selftest(){
       ENVIO.modo === 'arquivo' && ENVIO.url === '');
     t('★ e mesmo assim NÃO mostra "modo de teste": o pacote sai de verdade, na mão da pessoa',
       destinoReal() === true && !/MODO DE TESTE/.test(textoAviso()));
-    t('e o aviso diz o que fazer com o arquivo, com o e-mail escrito',
-      /baixe o arquivo/i.test(textoAviso()) && textoAviso().indexOf(EMAIL_DO_RH) >= 0);
+    t('e no offline não há legenda embaixo do botão: quem instrui é o popup depois de baixar (16/09)',
+      textoAviso() === '');
     /* 🔴 e o que está ESCRITO NA TELA acompanha, não só o que a função devolve.
        Este par de asserções nasceu de um defeito real: a página publicada dizia
        "MODO DE TESTE" em cima de um formulário que funciona, porque o aviso é
        escrito no arranque, antes de o modo offline ligar. A bateria perguntava
        à função, que respondia certo, e ninguém perguntava ao pixel. */
-    t('★ e a TELA acompanha: nada de "modo de teste" num formulário que funciona',
-      !/MODO DE TESTE/.test($('avisoEnvio').textContent) &&
-      $('avisoEnvio').textContent.indexOf(EMAIL_DO_RH) >= 0,
+    t('★ e a TELA acompanha: nada de "modo de teste" nem legenda embaixo do botão (16/09)',
+      !/MODO DE TESTE/.test($('avisoEnvio').textContent) && $('avisoEnvio').textContent === '',
       $('avisoEnvio').textContent.slice(0, 70));
     t('★ e o limite de evidência escrito na tela é o do offline, não o de dentro',
       /1 arquivo/.test($('arqDica').textContent) && /3 MB/.test($('arqDica').textContent),
@@ -3655,11 +3653,13 @@ function selftest(){
       abrirConviteLogin() === false);
     sessionStorage.removeItem(CHAVE_CONVITE);
     abrirInstrucoesOffline({ tipoCodigo:'alimentacao', colaborador:'Maria da Silva', enviadoEm:'2026-09-16T13:40:00.000Z' });
-    t('★ depois de baixar, o popup diz o e-mail do RH, o nome do arquivo e o limite de evidência',
+    t('★ depois de baixar, o popup diz o e-mail do RH e o nome do arquivo, e NADA de limite ou explicação técnica',
       !!$('ovInstrucoes') && $('ovInstrucoes').classList.contains('on') &&
       $('ovInstrucoes').textContent.indexOf(EMAIL_DO_RH) >= 0 &&
       /alimentacao - Maria da Silva - 2026-09-16\.json/.test($('ovInstrucoes').textContent) &&
-      /1 arquivo de até 3 MB/.test($('ovInstrucoes').textContent));
+      !/MB|não envia nada sozinho/.test($('ovInstrucoes').textContent) &&
+      $('ovInstrucoes').querySelectorAll('p').length === 2);
+    t('e o convite tem uma frase só', $('ovConvite') ? $('ovConvite').querySelectorAll('p').length === 1 : true);
     t('★ e manda quem tem e-mail da empresa para o formulário do portal, com o link',
       !!$('ovInstrucoes').querySelector('a[href="' + URL_FORMULARIO_PORTAL + '"]'));
     $('btnInstrucoesOk').click();
