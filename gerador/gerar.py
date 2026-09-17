@@ -35,7 +35,7 @@ HORARIO_PADRAO = "Consultar horário de funcionamento"   # o mesmo texto do pain
 # padrão. Card sem a seção fazia o colaborador achar que não havia regra, e a
 # regra existe: confirmar no balcão. O MESMO texto do painel (ETAPAS_PADRAO).
 ETAPAS_PADRAO = ["Apresente o crachá funcional e informe o convênio com a Brazilian Nickel.",
-                 "Confirme a condição vigente com o responsável do estabelecimento antes de fechar a compra."]
+                 "Confirme a condição vigente com o responsável do estabelecimento antes de usufruir do benefício."]
 # 🔴 endereço é OPCIONAL desde 16/09 (parceria com rede de unidades não tem um
 # endereço para listar): vazio, o card diz isto, e não tem botão de mapa.
 ENDERECO_PADRAO = "Consultar endereço na internet"    # o mesmo texto do painel (ENDERECO_PADRAO)

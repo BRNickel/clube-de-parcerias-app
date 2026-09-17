@@ -95,7 +95,13 @@ body{
 /* botão de tema: mesmo comportamento do app. Só aparece com JS e só no
    desktop; no celular segue o aparelho, porque lá o sistema já decide e
    um botão a mais na tela de um formulário só atrapalha. */
-.tema-btn{display:none;position:absolute;top:18px;right:18px;z-index:2;
+/* 🔴 OS TRÊS BOTÕES NUMA FILEIRA (pedido dele, 18/09): eram três peças
+   ancoradas cada uma num `right:` próprio, e o atalho, que CRESCE no hover,
+   passava por cima do botão de idioma. Numa fileira ancorada à direita, crescer
+   empurra a própria fileira para a esquerda e ninguém se sobrepõe. A ordem que
+   ele pediu, da esquerda para a direita: login, idioma, tema. */
+.capa-tools{position:absolute;top:18px;right:18px;z-index:4;display:flex;align-items:center;gap:8px}
+.tema-btn{display:none;z-index:2;
   border:1px solid rgba(255,255,255,.26);background:transparent;color:rgba(255,255,255,.82);
   border-radius:999px;width:34px;height:34px;align-items:center;justify-content:center;
   cursor:pointer;transition:border-color .15s,color .15s,transform .15s}
@@ -106,7 +112,7 @@ body.js .tema-btn{display:inline-flex}
    mesma roupa; fechado é só o ícone (34px), no hover abre para a esquerda e
    mostra o texto. Aparece também no celular (sem hover, só o ícone), porque é
    dali que se repassa link. */
-.sem-login{position:absolute;top:18px;right:60px;z-index:2;display:inline-flex;align-items:center;gap:0;
+.sem-login{z-index:2;display:inline-flex;align-items:center;gap:0;
   height:34px;padding:0 8px;box-sizing:border-box;max-width:34px;overflow:hidden;white-space:nowrap;
   border:1px solid rgba(255,255,255,.26);border-radius:999px;color:rgba(255,255,255,.82);text-decoration:none;
   transition:max-width .25s,gap .25s,border-color .15s,color .15s,background .15s}
@@ -381,8 +387,15 @@ select{background-image:url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http:
 .en-grupo-t{font-size:12.5px;font-weight:600;color:var(--txt)}
 .en-vazio{font-size:12.5px;color:var(--muted)}
 /* a caixa de seleção que abre o campo opcional */
-.tem{display:flex;align-items:center;gap:9px;font-size:13.5px;font-weight:600;color:var(--txt);cursor:pointer;line-height:1.4}
-.tem input{width:17px;height:17px;flex:none;accent-color:var(--green);cursor:pointer}
+/* 🔴 ALINHADAS COM AS CAIXAS DE CIDADE (pedido dele, 18/09): a opção de cidade
+   é um botão com 1px de borda e 14px de recuo, então o quadradinho dela começa a
+   15px da margem; a caixa daqui começava colada na margem e as duas colunas de
+   marcação não batiam. O recuo e o vão são os MESMOS de `.op`, e a bateria mede
+   a distância das duas na tela em vez de acreditar na conta. */
+.tem{display:flex;align-items:center;gap:11px;padding-left:15px;font-size:13.5px;font-weight:600;
+  color:var(--txt);cursor:pointer;line-height:1.4}
+.tem input{width:19px;height:19px;flex:none;accent-color:var(--green);cursor:pointer}
+.tem-corpo{padding-left:15px}
 .tem-corpo{margin-top:10px;display:flex;flex-direction:column;gap:7px}
 .tem-corpo[hidden]{display:none}
 /* site e rede social dividem a linha dentro da mesma caixa */
@@ -404,15 +417,13 @@ select{background-image:url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http:
 /* 🔴 o seletor de idioma mora NA CAPA, ao lado do botão de tema: mesma roupa,
    mesma altura, mesma âncora. Na capa o fundo é escuro, então ele usa as cores
    de lá, e não as do corpo da página. */
-.lang-btn{position:absolute;top:18px;right:102px;z-index:3;
+.lang-btn{z-index:3;
   border:1px solid rgba(255,255,255,.26);background:transparent;color:rgba(255,255,255,.82);
   height:34px;padding:0 11px;font-family:'DM Sans',Arial,sans-serif;font-size:12px;font-weight:700;
   letter-spacing:.06em;cursor:pointer;border-radius:999px;display:none;align-items:center;flex-shrink:0;
   transition:border-color .15s,color .15s}
 body.js .lang-btn{display:inline-flex}
-/* sem o atalho (modo offline, onde ele apontaria para a própria página), o
-   idioma ocupa a vaga vazia em vez de deixar um buraco na fileira */
-body.js .sem-login[hidden] ~ .lang-btn{right:60px}
+/* a fileira fecha o buraco sozinha: peça escondida deixa de ocupar espaço */
 .lang-btn:hover{border-color:#fff;color:#fff}
 .lang-menu{position:absolute;top:58px;right:18px;z-index:60;background:var(--card);border:1px solid var(--line);
   border-radius:14px;padding:6px;box-shadow:0 12px 30px rgba(27,45,37,.2);display:flex;flex-direction:column;gap:2px;min-width:150px}
@@ -429,7 +440,10 @@ body.js .sem-login[hidden] ~ .lang-btn{right:60px}
   text-decoration:none;color:var(--btn-txt);background:var(--btn-bg);border:1px solid var(--btn-bg);
   border-radius:10px;padding:11px 18px;transition:opacity .15s}
 .suc-app:hover{opacity:.88}
-/* as etapas do "como utilizar": numeradas na tela, como ficam no card */
+/* as etapas do "como usar": numeradas na tela, como ficam no card */
+.et-bloco{display:flex;flex-direction:column;gap:5px}
+.et-cab{display:flex;align-items:center;gap:8px}
+.et-rot{font-size:11.5px;font-weight:700;color:var(--muted);letter-spacing:.01em}
 .et-linha{display:flex;align-items:center;gap:8px}
 .et-n{flex:none;width:22px;height:22px;border-radius:50%;background:var(--green-dim);color:var(--ok-txt);
   font-size:11.5px;font-weight:700;display:flex;align-items:center;justify-content:center}
@@ -631,25 +645,31 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
 
   <!-- ===================== CAPA ===================== -->
   <div class="capa">
-    <button type="button" class="tema-btn" id="temaBtn" aria-label="Escolher o tema" title="Tema: claro ou escuro"
-            aria-haspopup="menu" aria-expanded="false" aria-controls="temaMenu">
-      <svg class="so-claro" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
-      <svg class="so-escuro" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.6M12 19.4V22M2 12h2.6M19.4 12H22M4.9 4.9l1.9 1.9M17.2 17.2l1.9 1.9M19.1 4.9l-1.9 1.9M6.8 17.2l-1.9 1.9"/></svg>
-    </button>
-    <!-- 🔴 ATALHO PARA A VERSÃO SEM LOGIN (pedido dele, 16/09): quem abre o formulário
-         do portal é quem repassa o link público a quem não tem conta. Ao lado do
-         botão de tema; passa o mouse e ele se abre dizendo o que é. Escondido no
-         modo offline, porque lá ele apontaria para a própria página. -->
-    <a class="sem-login" id="linkSemLogin" href="https://brnickel.github.io/clube-de-parcerias-app/indicar.html"
-       target="_blank" rel="noopener" aria-label="Versão sem login" title="Versão sem login, para quem não tem conta da empresa">
-      <svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8"/><path d="M8 12h8"/><path d="M8 16h5"/></svg>
-      <span class="rot">versão sem login</span>
-    </a>
+    <!-- 🔴 UMA FILEIRA, NA ORDEM QUE ELE PEDIU (18/09): login, idioma, tema.
+         Os menus ficam FORA dela de propósito: eles se ancoram na capa, e dentro
+         de uma caixa posicionada passariam a se ancorar nela. -->
+    <div class="capa-tools">
+      <!-- 🔴 O ATALHO TROCA DE LADO conforme a página (16/09, corrigido em 18/09):
+           no formulário do portal ele leva à versão SEM login (é dali que se
+           repassa o link a quem não tem conta da empresa); na página pública ele
+           leva à versão COM login, que é onde a indicação é enviada na hora. Ele
+           sumia na pública, e quem tinha conta não tinha como voltar. -->
+      <a class="sem-login" id="linkSemLogin" href="https://brnickel.github.io/clube-de-parcerias-app/indicar.html"
+         target="_blank" rel="noopener" aria-label="Versão sem login" title="Versão sem login, para quem não tem conta da empresa">
+        <svg id="icoAtalho" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8"/><path d="M8 12h8"/><path d="M8 16h5"/></svg>
+        <span class="rot">versão sem login</span>
+      </a>
+      <!-- 🔴 IDIOMA (pedido dele, 17/09): ao lado do tema, porque são a mesma
+           família de escolha (como a página se apresenta). -->
+      <button type="button" class="lang-btn" id="langBtn" aria-label="Escolher o idioma / Choose language"
+              aria-haspopup="menu" aria-expanded="false" aria-controls="langMenu"><span id="langAtual">PT</span></button>
+      <button type="button" class="tema-btn" id="temaBtn" aria-label="Escolher o tema" title="Tema: claro ou escuro"
+              aria-haspopup="menu" aria-expanded="false" aria-controls="temaMenu">
+        <svg class="so-claro" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        <svg class="so-escuro" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.6M12 19.4V22M2 12h2.6M19.4 12H22M4.9 4.9l1.9 1.9M17.2 17.2l1.9 1.9M19.1 4.9l-1.9 1.9M6.8 17.2l-1.9 1.9"/></svg>
+      </button>
+    </div>
     <div class="tema-menu" id="temaMenu" role="menu" hidden></div>
-    <!-- 🔴 IDIOMA (pedido dele, 17/09): ao lado do tema, porque são a mesma
-         família de escolha (como a página se apresenta). -->
-    <button type="button" class="lang-btn" id="langBtn" aria-label="Escolher o idioma / Choose language"
-            aria-haspopup="menu" aria-expanded="false" aria-controls="langMenu"><span id="langAtual">PT</span></button>
     <div class="lang-menu" id="langMenu" role="menu" hidden aria-label="Idioma"></div>
     <img class="capa-logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA2EAAAB+CAMAAACauuneAAAAwFBMVEUAAAD///////8A6YIA9Yn///////////////////8A/37///8A/6oA64MA6oMA6oMA6YIA//8A7IQAvn4A6YIA/wAA5XwA2XoAqlUA/1UA8okA5X4A5oUAf38Ay2sAfwAA24wA5n8A5H8A3n0Afz8A8oUAv18AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABSmrD4AAAAQHRSTlMA/QX4/lGPMLDRA20Dz3CPSwGwBDEBEw4DAw8oGQIGAgtOYiYEKAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAu9yyrAAAGg5JREFUeNrtnedig7qSgBXZgACXuMZOO7fs7vs/4kpUlRkVwDaONT9OcVwo+pg+IiRMTgUhx81+wWW9fb+QnwuJEiXKVLIi5LxdLJeCsMVysX7nL+3iZYkSZRIpCvKxWVR4LSvKlsv9kZDDKV6aKFFGy44rsPf1slZe6/26UmXLxfa7Um1RokQZJQfugO0bqI4f/IXPFrfNQWi3KFGiDJcrIR9bYSDWhiH5EUj91ibjUrhjh+iORYky2AG7kkvjgAmaPgvhee0OKnWHeJ2iRBkip0PrgAnCNlJsQ7YcPypFFyVKFBIcoa8xWjQx+u1/u9iGHP3Y/JBrdMeiRAmTy64xBRdtEkzA9NvFNvi/z7I7FiP3UaL4y4+ko7bH88f5uBH/t5RTzSvVHVvFqxYlir8Ddmz5+mxerHPOy/1XF9s41e7YonHHdrGQKkoUTwfsqzYQF1vOU3HZ7XbCOKw0FofpDLljsZAqShTiWSLV5LtEiP7cc9NqrModu7TuWO+uxUKqKFFIQIlUJQvJxer+pqSahcbbx0KqKFFIWInUer/fC84EN6eLFkDU3bEucn+OhVRRohC8ROq7iw4WVQniXjC24aqpUNpYanesA+9K/pEi99EdixLF6oBVnJCioorHFJdyxuskuWMcpp+OzXMspIoSxeKAybbeR2Prna5cZ/FMmM0d6wupOnfsHN2xKFEIXCKlA8JrO+ruZpHx0gKISqpZKaQqumBjlChRyOXUGHlQzL2Cb7HU6zkqjVXFNnaF3godC6miRJEcMGEKWgIVTbBQGR3QBRB18L5jIdUoobLEy/FU1xL5PS3Y/lPAfWL/s2ki9y03/LVTE7k/6nGQ1to8xUKqKNEB6yIUNrXTBPKV0QFXOXIPumN9sHGyRwMqT/qEVV8ilEmSEOr6xAyVhecx2j4wyS2lJJMvJiU3vnKUJPLvkT5m4ek6NdpJtwrbyP3Hw/tanouy9mCVg+aL4k2SUlkU4CfmenZTXJqRSPAVL1/MOxCWyr9X23RB+qbRTkrGS43cr06SXlx0evEy9lGUOqQsk4w+F2T8OGkijltZRzbC4E/M41xK7YYkzkPk6125g9ClGcnEDAjbSc0nXj5TEyysI/c7LYBYgVeY7S9cu61G3r83H8nThJLZrT6LBVMfNsukQ7YQhnxiHieT6zfD+ajTzjRX2WteTEad6OMJKwY0UHazfzcdTXIhVQ/TT52qbkzF1XQXyipMQPYURlQCcoQThn1iHmfDjBtBhhLGQeh5TccYJQ8njGeS1+Ez2dpg4XL/3SHWF1Ktv3qYujEEy+VmTBlVCGH8VpV0/ohRqiyv/lGNEoZ+YqaEOY8QI4wjJSvElDwvYbuiAkxp9iIB/S2CpkLveVkupRe7OMhi+Z8R46jCCOM3K5t9LEBbknn3pMYJMz4xc8Jyh/ZBCdN8ghEW8aMJu5JK64hhbKE2HA9A/oursfW52MkuGjcVuXzvCiDV9jU83BFKWLUw6bwBo2/wMsIIwz8xV8Jc2gcnLH/Dw6nPZSW+C8Akd4qEtZFtl8utopmEGhPxDuULebnIh9Bt6+FdY+GEvbF5xxSNMyrdhGGfmC1hjocAQpjxKGHPS9hOLPwtKX6GFlpxFXhUNBPfYmzDv1OLa/ySb2EnDo92DCBs5ogZZ5QGE5bOnzC7nYgSlmnf8ryEHcUYjmJws+SVfAl9pWLzS4TxqGnFX6EtNdV2a8LmtQKd+Yc/SZhdz74AYdulsBGLEdVWXInxLJry2k5we1S/9VQUa/7qmezuSNjcAtovaCVyO9GixF7AShQBiONpOGHFjqsm3fY7XdbCIFS/tahoHmwmDiPsbcZ2orGMkuBIR/IMhNnowKP1+VTK+tGECSNxTDlTwe1MQwkKxSacO+2d72P0pXah8kSTskxZ/lx24hTR+icgzPYceIFovcgPkxEja354BMPApqhDjDp2UxLGwPdkqanE5ovYC2ScXYbEC2ScxxK2I5+PIQzpXKHps3pif7FqygmIpWoqy6eJCUfChuowijSulJP5yPes/FXKW70qf/NkdpW/GGG4svWq/B1XOhAJm5CwuqkofRozsSpPzkouQd0rwCdmThjqMOKEtd0rJa/iHuVtRsKmJUzosRlXFvm1GXp1YM7utCyEoXaihbC/0oH55wjTz/AtmXmRPThFILO5kjOdImAjDHvO2QibbIpAJGxiwmjyVIS51135HGegEZb6FGXYCbtFYj8SNoEOyyJhMyAsKT1iupGwpySMTk7YnSdZTULYyGMO/7BOGPVIik1DmPVMpyTM55JGwqyXD7mo6P/OkrCxh6x8wP/DGmGlVuYG51fGEmYcK70RYep3U1sS/dUIU3xseDaf9P/qhetf5dUU/WdwFGnYUEdkWKAtH+aaRygfZKYcs2taoRrCa844YHCcocO0yAf0qLNF692DF6l6rBS8OV6EuSY9auvANjbw9fww50NLWlvUfJ3nZFjelRfkLC3rWVZ0ljqsrmvJ5BrNnB+zmP3md8ziPeLzeXfCpZiQ5/VRjTBC3XbiGB1Wn6u4Pd2ZptXBEm34pJswnxUiX1RxSbFV8AqxxBILYqkT/epr3S4pjpEQJrXy86ua5mC1eJXvpfjcP5c0P62OgMw86hKxT0h4lAwecpdBK0mZVVgP6DLPWYwV8oDcJEyrrwGSYnjlL3UNXsTONdUGjbkJo8akR1YqFiG8EBh8WV5Bh+XYbVX/RMEl1axafllpmVvap/UqDBrUU9MSFlr5S2yVv+JcmGP+lnbV1EcRpdgX+IzuAnSYNm3DTIpZCLOzSYESVPhEnYSZZUB8jJL8efyqpkC9yd+v6dAcbHXSJ1OvNbCksmbxkyR3jChQvzmEsPwWhOF4SC0/+kM3165oaRvdNYCwzFE8NZQw8fyzd95K18xOmNgkwJg+IXUzmH9GfuhV6hK1pc5UTaMTZi6prNZslAUNs3q8DrPhoT50McIcJ525p4saVqJ+fUsyDWFK5T0yogVpDKeEugBLFcCSgAftS9TWU4thYhBGUnAhGWMi8Go7OhPC/J4JnfqEdZh91WbO6aImYXqvcmavD/MkzKvfvT1cO2HUPOtUfnCS1PuHXqQ/zDoqRiMMLKTLPJ5b0OyaxxJGXXgglpqiw/KwpeRBmPGsYmQCwjy3MGiujpUw4LqVSnCZ+f/Qn9Nh0Hv02IRm+Os6LEWWURI8aefBfpg/YFo7o0xYGganF2GuOuwhhFEPvaIcAU4YYKzIdoEfYLo//EcIM+d0QGM6DJNAISyDH9SeJqJi9jxWh4UApjpD+dt0k7tgwuxJsQGE+W7C0/vUKGF2wPxR1sJpf4Mw39H1ljUAr8osCLDW7AnVYXRawjyfteYiDyPszTFdlLmNNMPgCyUsZB1U1xknDPiqbBjKsnZ/IcIYEJhlaHuFRBgztySr649olhg5zja6T4covskIMxI6PCmOHrK0XmHCeMmCSLsGTxdlsIJlNpMqkDBDJ7aVNmLWGOgno4SZK0oJA1HTxhH1LdUlTXP8kr4OYSmQWyTMQ+Fr8aOqGEISbZ5Ve21pgkmZMCzKNZ0flhj7pyn+KWY851DSrPu1hIUoMYwwakmKhRNm3sI06w84N40+hDAgU8MoHnjWFoKRjcuk+OOLEFYCZWN+hCn3pKrd0AKWifbcc0nmN3h0ZCyRSS8bdbOqRZxZCEuUzhU97ZSQYMKsxVOhhJmrgGXyAWsrnz8tEMKAQg4dsMS4MMoVZUiQ9HV0GFBNhxEmzMD6ymXVrsH9ei0BTLUV02kkrI4+wyytafNh7VExapaXawu2RAnL5Q8D6cV0CGEUz1EGE6Y7zyXRDlh+JpQUsxIBwFK90jQ3n7xKrSLDtqZ6nUiHUU0HE9ZbGUaBBDhHTHMFEkeAjaKuzLQ1Hc3iYkjxeAo+cHNrPtqMtuXhVqL1SwIJAxSLkcKmkpuAxRKB/HxJbEFOMxeoPzfSlyRMjyZChMlWhtImxtcrMqhP/Rq7928bwD5x5W+1bBjWNZaA/Qb5m7M0t/TtBUIJM8Le6Am5CWOuyEv7jXnb/gAQ5gbMbCelvl1S00/VPs+YMGPWoOkmo72J3G9GZzIyX8OJmub6zQirypURAnTC4FgitI60R0QyiDA0KRZGmKtCpH8mVDXOWNUUkD5MCLWZHmCuXUMpQQnjO8KqmxORsA3E+M4Q/9a2QJ8RYdrAXGY3vvX+CJ/+GLtrklqqIqYmrO4P89irDCHMZx2VQwgzbh4jAwkr3fsmiaea3FUC6bDcVQ+mfShBqmBhPWsQtnzfrcjwvVc2S32rsFkRpjo+7A1XKWjvszHMI/N0/k3AbOnW8YThx6wuKoSwEl5H/mfLLHkvOCkWShjzOhblQaMTZhZy5JBxnLrLxdTDyVE/bMzGlHynsNWa7868I3evmioBScENjhI8meI/5UX20hLvbQ9KRxHX5IRhx6waqwhhsEpw9UL6EYbYiUGEGRNYcPvD1uOcvTnCO6aZgsWJwTwAYCUuvgYj9slVmEnNoyp/6xkVOZom9XCUnUOGMj0Nm/r2gr5l9kDddITpg36SVN+zFSQMGRKjvIkNIwxLigUSlvntPGtrdaGJs/TH+PkMPWWwTMwkbLn+GLjuP8U2zovz7v46jOFTnIxrKAVSWaAK62OLWYZsAug5kh3g4TaE9c8TfshwQTRMGMPG8rIJCCNwUiyQsHLA5ovawinNa+EcgVWi9TrAbQJ12HJ9Jqvwlb86iY3WgY1jH7r3iplvlwKpLGTjIwpMbvLe9MBjR9hbENYccmI95EDC0kkIAycKBBKWDhiE6XLgM5CwAU5/ihG2XPMtYdfvhBzCgvZFQX43C8HMisyHMLCZA0mnJK7hrWKEF/PuwrQnwtwZlQkIqxZtkroq5mHC0psSBifFAgljAzbVcdGSg0PmynDCGE7YlSO22H8RLeZuzzTz976vl8IJO5CZEWboj7zzq/1vESX2YVP2hWkkwlK3LTI+HyYSYj59LI8hDJooMIYwOg1h0Cn5d4b5EUbIZsEZ257J6eprIBJy3C8q3bcisyMM22g74BZRT74wwkjqzrtNXtPhnI/1SMLApFggYbkjBDgszVM6gvXjCTutyNdWMLb5h1x9ALicyEf9gQ8IsBkQpgWHS4iw3ApYlofO6rAQzny2RRg7zQ0fIDgPwqCkWGDV1G0IgxLOE+swYfIdhckn3LHCVeBRrBqltz+Kmo45EqZXRjOIMOtisd8V5ppkm/gMuJh4mpv9mZDPgDAoKTYHwnJz1v3UhJEfQc26ccesFR6n1gGrgiMnMlfCUiB14kuYw9HNk8wxjzZxpjSn717JHG0G+cMJA+3EORAGjMCanDBu+e0ay2/7QXaF2wHb8P/+Qd+0fzhhJdAm6UmY7Z7w9vxEXRapI82FR1Sm7MCklikGuRjlPgfCADtxuB82LtLBUpsrNoiwFM+HfZ92DTxfTfSCrHZYhP6ji4pccD1XrEWa7DAbwrrhTswrpZbBsyvKpK7TUd9gzqOlud+YwUkJy62HrL7hcYSZEwUeE0tM7TdpQLQ+t2Scu1XfGYDCwQIMQFEg/L5uHLCVLRN9XC6McuDnIcyowK93+JFKfxPLPFp9sSe++zCNmtNRAnqLyoc8C8KA4qnhGecR+bDSNDQoXsuYB+0KB+mw9ee1UVnFhVxqHfVtMCT4O+6XHtnpX2EkGuXEj/TDQggzrn2aaRuM2gijAbWPE86a0qhmibZTrLpiH0iYkRQbXjVV0qGElVW5TunduUfH7ePMldhWmH+k6fci5zoQf+5fbGzI5g8H9Q+GpvsQDS1mLdWdCWND/TBqDGDQ9xRVdyhLbTOVrcXFE04kTYApQHgr2uMIM5sogwgLWQI4YQlkc2qNhFQr/vHf2BSuS9xIQXpZVXXuGGfq/zZNHIRY09LC0gQ7Yu5KmGZmB8QSgU1q7XkdbeKzc1O6mxCWOtLbPj3OdyHMeASxwbX1b87dZ60tDrYBPZpfmxI6TocJICSrsHW3KndsdbheVkJn9Q6aNRctIpIcpMX37pGE6R41CyEsc+7baJn4nPh3eE5JWO7czZXNhTBr1NM1pyP3sQ/U/V/1xsIM6a9WrpuGiaUJw2OHvsV6LZDg5Rmd8cf/41+dO1aJqdUg+anZ5N8GdJzdt2qKuWs6MMISR5cf3kTh3pHuJoS5myS1Zf1Iwuy5EFePc+qVyE9Saetp/YbKtwt1xfSWF+I/awLKh33ul+JfcgCDo/JdeV37zfH4780e8szMGH1VGSK+6r+AJXnXyl/EMPAirHRMX8LGeAGAuZzFmxBWUupMwD+QMNtcWCdhyZvH2APajnIDdzeSFBXuium+Avao5F+eEY/9w0QRlDAVJRuwixyKPyzh6KKRixbVjYvKV7uSxxEGTGKggwmjzvlmKbrFkHtLu9sQ5mpEezRhuJ3oIkz/ZAY2yLF+XKJj7xVKPQdOMGyuX1JP5XTsbsRdpu+GjXMfx6jcsX3F12K9PaIlUnK3WMXpFwEpuk+Pc3WuJVKcO0SHUVfFRoqFzD22Zb2PlWgc2WMJs+Rz3fMSU4eVIEfhU+cOfYaxQxHbEhyd2SZG84w4dzeqFdZiUcXiL507xm3G8/H9/f1/+StXmwPWBEdaW/NEbk8Y/kazRSoLIiyx7W9q6sfu+QqMU7JHdm9EWO7cqfjRhFFsuzMnYbrSyakx7LpUxzlTxx6YKeKKmR20wOi8RNqFxBKtX19QRFatXXgoHBF6AFCjHPgOOiyDGnwZPKfDK5aoWRXEdNNhL9ynx31CwnJs1HRVzsHeZkUYXqbssTOEPtRH37ABGFBpIwydyWyot9rq7PcoUH4rT1AdJqg6ihgFN/POvTvWeVy7YnVY2RtamqjIovbVrvhkxS2UiL75vETJ0huSD8spwW8gWm9Qlw040pMTRuvBJDm8tfUMCEMraz12hqDmtgOy/ZL77m7knFdkKNpm26fu7mnueG+ZqIRte72ihCp2F+I9ruNgBkqgSCMvB14szkNHeA8nrETcV7SmI0f209K3DpPuvnF0uV2gbcTHEFYaW2IQZGvreRCG2Ik++4eZywDfOI/ZduhzuGKAos3b+lRzpl9/ZXTCjsJMLOos1+nQhdttvSnAuI7GurQly34rI3H48NPBhDFs5i9KmFlFW1YbRedo0wJcjv/m2Ft7QsKA7Rrrva3n1OPsvpteu8yysF1xHYThk8/hgEzOGDzGK0N02E4kiLfk80dJGXNgXMFD3QH7tSfLfsn3YjHCSBxMmLrFrhdhHhvGMutOpvcmzGvZsTkRhhyxD2HUf1f4xLFTutMVY4F3FCJMaJaqLvEglT1VpqKz21m899xH+Vf2wQMfAuV1MXh+90DC1K15PbtXnM1BZTkzwtw6NM/mRRiYFMu9KtNokHvgIgx3xYJhBgm7kkoHSQW9VSNmrZc+bHqpGdfROmAn5+CBhegZu9yXMNvWvJahprlrkszMCPNoys3mRRj8HPMhzDkwwV4IAs7QRvYXAHZpcQJmWonFeV3jdGnj7Ccf3+rk7YDVgwcEX8v/kCu5K2FaEsN7ikDm0ouzI4xS5vjBmREG2mBehHku/JJg+4c5D0VyxaiXoZhZMs48tFchpiTCimvViGlRT7Wia+OOhavavvoucHjpLQljmXVjQ9sknMQO2OwIcyle/s75EZYNJMxrcF2JJLZAwiyumMfEDt1Q0gjjwb2WACkR1jRiIi4WL/YQ4zrERxzOWjPDqiF4+DZlAwhjGVD27D3NLbNfz9kRZn3cVh0bcyMMshM9CXMPX5W2BPMgzJoVc455NQwlnTCRoGqsODkRJoUJNXfMp0RKKh+u+cKGl96IMFZS4mqddIy+Z/j1nCNhhBIsQlPX9MyPMFPt+hJW7RSb2mbXEUoCCDNplwm1Tn9OqWEoGYSRU4uMkgjTQNqpRfcVNI4Rwc3wKvFWoR4v5B6E5fW8NQKPsWb+DTDgCPj6es6SsIqiFNPlMyQMsBRy/30B8X0F8tS6B6bf7IhcHguAMpaX1Nkfppp9aiKsmd3W1stff3Y7EQw5d4Uf1jH3XRmWW9cF7kPpMS4B7ecBBivgvauZmmRm/fWEfjBIoFNCz9XnD91aUNvy06zrk4I+53U9vC8a9b+8LUcU+4zzu6oitkwvA6hmQ+paxeOw9EPJtHpiYBce6Kcs16sNXQh0ends1fPUdjt/A8WLtmp7oes8C0SmEc+76/NFVXkML4xgLE3rgplpvvmG514V54ntdlk1LHHmh0zHn213i8Q9Sm50k9qd5Nor2/5S0E/1SSvZ85Jswu37+fx93Jh2I+aAtcBah5feSIeNfhxDMxiU9thJdBh+POF/IKDyhvXVTHQYsegwr1+F9LhDqfgeCnF+Lw02lLoUspLj6t2xZTUzx52K7lWfGp98RgleMjM7ZvL3hdJ73aQJfonvWiSTceictPOmAayZqG0vkSp6p24SByxKlD8jK8W6k90xPg2nmg+8+bJDs5OtzV+0HzNKlNcUDZDWHROocS/seCaOEqmDFDE5P7WBGCXKbaSbaaMENHYNaz9WB+xKIDMzSpQo0FgAjRPepVxYG5R5OeM/ZqgkSpQocGflsimk8gu2K+F+x/DSKFFe3R1TE8Ye+6fLKWvX8NIoUaLo7pg95l60PSrufswoUaIoY7LdeWNJ40UHLEoUElBI1TafWBotu8qqwDlwUaK8vPx4KCf+lo+/USIVJcr95eJwsMLctShRovgVUgEhxx+fkGOUKFG8+lqIkTYbMUgqSpSXlm72VGMKVjtFiArG71giFSXKFHJVwxm8PJH/AyhfjBIlChldSHXkJiH57CzHQyyRihKFTFlItV7v14tYIhUlytSFVE3zcrW5c+eAxQh9lChkqsi96P9qBgosYolUlCjTitiP9lgPFFhv3y/kJ5ZIRYlikf8Hw/KCbBHkylUAAAAASUVORK5CYII=" alt="Brazilian Nickel">
     <svg class="capa-icone" viewBox="0 0 220 240" aria-hidden="true" focusable="false">
@@ -785,6 +805,10 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
             <div class="hint">Pode marcar mais de uma. São as cidades que já existem no Clube de
             Parcerias; se for outra, marque a última opção e escreva o nome.</div>
             <div class="ops duas" id="opsUnidades" role="group" aria-label="Em que cidade o benefício vale"></div>
+            <!-- 🔴 diz por que o resto apagou (18/09): opção desligada sem motivo
+                 escrito lê como tela quebrada. -->
+            <div class="hint amp" id="avisoAmpla" hidden data-en="A broad scope already covers every place inside it, so the other options stay off. Uncheck it to pick cities.">Uma abrangência já cobre todos os lugares dentro dela, então as outras
+            opções ficam desligadas. Desmarque-a para escolher cidades.</div>
             <div class="err" id="e_unidades"></div>
           </div>
           <div class="f wide" data-campo="cidadeOutra" hidden>
@@ -815,8 +839,8 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
           <div class="f wide" data-campo="endereco">
             <label class="tem"><input type="checkbox" id="temEndereco"><span data-en="The establishment has an address for service <span class=&quot;opt&quot;>(optional)</span>">O estabelecimento tem endereço de atendimento <span class="opt">(opcional)</span></span></label>
             <div class="tem-corpo" id="blocoEndereco" hidden>
-              <div class="hint" id="hintEndereco" data-en="One address per line, inside the matching city. Chains with several branches: one line per branch.">Um endereço por linha, dentro da cidade correspondente. Rede com
-                várias unidades: uma linha por unidade.</div>
+              <div class="hint" id="hintEndereco" data-en="Give the full address of the main points of service. One address per line, as many as you need.">Inclua o endereço completo dos pontos principais de atendimento. Um
+                endereço por linha, quantos forem necessários.</div>
               <div class="hr-campo" id="enderecos"></div>
               <div class="err" id="e_endereco"></div>
             </div>
@@ -923,12 +947,12 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
             <div class="conta"><span id="condicaoConta"></span></div>
             <div class="err" id="e_condicao"></div>
           </div>
-          <!-- 🔴 COMO UTILIZAR O BENEFÍCIO (pedido dele, 17/09): a condição diz O QUE
+          <!-- 🔴 COMO USAR O BENEFÍCIO (pedido dele, 17/09; nome fechado em 18/09): a condição diz O QUE
                o colaborador ganha; isto diz O QUE ELE FAZ para receber. São as duas
                perguntas que chegavam misturadas num parágrafo só, e a segunda é a
                que faz o colaborador ser atendido sem constrangimento no balcão. -->
           <div class="f wide" data-campo="comoUsar">
-            <label>Como utilizar o benefício <span class="opt">(opcional)</span></label>
+            <label data-en="How to use the benefit <span class=&quot;opt&quot;>(optional)</span>">Como usar o benefício <span class="opt">(opcional)</span></label>
             <div class="hint" data-en="One step per line, in order. They appear numbered on the card.">Uma etapa por linha, na ordem. No card elas aparecem numeradas.</div>
             <div class="hr-campo" id="comoUsar"></div>
             <div class="err" id="e_comoUsar"></div>
@@ -1126,7 +1150,10 @@ var UNIDADES = [
   { cod:'BRASIL', nome:'Todo o Brasil', ampla:true, pais:'BR', rotulo:'Vale para todo o Brasil' },
   { cod:'CANADA', nome:'Todo o Canadá', ampla:true, pais:'CA', rotulo:'Vale para todo o Canadá' },
   { cod:'GLOBAL', nome:'Qualquer lugar', ampla:true, rotulo:'Vale em qualquer lugar' },
-  { cod:'OUTRA', nome:'Outra cidade',               outra:true }
+  /* 🔴 "OUTRO LUGAR", e não "outra cidade" (pedido dele, 18/09): com Toronto e
+     as três abrangências na lista, "cidade" ficou estreito demais para o que a
+     opção faz. */
+  { cod:'OUTRA', nome:'Outro lugar',                outra:true }
 ];
 /* abrangência ampla: vale em qualquer lugar daquele recorte, e por isso não tem
    endereço para listar. A mesma pergunta é feita no painel e no gerador. */
@@ -1529,17 +1556,30 @@ function montarUnidades(){
   });
 }
 
+/* 🔴 ABRANGÊNCIA AMPLA É EXCLUSIVA (pedido dele, 18/09). "Vale para todo o
+   Brasil" JÁ contém Belo Horizonte: marcar as duas não acrescenta nada e ainda
+   faz o card aparecer duas vezes na mesma seção do app. Marcar uma ampla limpa o
+   resto; marcar uma cidade limpa as amplas. As outras opções ficam DESLIGADAS
+   enquanto a ampla está marcada, com o motivo escrito ao lado, em vez de
+   aceitarem o clique e desfazerem a escolha anterior sem avisar. */
 function alternarUnidade(cod){
   var i = R.unidades.indexOf(cod);
-  if(i >= 0) R.unidades.splice(i,1); else R.unidades.push(cod);
+  if(i >= 0) R.unidades.splice(i,1);
+  else if(ehAmpla(cod)) R.unidades = [cod];
+  else R.unidades = R.unidades.filter(function(c){ return !ehAmpla(c); }).concat([cod]);
   /* desmarcar "outra cidade" tem de limpar o texto, senão fica resposta
      órfã no dado. Mesma regra do campo do tipo "Outros". */
   if(!pediuOutraCidade() && R.cidadeOutra){
     R.cidadeOutra = ''; if($('cidadeOutra')) $('cidadeOutra').value = '';
   }
   /* 🔴 o endereço mora DENTRO da cidade (16/09): desmarcar a cidade leva os
-     endereços dela junto, senão fica endereço órfão no dado */
-  R.enderecos = limparEnderecos(R.enderecos).filter(function(e){ return R.unidades.indexOf(e.cidade) >= 0; });
+     endereços dela junto, senão fica endereço órfão no dado. A exceção é o
+     endereço SEM cidade, que é o dos pontos principais de uma abrangência: ele
+     sobrevive enquanto a escolha for só de abrangências. */
+  R.enderecos = limparEnderecos(R.enderecos).filter(function(e){
+    if(!e.cidade) return soAmplasMarcadas();
+    return R.unidades.indexOf(e.cidade) >= 0;
+  });
   pintarUnidades();
   revelarCidadeOutra();
   montarCampoDeEnderecos();
@@ -1552,11 +1592,23 @@ function revelarCidadeOutra(){
   else campoEl('cidadeOutra').setAttribute('hidden','');
 }
 
+/* só abrangência marcada = não há cidade para pendurar endereço */
+function soAmplasMarcadas(){
+  return R.unidades.length > 0 && R.unidades.every(ehAmpla);
+}
 function pintarUnidades(){
   var box = $('opsUnidades');
+  var trava = R.unidades.some(ehAmpla);
   Array.prototype.forEach.call(box.children, function(o){
-    o.setAttribute('aria-pressed', R.unidades.indexOf(o.dataset.valor) >= 0 ? 'true' : 'false');
+    var meu = R.unidades.indexOf(o.dataset.valor) >= 0;
+    o.setAttribute('aria-pressed', meu ? 'true' : 'false');
+    /* desligada, e não só apagada: clique que não faz nada ensina a desconfiar
+       da tela. O título diz por que ela está assim. */
+    o.disabled = trava && !meu;
+    o.title = o.disabled ? 'A abrangência marcada já cobre este lugar. Desmarque-a para escolher cidades.' : '';
   });
+  var av = $('avisoAmpla');
+  if(av) av.hidden = !trava;
 }
 
 /* ---------- revelação em cascata ---------- */
@@ -1795,6 +1847,17 @@ function montarSeletorDePais(){
   return true;
 }
 
+/* o nome de cada etapa, na ordem. Depois da oitava não há mais nome escrito:
+   o número sozinho resolve, e inventar "nona" para um teto de oito seria texto
+   que nunca aparece. */
+var NOMES_DE_ETAPA = { pt:['Primeira etapa','Segunda etapa','Terceira etapa','Quarta etapa',
+                           'Quinta etapa','Sexta etapa','Sétima etapa','Oitava etapa'],
+                       en:['First step','Second step','Third step','Fourth step',
+                           'Fifth step','Sixth step','Seventh step','Eighth step'] };
+function nomeDaEtapa(i, idioma){
+  var l = NOMES_DE_ETAPA[idioma === 'en' ? 'en' : 'pt'];
+  return l[i] || ((idioma === 'en' ? 'Step ' : 'Etapa ') + (i + 1));
+}
 function montarCampoDeEtapas(){
   var w = document.getElementById('comoUsar');
   if(!w) return false;
@@ -1819,8 +1882,19 @@ function montarCampoDeEtapas(){
   function desenhar(){
     corpo.innerHTML = '';
     estado.forEach(function(txt, i){
+      /* 🔴 A ETAPA GANHA NOME (pedido dele, 18/09): a bolinha com o número
+         sozinha, ao lado de um campo vazio, deixava um vão que lia como campo
+         quebrado. "1 - Primeira etapa" em cima diz o que se espera ali. Isto é
+         só o RÓTULO do campo: o card continua mostrando o texto escrito. */
+      var bloco = novo('div','et-bloco');
+      var cab = novo('div','et-cab');
+      cab.appendChild(novo('span','et-n', String(i + 1)));
+      var nm = novo('span','et-rot');
+      nm.textContent = nomeDaEtapa(i);
+      nm.dataset.en = nomeDaEtapa(i, 'en');
+      cab.appendChild(nm);
+      bloco.appendChild(cab);
       var linha = novo('div','hr-linha et-linha');
-      linha.appendChild(novo('span','et-n', String(i + 1)));
       var t = novo('input','et-txt'); t.type = 'text'; t.value = txt || '';
       t.placeholder = i === 0 ? 'Exemplo: apresente o crachá funcional no caixa' : 'Próxima etapa';
       t.maxLength = 140;
@@ -1836,7 +1910,8 @@ function montarCampoDeEtapas(){
         desenhar(); guardar();
       });
       linha.appendChild(x);
-      corpo.appendChild(linha);
+      bloco.appendChild(linha);
+      corpo.appendChild(bloco);
     });
     var mais = novo('button','hr-mais','+ Adicionar etapa'); mais.type = 'button';
     /* oito é o teto de `limparEtapas`: oferecer a nona seria prometer o que não entra */
@@ -1848,6 +1923,9 @@ function montarCampoDeEtapas(){
     corpo.appendChild(mais);
   }
   desenhar();
+  /* conteúdo desenhado DEPOIS da troca de idioma não passou pela varredura:
+     repassar aqui é o que faz o rótulo novo nascer na língua certa */
+  if(idiomaAtual() === 'en') aplicarIdioma('en');
   return true;
 }
 
@@ -2041,19 +2119,25 @@ function montarCampoDeEnderecos(){
     if(txt !== undefined && txt !== null) e.textContent = txt;
     return e;
   }
-  /* 🔴 abrangência ampla não abre endereço (17/09): "Brasil" não tem rua */
+  /* 🔴 ABRANGÊNCIA TAMBÉM TEM ENDEREÇO (pedido dele, 18/09), e a regra de 17/09
+     ("Brasil não tem rua") estava errada pelo lado prático: rede nacional TEM
+     pontos de atendimento, e quem usa o benefício quer saber onde ficam os
+     principais. A diferença é que ali o endereço não pertence a uma cidade: ele
+     entra com `cidade` VAZIA, e o gerador do app já trata endereço sem cidade
+     como válido em TODA seção onde o card aparece. */
   var cidades = unidadesEscolhidas().filter(function(c){ return !ehAmpla(c); });
   var soAmplas = !cidades.length && unidadesEscolhidas().length > 0;
-  /* 🔴 SEM CIDADE, SEM ENDEREÇO (16/09): o endereço nasce dentro da cidade */
-  if(!cidades.length){
-    w.appendChild(novo('div','en-vazio', soAmplas
-      ? 'As abrangências marcadas (Brasil, Canadá ou Global) não têm endereço para informar. Marque também uma cidade se o benefício tiver ponto físico.'
-      : 'Marque acima em que cidade o benefício vale: os endereços entram dentro de cada cidade.'));
+  /* 🔴 SEM CIDADE E SEM ABRANGÊNCIA, SEM ENDEREÇO (16/09) */
+  if(!cidades.length && !soAmplas){
+    w.appendChild(novo('div','en-vazio',
+      'Marque acima em que cidade o benefício vale: os endereços entram dentro de cada cidade.'));
     R.enderecos = [];
     return true;
   }
+  /* a abrangência vira UM grupo sem cidade, de lista livre */
+  var grupos = soAmplas ? [''] : cidades;
   /* o estado bruto guarda a ORDEM e as linhas vazias; R.enderecos guarda só o limpo */
-  var estado = limparEnderecos(R.enderecos).filter(function(e){ return cidades.indexOf(e.cidade) >= 0; });
+  var estado = limparEnderecos(R.enderecos).filter(function(e){ return grupos.indexOf(e.cidade || '') >= 0; });
 
   function lerTudo(){
     var lidas = [];
@@ -2070,14 +2154,16 @@ function montarCampoDeEnderecos(){
     atualizarProgresso();
   }
   function linhasDe(cid){
-    var l = estado.filter(function(e){ return e.cidade === cid; });
+    var l = estado.filter(function(e){ return (e.cidade || '') === cid; });
     return l.length ? l : [{ endereco:'', rotulo:'', cidade:cid }];
   }
   function desenharLinha(l, grupo){
     var linha = novo('div','hr-linha en-linha');
     var t = novo('input','en-txt'); t.type = 'text'; t.value = l.endereco || '';
     t.placeholder = 'Rua, número, bairro'; t.maxLength = 220;
-    t.setAttribute('aria-label','Endereço em ' + nomeDaCidade(grupo.dataset.cidade));
+    t.setAttribute('aria-label', grupo.dataset.cidade
+      ? 'Endereço em ' + nomeDaCidade(grupo.dataset.cidade)
+      : 'Endereço de ponto de atendimento');
     t.addEventListener('input', guardar);
     linha.appendChild(t);
     var x = novo('button','hr-x','×'); x.type = 'button';
@@ -2097,11 +2183,15 @@ function montarCampoDeEnderecos(){
   }
   function desenhar(){
     w.innerHTML = '';
-    cidades.forEach(function(cid){
+    grupos.forEach(function(cid){
       var g = novo('div','en-grupo'); g.dataset.cidade = cid;
       var tit = novo('div','en-grupo-t');
-      tit.appendChild(document.createTextNode('Endereços em '));
-      tit.appendChild(novo('span','en-titulo-nome', nomeDaCidade(cid)));
+      if(cid){
+        tit.appendChild(document.createTextNode('Endereços em '));
+        tit.appendChild(novo('span','en-titulo-nome', nomeDaCidade(cid)));
+      } else {
+        tit.appendChild(document.createTextNode('Pontos principais de atendimento'));
+      }
       tit.appendChild(document.createTextNode(' '));
       tit.appendChild(novo('span','opt','(opcional)'));
       g.appendChild(tit);
@@ -2143,6 +2233,12 @@ function marcar(nome, ok, msg){
 
 /* a lista muda com as respostas: o que está escondido não conta no
    progresso, senão a barra nunca fecha */
+/* 🔴 CAIXA MARCADA = CAMPO OBRIGATÓRIO (pedido dele, 18/09). Quem marca "o
+   estabelecimento tem endereço" e não escreve nenhum deixa a promessa na tela e
+   o dado vazio, e o RH recebe uma indicação que diz ter endereço e não tem.
+   Desistir continua sendo um clique: é só desmarcar a caixa, e aí o valor é
+   limpo, como já era. */
+function caixaLigada(id){ var c = document.getElementById(id); return !!(c && c.checked); }
 function camposAtivos(){
   var l = ['colaborador','tipo'];
   if(ehOutros()) l.push('tipoOutro');
@@ -2153,6 +2249,9 @@ function camposAtivos(){
   if(R.semLogin) l.push('retorno');
   l.push('estab','unidades');
   if(pediuOutraCidade()) l.push('cidadeOutra');
+  if(caixaLigada('temEndereco')) l.push('endereco');
+  if(caixaLigada('temSite'))     l.push('siteOuSocial');
+  if(caixaLigada('temHorario'))  l.push('horario');
   l.push('contatoNome','contato','condicao','consent');
   return l;
 }
@@ -2165,6 +2264,8 @@ function respondido(c){
     case 'atendimento':  return !!nomeAtendimento(R.atendimento);
     case 'estab':        return String(R.estab||'').trim().length >= 2;
     case 'endereco':     return limparEnderecos(R.enderecos).length > 0;
+    case 'siteOuSocial': return !!(String(R.site||'').trim() || String(R.social||'').trim());
+    case 'horario':      return !!String(R.horario||'').trim();
     case 'contatoNome':  return nomeContatoValido(R.contatoNome);
     case 'contato':      return parResolvido();
     case 'retorno':      return contatoDoIndicadorResolvido();
@@ -2222,8 +2323,19 @@ function validar(){
   if(String(R.estab||'').trim().length < 2) p('estab','Escreva o nome do estabelecimento.');
   else marcar('estab', true, '');
 
-  /* endereço é opcional para todo mundo (16/09) e é uma LISTA; nunca barra o envio */
-  marcar('endereco', limparEnderecos(R.enderecos).length > 0, '');
+  /* 🔴 endereço continua OPCIONAL (16/09): quem barra é a CAIXA, e só quando ela
+     está marcada. A pessoa disse que existe endereço; o campo vazio é uma
+     resposta pela metade, e desmarcar a caixa resolve em um clique. */
+  if(caixaLigada('temEndereco') && !limparEnderecos(R.enderecos).length)
+    p('endereco','Escreva pelo menos um endereço, ou desmarque a caixa acima.');
+  else marcar('endereco', limparEnderecos(R.enderecos).length > 0, '');
+  if(caixaLigada('temSite') && !String(R.site||'').trim() && !String(R.social||'').trim()){
+    p('site','Informe o site ou a rede social, ou desmarque a caixa acima.');
+    p('social','Informe o site ou a rede social, ou desmarque a caixa acima.');
+  }
+  if(caixaLigada('temHorario') && !String(R.horario||'').trim())
+    p('horario','Informe o horário de atendimento, ou desmarque a caixa acima.');
+  else marcar('horario', !!String(R.horario||'').trim(), '');
 
   if(!siteValido(R.site)) p('site','Endereço de site inválido. Exemplo: www.exemplo.com.br');
   else marcar('site', String(R.site||'').trim() ? true : false, '');
@@ -2599,8 +2711,20 @@ function ligarModoOffline(){
      empresa da qual ela não faz parte. */
   var ent = $('entrada'); if(ent) ent.hidden = true;
   var be = $('btnEntrar'); if(be) be.hidden = true;
-  /* o atalho "versão sem login" apontaria para esta mesma página */
-  var ls = $('linkSemLogin'); if(ls) ls.hidden = true;
+  /* 🔴 O ATALHO VIRA "VERSÃO COM LOGIN" (defeito que ele viu, 18/09): aqui ele
+     apontava para esta mesma página, então era escondido, e quem tem conta da
+     empresa ficava sem caminho de volta para o formulário que envia na hora.
+     Esconder um caminho não é o mesmo que não ter para onde ir. */
+  var ls = $('linkSemLogin');
+  if(ls){
+    ls.hidden = false;
+    ls.href = URL_FORMULARIO_PORTAL;
+    ls.setAttribute('aria-label','Versão com login');
+    ls.title = 'Versão com login, para quem tem conta da empresa: a indicação é enviada na hora';
+    var rot = ls.querySelector('.rot'); if(rot){ rot.textContent = 'versão com login'; rot.dataset.en = 'sign-in version'; }
+    var ico = ls.querySelector('svg');
+    if(ico) ico.innerHTML = '<path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/>';
+  }
   $('btnTxt').textContent = 'Baixar formulário';
   montarCampoDeContatoDoIndicador();
   /* 🔴 A LEGENDA SAIU DA TELA (pedido dele, 16/09): virou o popup que aparece
@@ -3622,7 +3746,10 @@ function selftest(){
       !document.querySelector('[data-campo="endereco"] label .req'));
     $('temEndereco').checked = true; $('temEndereco').dispatchEvent(new Event('change'));
     t('★ marcando, o campo aparece', $('blocoEndereco').hidden === false);
-    t('e a dica explica o caso da rede', /[Rr]ede/.test($('hintEndereco').textContent));
+    t('e a dica pede o endereço completo dos pontos principais de atendimento (18/09)',
+      /pontos principais de atendimento/i.test($('hintEndereco').textContent) &&
+      /quantos forem necess/i.test($('hintEndereco').textContent),
+      $('hintEndereco').textContent.replace(/\s+/g,' ').trim().slice(0, 80));
     t('a faixa verde que dizia por que o endereço era obrigatório saiu da marcação',
       !document.getElementById('notaEndereco'));
     /* 🔴 ENDEREÇO DENTRO DA CIDADE (pedido dele, 16/09): a pessoa marca as
@@ -3686,6 +3813,65 @@ function selftest(){
       limparEnderecos([{ rotulo:'só nome' }]).length === 0 && limparEnderecos(null).length === 0 &&
       limparEnderecos([{ endereco:' Rua  B ', cidade:' BHZ ' }])[0].cidade === 'BHZ' && limparEnderecos('Rua A')[0].cidade === '');
     R.unidades = gU; R.cidadeOutra = gO; R.enderecos = gE; revelarCidadeOutra(); pintarUnidades(); montarCampoDeEnderecos();
+  })();
+
+  out.push('== Lote de 18/09: fileira do canto, alinhamento, "Outro lugar" e o nome da etapa ==');
+  (function(){
+    /* 🔴 A ORDEM NA TELA, medida pela POSIÇÃO e não pelo CSS: era o `right:` de
+       cada peça que se sobrepunha, então perguntar ao CSS seria perguntar ao
+       suspeito. Aqui se mede a borda esquerda de cada uma, na tela. */
+    var esq = function(e){ return e.getBoundingClientRect().left; };
+    if(getComputedStyle($('temaBtn')).display !== 'none'){
+      t('★ os três botões do canto ficam nesta ordem: login, idioma, tema (pedido dele, 18/09)',
+        esq($('linkSemLogin')) < esq($('langBtn')) && esq($('langBtn')) < esq($('temaBtn')),
+        [esq($('linkSemLogin')), esq($('langBtn')), esq($('temaBtn'))].map(Math.round).join(' < '));
+      t('★ e nenhum deles se sobrepõe ao vizinho',
+        $('linkSemLogin').getBoundingClientRect().right <= esq($('langBtn')) + 1 &&
+        $('langBtn').getBoundingClientRect().right <= esq($('temaBtn')) + 1);
+      /* 🔴 O DEFEITO ERA NO HOVER: fechado nada se tocava, aberto o atalho passava
+         por cima do idioma. A largura aberta é simulada pela classe, porque
+         headless não tem mouse. */
+      var a = $('linkSemLogin');
+      a.style.maxWidth = '220px';
+      t('★ e aberto ele cresce para a ESQUERDA, sem cobrir o botão de idioma',
+        a.getBoundingClientRect().right <= esq($('langBtn')) + 1,
+        Math.round(a.getBoundingClientRect().right) + ' vs ' + Math.round(esq($('langBtn'))));
+      a.style.maxWidth = '';
+    }
+
+    /* 🔴 ALINHAMENTO MEDIDO NA TELA (pedido dele, 18/09): a conta ("15px de
+       recuo") é a mesma que eu escreveria errado. O que vale é a distância
+       horizontal entre o quadradinho da cidade e o da caixa, renderizados. */
+    var quad = document.querySelector('#opsUnidades .quad');
+    var cxs = document.querySelectorAll('[data-campo="endereco"] .tem input,' +
+                                        '[data-campo="site"] .tem input,' +
+                                        '[data-campo="horario"] .tem input');
+    var difs = Array.prototype.map.call(cxs, function(c){
+      return Math.abs(c.getBoundingClientRect().left - quad.getBoundingClientRect().left);
+    });
+    t('★ as três caixas de seleção alinham com o quadradinho das cidades (18/09)',
+      cxs.length === 3 && difs.every(function(d){ return d <= 1.5; }),
+      difs.map(function(d){ return d.toFixed(1); }).join(' / ') + ' px de diferença');
+
+    t('★ a última opção de lugar chama-se "Outro lugar" (18/09)',
+      /Outro lugar/.test(document.querySelector('#opsUnidades [data-valor="OUTRA"]').textContent) &&
+      !/Outra cidade/.test($('opsUnidades').textContent),
+      document.querySelector('#opsUnidades [data-valor="OUTRA"]').textContent.trim());
+
+    /* 🔴 O NOME DA ETAPA é só rótulo de campo: o que viaja no pacote continua
+       sendo o texto escrito. A asserção mede as duas coisas, senão um rótulo
+       novo poderia estar entrando no dado sem ninguém ver. */
+    var g = R.comoUsar;
+    R.comoUsar = ['apresente o crachá']; montarCampoDeEtapas();
+    var rots = Array.prototype.map.call($('comoUsar').querySelectorAll('.et-rot'),
+      function(e){ return e.textContent; });
+    t('★ cada etapa mostra "Primeira etapa", "Segunda etapa"… acima do campo (18/09)',
+      rots[0] === 'Primeira etapa' && $('comoUsar').querySelector('.et-n').textContent === '1',
+      rots.join(' | '));
+    t('★ e o rótulo NÃO entra no pacote: o que viaja é só o que foi escrito',
+      montarPacote().comoUsar.join('|') === 'apresente o crachá',
+      JSON.stringify(montarPacote().comoUsar));
+    R.comoUsar = g; montarCampoDeEtapas();
   })();
 
   out.push('== O atalho para a versão sem login (16/09) ==');
@@ -3853,10 +4039,13 @@ function selftest(){
   out.push('== Progresso: o que está escondido não conta ==');
   (function(){
     R.tipo = ''; R.atendimento = '';
+    /* 🔴 a conta depende da CAIXA desde 18/09: desligá-la aqui é medir o estado
+       de chegada, e não o que outro teste deixou marcado. */
+    $('temEndereco').checked = false; $('temEndereco').dispatchEvent(new Event('change'));
     var semTipo = camposAtivos();
     t('sem tipo escolhido, atendimento não entra na conta',
       semTipo.indexOf('atendimento') < 0);
-    t('sem tipo escolhido, endereço não entra na conta',
+    t('com a caixa do endereço desmarcada, endereço não entra na conta',
       semTipo.indexOf('endereco') < 0);
     R.tipo = 'servico';
     t('com tipo escolhido, atendimento entra',
@@ -3867,6 +4056,20 @@ function selftest(){
     R.tipo = 'alimentacao';
     t('restaurante: endereço TAMBÉM fica fora da conta (opcional para todo mundo desde 16/09)',
       camposAtivos().indexOf('endereco') < 0);
+    /* 🔴 18/09: quem MARCA a caixa promete um endereço, e a promessa entra na
+       conta do progresso. É o outro lado da mesma regra, e sem medir os dois a
+       asserção só provaria que o campo nunca entra. */
+    $('temEndereco').checked = true; $('temEndereco').dispatchEvent(new Event('change'));
+    t('★ marcando a caixa, o endereço ENTRA na conta (18/09)',
+      camposAtivos().indexOf('endereco') >= 0, camposAtivos().join(','));
+    $('temSite').checked = true; $('temSite').dispatchEvent(new Event('change'));
+    $('temHorario').checked = true; $('temHorario').dispatchEvent(new Event('change'));
+    t('★ e o mesmo vale para site/rede social e para o horário',
+      camposAtivos().indexOf('siteOuSocial') >= 0 && camposAtivos().indexOf('horario') >= 0,
+      camposAtivos().join(','));
+    ['temEndereco','temSite','temHorario'].forEach(function(id){
+      $(id).checked = false; $(id).dispatchEvent(new Event('change'));
+    });
     t('o par de contato conta como UM item, não dois',
       camposAtivos().filter(function(c){ return c === 'contato'; }).length === 1 &&
       camposAtivos().indexOf('contatoEmail') < 0);
@@ -3940,12 +4143,15 @@ function selftest(){
     R.colaborador=''; R.tipo=''; R.tipoOutro=''; R.atendimento=''; R.estab='';
     R.enderecos = []; R.site=''; R.social=''; R.contatoNome=''; R.contatoEmail='';
     R.contatoFone=''; R.unidades=[]; R.condicao=''; R.consent=false; termoLido=false;
+    ['temEndereco','temSite','temHorario'].forEach(function(id){
+      $(id).checked = false; $(id).dispatchEvent(new Event('change'));
+    });
     var pr = validar(), campos = pr.map(function(x){ return x.campo; });
     t('formulário vazio acusa problema',     pr.length > 0);
     t('não cobra ATENDIMENTO enquanto o tipo está vazio (campo escondido)',
       campos.indexOf('atendimento') < 0);
     t('não cobra o texto do "Outros" fora dele', campos.indexOf('tipoOutro') < 0);
-    t('não cobra ENDEREÇO quando a regra não pede', campos.indexOf('endereco') < 0);
+    t('não cobra ENDEREÇO com a caixa desmarcada', campos.indexOf('endereco') < 0);
     t('cobra o e-mail E o telefone do contato, porque qualquer um resolve',
       campos.indexOf('contatoEmail') >= 0 && campos.indexOf('contatoFone') >= 0);
     t('cobra a leitura do texto',            campos.indexOf('consent') >= 0);
@@ -3969,8 +4175,19 @@ function selftest(){
     t('formulário completo passa sem problema', validar().length === 0);
 
     R.enderecos = [];
+    $('temEndereco').checked = false; $('temEndereco').dispatchEvent(new Event('change'));
     t('★ restaurante SEM endereço PASSA: endereço é opcional para todo mundo (16/09, redes de unidades)',
       validar().length === 0, validar().map(function(x){ return x.campo; }).join());
+    /* 🔴 18/09: marcada e vazia, BARRA, e a mensagem oferece a saída (desmarcar).
+       Sem esta asserção a caixa seria enfeite: prometer e não cobrar é o mesmo
+       que não perguntar. */
+    $('temEndereco').checked = true; $('temEndereco').dispatchEvent(new Event('change'));
+    var comCaixa = validar();
+    t('★ caixa marcada e nenhum endereço escrito: BARRA o envio (18/09)',
+      comCaixa.some(function(x){ return x.campo === 'endereco'; }) &&
+      /desmarque a caixa/i.test((comCaixa.filter(function(x){ return x.campo === 'endereco'; })[0]||{}).msg || ''),
+      comCaixa.map(function(x){ return x.campo; }).join());
+    $('temEndereco').checked = false; $('temEndereco').dispatchEvent(new Event('change'));
     R.enderecos = [{endereco:'Rua das Flores, 120, Centro, Belo Horizonte', rotulo:''}];
 
     R.contatoEmail = ''; R.contatoFone = '';
@@ -4259,8 +4476,14 @@ function selftest(){
       !$('evidencia').hasAttribute('multiple'));
     t('★ a entrada pelo portal some: ela levaria a pessoa a um login de uma empresa que não é dela',
       $('entrada').hidden === true);
-    t('★ e o atalho "versão sem login" some também: aqui ele apontaria para a própria página',
-      $('linkSemLogin').hidden === true);
+    /* 🔴 18/09: o atalho INVERTE em vez de sumir. Ele sumia porque apontaria para
+       esta mesma página, e com isso quem tem conta da empresa ficava sem caminho
+       de volta para o formulário que envia na hora. */
+    t('★ o atalho do canto vira "versão com login" e leva ao formulário do portal',
+      $('linkSemLogin').hidden === false &&
+      $('linkSemLogin').href === URL_FORMULARIO_PORTAL &&
+      /versão com login/i.test($('linkSemLogin').textContent),
+      $('linkSemLogin').href);
     t('o botão passa a dizer que BAIXA', $('btnTxt').textContent === 'Baixar formulário');
     t('★ e o nome fica destravado, porque não há login de onde tirá-lo',
       $('colaborador').readOnly === false && IDENTIDADE.modo === 'livre');
@@ -4414,17 +4637,38 @@ function selftest(){
     R.unidades = []; R.enderecos = []; pintarUnidades();
     $('temEndereco').checked = true; $('temEndereco').dispatchEvent(new Event('change'));
     alternarUnidade('BRASIL');
-    t('★ abrangência ampla NÃO abre endereço: "Brasil" não tem rua para escrever',
-      $('enderecos').querySelectorAll('.en-grupo').length === 0 &&
-      /Brasil, Canadá ou Global/.test($('enderecos').textContent),
-      $('enderecos').textContent.slice(0, 60));
-    alternarUnidade('BHZ');
-    t('★ e marcar uma cidade junto abre o grupo DELA, e só dele',
+    /* 🔴 18/09 REVERTE a regra de 17/09 ("Brasil não tem rua"): rede nacional TEM
+       pontos de atendimento, e quem usa quer saber onde ficam os principais. A
+       diferença é que ali o endereço não pertence a uma cidade: entra com
+       `cidade` VAZIA, e o gerador do app já mostra endereço sem cidade em TODA
+       seção onde o card aparece. */
+    t('★ abrangência ampla ABRE um grupo de endereço sem cidade (18/09)',
       $('enderecos').querySelectorAll('.en-grupo').length === 1 &&
-      $('enderecos').querySelector('.en-grupo').dataset.cidade === 'BHZ');
-    t('o pacote leva as duas: a cidade e a abrangência',
-      cidadesDoPacote().indexOf('BRASIL') >= 0 && cidadesDoPacote().indexOf('BHZ') >= 0,
+      $('enderecos').querySelector('.en-grupo').dataset.cidade === '' &&
+      /Pontos principais de atendimento/i.test($('enderecos').textContent),
+      $('enderecos').textContent.slice(0, 70));
+    /* 🔴 EXCLUSIVIDADE (pedido dele, 18/09): "vale para todo o Brasil" já contém
+       Belo Horizonte. Marcar a cidade TROCA a escolha em vez de somar. */
+    alternarUnidade('BHZ');
+    t('★ marcar uma cidade DESMARCA a abrangência, e o grupo vira o dela',
+      R.unidades.join(',') === 'BHZ' &&
+      $('enderecos').querySelectorAll('.en-grupo').length === 1 &&
+      $('enderecos').querySelector('.en-grupo').dataset.cidade === 'BHZ', R.unidades.join(','));
+    t('★ e o pacote leva UMA só: a abrangência saiu quando a cidade entrou',
+      cidadesDoPacote().indexOf('BRASIL') < 0 && cidadesDoPacote().indexOf('BHZ') >= 0,
       cidadesDoPacote().join(','));
+    alternarUnidade('BRASIL');
+    t('★ e o caminho inverso: marcar a abrangência limpa as cidades',
+      R.unidades.join(',') === 'BRASIL', R.unidades.join(','));
+    t('★ com a abrangência marcada, as outras opções ficam DESLIGADAS, com o motivo escrito',
+      document.querySelector('#opsUnidades [data-valor="BHZ"]').disabled === true &&
+      $('avisoAmpla').hidden === false &&
+      document.querySelector('#opsUnidades [data-valor="BRASIL"]').disabled === false);
+    alternarUnidade('BRASIL');
+    t('★ desmarcada a abrangência, tudo volta a ser clicável',
+      document.querySelector('#opsUnidades [data-valor="BHZ"]').disabled === false &&
+      $('avisoAmpla').hidden === true);
+    alternarUnidade('BRASIL');
 
     /* --- caixas de seleção dos quatro campos opcionais ---
        🔴 devolve as quatro ao estado de chegada antes de medir: um teste anterior
