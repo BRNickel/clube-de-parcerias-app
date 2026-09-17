@@ -39,7 +39,7 @@ try{var _t=localStorage.getItem('cp-theme');if(_t==='light'||_t==='dark'||_t==='
   --chipsel-bg:#00E883;--chipsel-txt:#06251A;
   --wa-bg:#00E883;--wa-txt:#06251A;--wa-ico:#06251A;
 }
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]):not([data-theme="portal"]){
   --bg:#0F1613;--card:#1A2620;--txt:#E9EFEA;
   --grey:#151F1A;--line:rgba(255,255,255,.10);--muted:rgba(233,239,234,.62);--soft:rgba(255,255,255,.12);
   --green-dim:rgba(0,232,131,.10);--amber-dim:rgba(230,168,0,.13);
@@ -83,7 +83,7 @@ try{var _t=localStorage.getItem('cp-theme');if(_t==='light'||_t==='dark'||_t==='
 :root[data-theme="portal"] .topbar .brand-link{display:inline-block}
 :root[data-theme="portal"] .topbar .brand-link img{filter:brightness(0)}
 :root[data-theme="portal"] .only-portal{display:block!important}
-:root[data-theme="portal"] h1 em{background:linear-gradient(90deg,#0A5C2E,#0A1F17);-webkit-background-clip:text;background-clip:text}
+:root[data-theme="portal"] h1 em{background:none;color:#0A1F17} /* título liso, sem o degradê ("shader") na palavra destacada */
 .only-portal{display:none}
 /* o seletor de tema: três opções, a atual marcada */
 .theme-menu{position:absolute;top:56px;right:0;z-index:50;background:var(--card);border:1px solid var(--line);
@@ -97,9 +97,9 @@ try{var _t=localStorage.getItem('cp-theme');if(_t==='light'||_t==='dark'||_t==='
 .theme-menu button[aria-checked="true"] .pt{opacity:1}
 .theme-wrap{position:relative;display:inline-flex}
 @media(prefers-color-scheme:dark){
-  :root:not([data-theme="light"]) .only-light{display:none!important}
-  :root:not([data-theme="light"]) .only-dark{display:block!important}
-  :root:not([data-theme="light"]) h1 em{background:linear-gradient(90deg,#2BE38A,#8CF5C0);-webkit-background-clip:text;background-clip:text}
+  :root:not([data-theme="light"]):not([data-theme="portal"]) .only-light{display:none!important}
+  :root:not([data-theme="light"]):not([data-theme="portal"]) .only-dark{display:block!important}
+  :root:not([data-theme="light"]):not([data-theme="portal"]) h1 em{background:linear-gradient(90deg,#2BE38A,#8CF5C0);-webkit-background-clip:text;background-clip:text}
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}

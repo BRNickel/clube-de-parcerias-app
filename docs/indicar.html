@@ -46,7 +46,7 @@ try{var _t=localStorage.getItem('cp-theme');if(_t==='light'||_t==='dark'||_t==='
   --brilho-verde:rgba(0,232,131,.16);--brilho-lilas:rgba(191,177,255,.14);
   --ico:#E9EFEA;--placeholder:rgba(233,239,234,.40);
 }
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]):not([data-theme="portal"]){
   color-scheme:dark;
   --bg:#0F1613;--card:#1A2620;--txt:#E9EFEA;--campo:#131E19;
   --grey:#151F1A;--line:rgba(255,255,255,.12);--muted:rgba(233,239,234,.62);
@@ -159,8 +159,8 @@ body.js .tema-btn{display:inline-flex}
 .tema-menu button .pt{width:8px;height:8px;border-radius:50%;background:currentColor;opacity:0}
 .tema-menu button[aria-checked="true"] .pt{opacity:1}
 @media(prefers-color-scheme:dark){
-  :root:not([data-theme="light"]) .so-claro{display:none}
-  :root:not([data-theme="light"]) .so-escuro{display:block}
+  :root:not([data-theme="light"]):not([data-theme="portal"]) .so-claro{display:none}
+  :root:not([data-theme="light"]):not([data-theme="portal"]) .so-escuro{display:block}
 }
 
 /* ---------- bloco de explicação ---------- */
