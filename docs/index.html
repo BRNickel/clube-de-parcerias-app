@@ -206,16 +206,10 @@ body.js .chips.on{display:flex}
    isso que ele pediu: fileira alinhada vale mais que card justo. */
 .partners{display:grid;grid-template-columns:1fr;gap:12px;margin-top:14px;align-items:stretch}
 @media(min-width:760px){.partners{grid-template-columns:1fr 1fr}}
-/* 🔴 NO COMPUTADOR NÃO HÁ EXPANSÃO (pedido dele, 15/09): com duas colunas sobra
-   espaço, e esconder o detalhe atrás de um clique só cria trabalho. O card já
-   vem aberto e a seta some. No celular, onde o espaço é caro, a expansão
-   continua. Quem liga é o JS (classe no body), porque <details> fechado não se
-   abre por CSS; sem JS o card continua fechado e abre no toque, que é o
-   comportamento de sempre e o que mantém o app vivo na pré-visualização do
-   iPhone. */
-body.sem-toggle .p-sum{cursor:default}
-body.sem-toggle .p-sum>.p-chev{display:none}
-body.sem-toggle .p-sum{grid-template-columns:auto minmax(0,1fr)}
+/* 🔴 A EXPANSÃO VALE EM TODA TELA (pedido dele, 17/09). Até 15/09 o card vinha
+   aberto no computador, porque lá sobrava espaço; com o bloco "Como usar o
+   benefício" em todo card o aberto ficou alto e a lista virou parede de texto.
+   Quem abre é o <details>, que funciona sem JS. */
 /* 🔴 PORTUGUÊS E INGLÊS (17/09): os dois textos vivem na página e o idioma
    escolhe qual aparece. Sem script a página continua em português, que é o
    idioma da maioria e o padrão do documento. */
@@ -258,7 +252,6 @@ body.sem-toggle .p-sum{grid-template-columns:auto minmax(0,1fr)}
 .p-como-l{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:5px}
 .p-como-l li{font-size:13px;line-height:1.5;color:var(--txt)}
 .p-como-l li::marker{color:var(--ben-txt);font-weight:700}
-body.sem-toggle .p-mais{animation:none}
 .p-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:0;box-shadow:0 1px 8px rgba(27,45,37,.06);display:flex;flex-direction:column;gap:0;scroll-margin-top:90px;transition:border-color .15s,box-shadow .15s,transform .12s}
 .p-card:hover{border-color:rgba(0,232,131,.4);box-shadow:0 4px 16px rgba(27,45,37,.10);transform:translateY(-1px)}
 .p-card.off{display:none}
@@ -575,7 +568,7 @@ body.sem-toggle .p-mais{animation:none}
           <div class="d-row"><svg class="ic"><use href="#i-pin"/></svg><span class="d-txt"><span class="i18 lg-pt">Consultar endereço na internet</span><span class="i18 lg-en">Check the address online</span></span></div>
           <div class="d-row"><svg class="ic"><use href="#i-clock"/></svg><span class="d-txt">Seg a Sex, 13h59 às 09h59 do dia seguinte</span></div>
           <div class="d-row"><svg class="ic"><use href="#i-phone"/></svg><span class="d-txt">(11) 99695-5847<a class="d-wa" target="_blank" rel="noopener" title="Abrir conversa no WhatsApp" aria-label="WhatsApp" href="https://wa.me/5511996955847"><svg class="ic"><use href="#i-wa"/></svg></a></span></div>
-          <div class="p-como"><div class="p-como-t"><span class="i18 lg-pt">Como usar o benefício</span><span class="i18 lg-en">How to use it</span></div><ol class="p-como-l"><li>Apresente o crachá funcional e informe o convênio com a Brazilian Nickel.</li><li>Confirme a condição vigente com o responsável do estabelecimento antes de fechar a compra.</li></ol></div>
+          <div class="p-como"><div class="p-como-t"><span class="i18 lg-pt">Como usar o benefício</span><span class="i18 lg-en">How to use it</span></div><ol class="p-como-l"><li>1</li><li>2</li><li>3</li></ol></div>
         </div>
       </details>
     </article>
@@ -647,7 +640,7 @@ body.sem-toggle .p-mais{animation:none}
           <div class="d-row"><svg class="ic"><use href="#i-pin"/></svg><span class="d-txt"><span class="i18 lg-pt">Consultar endereço na internet</span><span class="i18 lg-en">Check the address online</span></span></div>
           <div class="d-row"><svg class="ic"><use href="#i-clock"/></svg><span class="d-txt">Seg a Sex, 13h59 às 09h59 do dia seguinte</span></div>
           <div class="d-row"><svg class="ic"><use href="#i-phone"/></svg><span class="d-txt">(11) 99695-5847<a class="d-wa" target="_blank" rel="noopener" title="Abrir conversa no WhatsApp" aria-label="WhatsApp" href="https://wa.me/5511996955847"><svg class="ic"><use href="#i-wa"/></svg></a></span></div>
-          <div class="p-como"><div class="p-como-t"><span class="i18 lg-pt">Como usar o benefício</span><span class="i18 lg-en">How to use it</span></div><ol class="p-como-l"><li>Apresente o crachá funcional e informe o convênio com a Brazilian Nickel.</li><li>Confirme a condição vigente com o responsável do estabelecimento antes de fechar a compra.</li></ol></div>
+          <div class="p-como"><div class="p-como-t"><span class="i18 lg-pt">Como usar o benefício</span><span class="i18 lg-en">How to use it</span></div><ol class="p-como-l"><li>1</li><li>2</li><li>3</li></ol></div>
         </div>
       </details>
     </article>
@@ -719,7 +712,7 @@ body.sem-toggle .p-mais{animation:none}
           <div class="d-row"><svg class="ic"><use href="#i-pin"/></svg><span class="d-txt"><span class="i18 lg-pt">Consultar endereço na internet</span><span class="i18 lg-en">Check the address online</span></span></div>
           <div class="d-row"><svg class="ic"><use href="#i-clock"/></svg><span class="d-txt">Seg a Sex, 13h59 às 09h59 do dia seguinte</span></div>
           <div class="d-row"><svg class="ic"><use href="#i-phone"/></svg><span class="d-txt">(11) 99695-5847<a class="d-wa" target="_blank" rel="noopener" title="Abrir conversa no WhatsApp" aria-label="WhatsApp" href="https://wa.me/5511996955847"><svg class="ic"><use href="#i-wa"/></svg></a></span></div>
-          <div class="p-como"><div class="p-como-t"><span class="i18 lg-pt">Como usar o benefício</span><span class="i18 lg-en">How to use it</span></div><ol class="p-como-l"><li>Apresente o crachá funcional e informe o convênio com a Brazilian Nickel.</li><li>Confirme a condição vigente com o responsável do estabelecimento antes de fechar a compra.</li></ol></div>
+          <div class="p-como"><div class="p-como-t"><span class="i18 lg-pt">Como usar o benefício</span><span class="i18 lg-en">How to use it</span></div><ol class="p-como-l"><li>1</li><li>2</li><li>3</li></ol></div>
         </div>
       </details>
     </article>
@@ -791,7 +784,7 @@ body.sem-toggle .p-mais{animation:none}
           <div class="d-row"><svg class="ic"><use href="#i-pin"/></svg><span class="d-txt"><span class="i18 lg-pt">Consultar endereço na internet</span><span class="i18 lg-en">Check the address online</span></span></div>
           <div class="d-row"><svg class="ic"><use href="#i-clock"/></svg><span class="d-txt">Seg a Sex, 13h59 às 09h59 do dia seguinte</span></div>
           <div class="d-row"><svg class="ic"><use href="#i-phone"/></svg><span class="d-txt">(11) 99695-5847<a class="d-wa" target="_blank" rel="noopener" title="Abrir conversa no WhatsApp" aria-label="WhatsApp" href="https://wa.me/5511996955847"><svg class="ic"><use href="#i-wa"/></svg></a></span></div>
-          <div class="p-como"><div class="p-como-t"><span class="i18 lg-pt">Como usar o benefício</span><span class="i18 lg-en">How to use it</span></div><ol class="p-como-l"><li>Apresente o crachá funcional e informe o convênio com a Brazilian Nickel.</li><li>Confirme a condição vigente com o responsável do estabelecimento antes de fechar a compra.</li></ol></div>
+          <div class="p-como"><div class="p-como-t"><span class="i18 lg-pt">Como usar o benefício</span><span class="i18 lg-en">How to use it</span></div><ol class="p-como-l"><li>1</li><li>2</li><li>3</li></ol></div>
         </div>
       </details>
     </article>
@@ -882,7 +875,7 @@ body.sem-toggle .p-mais{animation:none}
           <div class="d-row"><svg class="ic"><use href="#i-pin"/></svg><span class="d-txt"><span class="i18 lg-pt">Consultar endereço na internet</span><span class="i18 lg-en">Check the address online</span></span></div>
           <div class="d-row"><svg class="ic"><use href="#i-clock"/></svg><span class="d-txt">Seg a Sex, 13h59 às 09h59 do dia seguinte</span></div>
           <div class="d-row"><svg class="ic"><use href="#i-phone"/></svg><span class="d-txt">(11) 99695-5847<a class="d-wa" target="_blank" rel="noopener" title="Abrir conversa no WhatsApp" aria-label="WhatsApp" href="https://wa.me/5511996955847"><svg class="ic"><use href="#i-wa"/></svg></a></span></div>
-          <div class="p-como"><div class="p-como-t"><span class="i18 lg-pt">Como usar o benefício</span><span class="i18 lg-en">How to use it</span></div><ol class="p-como-l"><li>Apresente o crachá funcional e informe o convênio com a Brazilian Nickel.</li><li>Confirme a condição vigente com o responsável do estabelecimento antes de fechar a compra.</li></ol></div>
+          <div class="p-como"><div class="p-como-t"><span class="i18 lg-pt">Como usar o benefício</span><span class="i18 lg-en">How to use it</span></div><ol class="p-como-l"><li>1</li><li>2</li><li>3</li></ol></div>
         </div>
       </details>
     </article>
@@ -1109,27 +1102,13 @@ body.sem-toggle .p-mais{animation:none}
     });
   });
 
-  /* ---- no computador o card já vem aberto; no celular, expande ----
-     O <details> continua sendo <details>: só o atributo `open` muda, então
-     nada quebra sem JS. `change` do matchMedia trata quem gira o celular ou
-     redimensiona a janela. */
-  var telaLarga = window.matchMedia('(min-width: 760px)');
-  function ajustarExpansao(){
-    var aberto = telaLarga.matches;
-    document.body.classList.toggle('sem-toggle', aberto);
-    Array.prototype.forEach.call(document.querySelectorAll('.p-det'), function(d){
-      if(aberto) d.setAttribute('open',''); else d.removeAttribute('open');
-    });
-  }
-  /* no computador, clicar no cabeçalho não fecha: o detalhe é para ficar à vista */
-  document.addEventListener('click', function(ev){
-    if(!telaLarga.matches) return;
-    var sum = ev.target.closest && ev.target.closest('.p-sum');
-    if(sum) ev.preventDefault();
-  });
-  if(telaLarga.addEventListener) telaLarga.addEventListener('change', ajustarExpansao);
-  else if(telaLarga.addListener) telaLarga.addListener(ajustarExpansao);
-  ajustarExpansao();
+  /* ---- O CARD EXPANDE EM TODA TELA (pedido dele, 17/09) ----------------
+     🔴 A regra anterior (15/09) abria o card no computador e escondia a seta,
+     porque lá sobrava espaço. O que mudou foi o CONTEÚDO: com "Como usar o
+     benefício" em todo card, o aberto ficou alto e a lista de parceiros virou
+     uma parede de texto onde não se acha ninguém. Fechado em toda tela, a lista
+     volta a ser lista e quem quer o detalhe abre.
+     O <details> continua sendo <details>: sem JS ele abre no clique sozinho. */
 
   /* ---- busca global (home) ---- */
   var inp = document.getElementById('search');
