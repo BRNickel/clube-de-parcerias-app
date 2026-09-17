@@ -8,7 +8,10 @@
 <script>/* aplica o tema salvo antes de pintar a tela (evita piscada).
    A chave é `cp-theme`, A MESMA do app Clube de Parceiros: publicados no
    mesmo endereço, a escolha da pessoa atravessa de uma tela para a outra. */
-try{var _t=localStorage.getItem('cp-theme');if(_t==='light'||_t==='dark')document.documentElement.setAttribute('data-theme',_t)}catch(e){}</script>
+try{var _t=localStorage.getItem('cp-theme');if(_t==='light'||_t==='dark')document.documentElement.setAttribute('data-theme',_t)}catch(e){}
+/* 🔴 IDIOMA salvo antes de pintar (17/09), pelo mesmo motivo do tema: aplicado
+   depois da primeira pintura, a página aparece em português e pisca para o inglês. */
+try{var _l=localStorage.getItem('cp-lang');if(_l==='pt'||_l==='en')document.documentElement.setAttribute('lang',_l==='en'?'en':'pt-BR');}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -382,6 +385,41 @@ select{background-image:url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http:
 .tem input{width:17px;height:17px;flex:none;accent-color:var(--green);cursor:pointer}
 .tem-corpo{margin-top:10px;display:flex;flex-direction:column;gap:7px}
 .tem-corpo[hidden]{display:none}
+/* o convite de idioma e o seletor do cabeçalho */
+.ov-lang{position:fixed;inset:0;z-index:130;background:rgba(10,20,16,.55);display:flex;
+  align-items:center;justify-content:center;padding:20px}
+.ov-lang[hidden]{display:none}
+.lang-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px 26px;
+  max-width:380px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.28);text-align:center}
+.lang-card h2{font-size:17px;margin:0 0 4px;letter-spacing:-.02em}
+.lang-card p{font-size:13px;color:var(--muted);margin:0 0 16px;line-height:1.5}
+.lang-bts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.lang-bts button{font-family:'DM Sans',Arial,sans-serif;font-size:14px;font-weight:600;cursor:pointer;
+  border-radius:11px;padding:11px 20px;border:1px solid var(--line);background:var(--card);color:var(--txt)}
+.lang-bts button:hover{border-color:var(--txt)}
+/* 🔴 o seletor de idioma mora NA CAPA, ao lado do botão de tema: mesma roupa,
+   mesma altura, mesma âncora. Na capa o fundo é escuro, então ele usa as cores
+   de lá, e não as do corpo da página. */
+.lang-btn{position:absolute;top:18px;right:102px;z-index:3;
+  border:1px solid rgba(255,255,255,.26);background:transparent;color:rgba(255,255,255,.82);
+  height:34px;padding:0 11px;font-family:'DM Sans',Arial,sans-serif;font-size:12px;font-weight:700;
+  letter-spacing:.06em;cursor:pointer;border-radius:999px;display:none;align-items:center;flex-shrink:0;
+  transition:border-color .15s,color .15s}
+body.js .lang-btn{display:inline-flex}
+/* sem o atalho (modo offline, onde ele apontaria para a própria página), o
+   idioma ocupa a vaga vazia em vez de deixar um buraco na fileira */
+body.js .sem-login[hidden] ~ .lang-btn{right:60px}
+.lang-btn:hover{border-color:#fff;color:#fff}
+.lang-menu{position:absolute;top:58px;right:18px;z-index:60;background:var(--card);border:1px solid var(--line);
+  border-radius:14px;padding:6px;box-shadow:0 12px 30px rgba(27,45,37,.2);display:flex;flex-direction:column;gap:2px;min-width:150px}
+.lang-menu[hidden]{display:none}
+.lang-menu button{font-family:'DM Sans',Arial,sans-serif;font-size:13px;font-weight:600;color:var(--txt);
+  background:none;border:none;border-radius:9px;padding:8px 12px;text-align:left;cursor:pointer;
+  display:flex;align-items:center;gap:9px}
+.lang-menu button:hover{background:var(--grey)}
+.lang-menu button[aria-checked="true"]{background:var(--green-dim);color:var(--ok-txt)}
+.lang-menu button .lg-dot{width:8px;height:8px;border-radius:50%;background:currentColor;opacity:0;flex:none}
+.lang-menu button[aria-checked="true"] .lg-dot{opacity:1}
 .suc-acoes{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center}
 .suc-app{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;
   text-decoration:none;color:var(--btn-txt);background:var(--btn-bg);border:1px solid var(--btn-bg);
@@ -570,6 +608,20 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
 
 <div class="wrap">
 
+  <!-- 🔴 O CONVITE DE IDIOMA (pedido dele, 17/09): aparece UMA vez, na primeira
+       visita, e só grava quando a pessoa responde. -->
+  <div class="ov-lang" id="ovLang" hidden>
+    <div class="lang-card" role="dialog" aria-modal="true" aria-labelledby="langTit">
+      <h2 id="langTit">Idioma · Language</h2>
+      <p>Escolha o idioma deste formulário. Dá para trocar depois, no botão do topo.<br>
+         Choose the language for this form. You can change it later, at the top.</p>
+      <div class="lang-bts">
+        <button type="button" id="btnLangPt">Português</button>
+        <button type="button" id="btnLangEn">English</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ===================== CAPA ===================== -->
   <div class="capa">
     <button type="button" class="tema-btn" id="temaBtn" aria-label="Escolher o tema" title="Tema: claro ou escuro"
@@ -587,6 +639,11 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
       <span class="rot">versão sem login</span>
     </a>
     <div class="tema-menu" id="temaMenu" role="menu" hidden></div>
+    <!-- 🔴 IDIOMA (pedido dele, 17/09): ao lado do tema, porque são a mesma
+         família de escolha (como a página se apresenta). -->
+    <button type="button" class="lang-btn" id="langBtn" aria-label="Escolher o idioma / Choose language"
+            aria-haspopup="menu" aria-expanded="false" aria-controls="langMenu"><span id="langAtual">PT</span></button>
+    <div class="lang-menu" id="langMenu" role="menu" hidden aria-label="Idioma"></div>
     <img class="capa-logo" src="data:image/png;base64,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" alt="Brazilian Nickel">
     <svg class="capa-icone" viewBox="0 0 220 240" aria-hidden="true" focusable="false">
       <defs>
@@ -603,39 +660,40 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
         <path d="M126 188l16 16 34-38"/>
       </g>
     </svg>
-    <div class="eyebrow">Clube de Parcerias</div>
-    <h1>Indicação de parceria</h1>
-    <p>Achou um lugar disposto a dar desconto para quem trabalha na Brazilian Nickel? Conte aqui.
-    O RH conversa com o estabelecimento, fecha o acordo e publica o desconto no Clube de Parcerias,
-    para todo mundo usar.</p>
+    <div class="eyebrow" data-en="Partnership Club">Clube de Parcerias</div>
+    <h1 data-en="Partnership suggestion">Indicação de parceria</h1>
+    <p data-en="Use this form to suggest an establishment that could become a Brazilian Nickel partner. HR will contact the establishment, assess whether a partnership is feasible and, if an agreement is reached, publish the terms in the Partnership Club.">Use este formulário para indicar um estabelecimento que possa se tornar parceiro da
+    Brazilian Nickel. O RH entra em contato com o estabelecimento, avalia a viabilidade da parceria
+    e, havendo acordo, publica a condição no Clube de Parcerias.</p>
   </div>
 
   <!-- ===================== EXPLICAÇÃO ===================== -->
   <div class="regras" id="regras">
-    <h2>Antes de preencher</h2>
+    <h2 data-en="Before you start">Antes de preencher</h2>
 
-    <p>Use este formulário quando um estabelecimento topar dar alguma vantagem para quem trabalha
-    na Brazilian Nickel: desconto no restaurante, preço melhor em um serviço, brinde, condição
-    especial na loja.</p>
+    <p data-en="This form records a suggestion of an establishment willing to offer special terms to Brazilian Nickel employees: a discount, a better price on a service, a gift or any other benefit.">Este formulário registra a indicação de um estabelecimento disposto a oferecer uma
+    condição diferenciada aos colaboradores da Brazilian Nickel: desconto, preço especial em um
+    serviço, brinde ou qualquer outra vantagem.</p>
 
-    <p>Quanto mais coisa você souber contar aqui, mais rápido o RH consegue validar.</p>
+    <p data-en="The more complete the information, the faster HR can assess it.">Quanto mais completa for a informação, mais rápida é a avaliação pelo RH.</p>
 
-    <h3>Tipos de parceria que entram aqui</h3>
+    <h3 data-en="Types of partnership that belong here">Tipos de parceria que entram aqui</h3>
     <div class="tags" id="tiposTags"></div>
 
-    <h3>O que você precisa ter em mãos</h3>
+    <h3 data-en="What you need at hand">O que você precisa ter em mãos</h3>
     <ul>
-      <li>O nome do estabelecimento e o nome de quem você firmou a parceria;</li>
-      <li>Um contato do responsável: <b>e-mail ou telefone</b>, pelo menos um dos dois;</li>
-      <li>A condição combinada, escrita com a maior quantidade de detalhes;</li>
-      <li>O endereço, se for um lugar só. Rede com várias unidades pode deixar em branco.</li>
+      <li data-en="The name of the establishment and the name of the person you spoke to;">O nome do estabelecimento e o nome da pessoa com quem você conversou;</li>
+      <li data-en="A contact for that person: <b>e-mail or phone</b>, at least one of them;">Um contato dessa pessoa: <b>e-mail ou telefone</b>, pelo menos um dos dois;</li>
+      <li data-en="The terms discussed, described in as much detail as possible;">A condição conversada, descrita com o máximo de detalhes;</li>
+      <li data-en="The address, when there is a physical location. Chains with several branches may leave it blank.">O endereço, quando houver ponto físico. Rede com várias unidades pode ficar em branco.</li>
     </ul>
 
     <div class="callout">
-      <div class="tit">Atenção</div>
-      <p>Indicar não é fechar. Você só está avisando o RH de que essa oportunidade existe.</p>
-      <p>Quem conversa de novo com o estabelecimento, acerta os detalhes e confirma a parceria é o
-      <b>RH</b>. Por isso, não prometa nada em nome da Brazilian Nickel antes disso.</p>
+      <div class="tit" data-en="What happens after you submit">Como funciona depois do envio</div>
+      <p data-en="A suggestion does not formalise a partnership. It records the opportunity so that HR can assess it.">A indicação não formaliza a parceria. Ela registra a oportunidade para que o RH possa avaliá-la.</p>
+      <p data-en="<b>HR</b> contacts the establishment, negotiates the terms and decides on publication. The partnership may not go ahead, and that is a normal part of the process. Until then, do not make commitments on behalf of Brazilian Nickel.">O <b>RH</b> entra em contato com o estabelecimento, negocia as condições e decide sobre a
+      publicação. A parceria pode não se confirmar, e isso é parte normal do processo. Até a decisão,
+      não assuma compromissos em nome da Brazilian Nickel.</p>
     </div>
 
     <div class="duvida" id="duvida"></div>
@@ -659,11 +717,11 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
 
       <!-- 1. quem indica -->
       <div class="sec">
-        <div class="sec-h"><div class="sec-n">1</div><div class="sec-t">Quem está indicando</div></div>
+        <div class="sec-h"><div class="sec-n">1</div><div class="sec-t" data-en="Who is submitting">Quem está indicando</div></div>
         <div class="grid">
           <div class="f wide" data-campo="colaborador">
-            <label for="colaborador">Seu nome completo<span class="req">*</span></label>
-            <div class="hint">Escreva como está no crachá, para o RH saber quem indicou.</div>
+            <label for="colaborador" data-en="Your full name">Seu nome completo<span class="req">*</span></label>
+            <div class="hint" data-en="Write it as it appears on your badge, so HR knows who submitted it.">Escreva como está no crachá, para o RH saber quem indicou.</div>
             <input id="colaborador" name="colaborador" type="text" autocomplete="name" placeholder="Nome e sobrenome" maxlength="120">
             <div class="nota" id="avisoLogin">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -676,23 +734,23 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
 
       <!-- 2. que tipo de parceria -->
       <div class="sec">
-        <div class="sec-h"><div class="sec-n">2</div><div class="sec-t">Que tipo de parceria é</div></div>
+        <div class="sec-h"><div class="sec-n">2</div><div class="sec-t" data-en="Type of partnership">Que tipo de parceria é</div></div>
         <div class="grid">
           <div class="f wide" data-campo="tipo">
-            <label>Tipo de parceria<span class="req">*</span></label>
-            <div class="hint">A resposta aqui decide o resto do formulário, por isso ela vem antes.</div>
+            <label data-en="Type of partnership">Tipo de parceria<span class="req">*</span></label>
+            <div class="hint" data-en="This answer shapes the rest of the form, which is why it comes first.">A resposta aqui decide o resto do formulário, por isso ela vem antes.</div>
             <div class="ops duas" id="opsTipo" role="group" aria-label="Tipo de parceria"></div>
             <div class="err" id="e_tipo"></div>
           </div>
           <div class="f wide" data-campo="tipoOutro" hidden>
-            <label for="tipoOutro">Que tipo de parceria é?<span class="req">*</span></label>
+            <label for="tipoOutro" data-en="What kind of partnership is it?">Que tipo de parceria é?<span class="req">*</span></label>
             <div class="hint">Você marcou "Outros": escreva em poucas palavras do que se trata.</div>
             <input id="tipoOutro" name="tipoOutro" type="text" placeholder="Exemplo: escola de idiomas" maxlength="80">
             <div class="err" id="e_tipoOutro"></div>
           </div>
           <div class="f wide" data-campo="atendimento" hidden>
-            <label>Como o colaborador usa o benefício?<span class="req">*</span></label>
-            <div class="hint">Vai escrito no card: é assim que o colaborador sabe se precisa ir até lá.</div>
+            <label data-en="How does the employee use the benefit?">Como o colaborador usa o benefício?<span class="req">*</span></label>
+            <div class="hint" data-en="This appears on the card: it tells the employee whether they need to go there in person.">Vai escrito no card: é assim que o colaborador sabe se precisa ir até lá.</div>
             <div class="ops" id="opsAtendimento" role="group" aria-label="Como o colaborador usa o benefício"></div>
             <div class="err" id="e_atendimento"></div>
           </div>
@@ -701,11 +759,11 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
 
       <!-- 3. o estabelecimento -->
       <div class="sec">
-        <div class="sec-h"><div class="sec-n">3</div><div class="sec-t">O estabelecimento e onde vale</div></div>
+        <div class="sec-h"><div class="sec-n">3</div><div class="sec-t" data-en="The establishment and where it applies">O estabelecimento e onde vale</div></div>
         <div class="grid">
           <div class="f wide" data-campo="estab">
-            <label for="estab">Nome do estabelecimento<span class="req">*</span></label>
-            <div class="hint">O nome pelo qual as pessoas conhecem o lugar.</div>
+            <label for="estab" data-en="Name of the establishment">Nome do estabelecimento<span class="req">*</span></label>
+            <div class="hint" data-en="The name people know the place by.">O nome pelo qual as pessoas conhecem o lugar.</div>
             <input id="estab" name="estab" type="text" placeholder="Exemplo: Madame Underground Club" maxlength="140">
             <div class="err" id="e_estab"></div>
           </div>
@@ -716,15 +774,15 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
                Endereço continua OPCIONAL (rede sem endereço para listar): vazio, o card
                diz para consultar na internet. -->
           <div class="f wide" data-campo="unidades">
-            <label>Em que cidade o benefício vale?<span class="req">*</span></label>
+            <label data-en="Where does the benefit apply?">Em que cidade o benefício vale?<span class="req">*</span></label>
             <div class="hint">Pode marcar mais de uma. São as cidades que já existem no Clube de
             Parcerias; se for outra, marque a última opção e escreva o nome.</div>
             <div class="ops duas" id="opsUnidades" role="group" aria-label="Em que cidade o benefício vale"></div>
             <div class="err" id="e_unidades"></div>
           </div>
           <div class="f wide" data-campo="cidadeOutra" hidden>
-            <label for="cidadeOutra">Qual cidade?<span class="req">*</span></label>
-            <div class="hint">Escreva a cidade e o estado. Ela ainda não existe no Clube de
+            <label for="cidadeOutra" data-en="Which city?">Qual cidade?<span class="req">*</span></label>
+            <div class="hint" data-en="Write the city and state. It does not exist in the Partnership Club yet, so HR will need to create the section.">Escreva a cidade e o estado. Ela ainda não existe no Clube de
             Parcerias, então o RH vai precisar criar a seção.</div>
             <input id="cidadeOutra" name="cidadeOutra" type="text" placeholder="Exemplo: Petrolina - PE" maxlength="80">
             <div class="err" id="e_cidadeOutra"></div>
@@ -735,16 +793,16 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
                que preencher. Desmarcar limpa o valor: campo escondido com
                conteúdo dentro é o jeito clássico de mandar dado que ninguém viu. -->
           <div class="f wide" data-campo="endereco">
-            <label class="tem"><input type="checkbox" id="temEndereco"><span>O estabelecimento tem endereço fixo para informar</span></label>
+            <label class="tem"><input type="checkbox" id="temEndereco"><span data-en="The establishment has a fixed address to report">O estabelecimento tem endereço fixo para informar</span></label>
             <div class="tem-corpo" id="blocoEndereco" hidden>
-              <div class="hint" id="hintEndereco">Um endereço por linha, dentro da cidade correspondente. Rede com
+              <div class="hint" id="hintEndereco" data-en="One address per line, inside the matching city. Chains with several branches: one line per branch.">Um endereço por linha, dentro da cidade correspondente. Rede com
                 várias unidades: uma linha por unidade.</div>
               <div class="hr-campo" id="enderecos"></div>
               <div class="err" id="e_endereco"></div>
             </div>
           </div>
           <div class="f" data-campo="site">
-            <label class="tem"><input type="checkbox" id="temSite"><span>Tem site</span></label>
+            <label class="tem"><input type="checkbox" id="temSite"><span data-en="Has a website">Tem site</span></label>
             <div class="tem-corpo" id="blocoSite" hidden>
               <input id="site" name="site" type="text" inputmode="url" placeholder="www.exemplo.com.br" maxlength="180"
                      aria-label="Endereço do site">
@@ -752,7 +810,7 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
             </div>
           </div>
           <div class="f" data-campo="social">
-            <label class="tem"><input type="checkbox" id="temSocial"><span>Tem rede social</span></label>
+            <label class="tem"><input type="checkbox" id="temSocial"><span data-en="Has social media">Tem rede social</span></label>
             <div class="tem-corpo" id="blocoSocial" hidden>
               <input id="social" name="social" type="text" placeholder="@estabelecimento" maxlength="180"
                      aria-label="Perfil em rede social">
@@ -760,9 +818,9 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
             </div>
           </div>
           <div class="f wide" data-campo="horario">
-            <label class="tem"><input type="checkbox" id="temHorario"><span>Sei o horário de atendimento</span></label>
+            <label class="tem"><input type="checkbox" id="temHorario"><span data-en="I know the opening hours">Sei o horário de atendimento</span></label>
             <div class="tem-corpo" id="blocoHorario" hidden>
-              <div class="hint">Dias e horários em que o estabelecimento atende. É possível acrescentar mais de uma faixa.</div>
+              <div class="hint" data-en="Days and hours when the establishment is open. You can add more than one range.">Dias e horários em que o estabelecimento atende. É possível acrescentar mais de uma faixa.</div>
               <div class="hr-campo" id="horario"></div>
               <div class="err" id="e_horario"></div>
             </div>
@@ -772,12 +830,16 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
 
       <!-- 4. contato no estabelecimento -->
       <div class="sec">
-        <div class="sec-h"><div class="sec-n">4</div><div class="sec-t">Com quem você falou</div></div>
+        <div class="sec-h"><div class="sec-n">4</div><div class="sec-t" data-en="Contact at the establishment">Contato no estabelecimento</div></div>
         <div class="grid">
           <div class="f wide" data-campo="contatoNome">
-            <label for="contatoNome">Nome do contato no estabelecimento<span class="req">*</span></label>
-            <div class="hint">A pessoa com quem você conversou sobre a parceria: dono, gerente,
-            responsável.</div>
+            <label for="contatoNome" data-en="Name of the contact at the establishment">Nome do contato no estabelecimento<span class="req">*</span></label>
+            <!-- 🔴 DIZER QUEM SERÁ PROCURADO (pedido dele, 17/09): quem preenche precisa
+                 saber que está indicando uma PESSOA para receber o contato do RH, e
+                 avisá-la. Sem isso o RH liga para alguém que não esperava a ligação. -->
+            <div class="hint" data-en="<b>This is the person HR will contact</b> to discuss the partnership: the owner, manager or person in charge. Give someone with authority to negotiate, and let them know HR will be in touch."><b>É esta a pessoa que o RH vai procurar</b> para tratar da parceria:
+            proprietário, gerente ou responsável pelo estabelecimento. Informe alguém que tenha
+            autonomia para negociar e avise essa pessoa de que o RH entrará em contato.</div>
             <input id="contatoNome" name="contatoNome" type="text" placeholder="Nome de quem te atendeu" maxlength="120">
             <div class="err" id="e_contatoNome"></div>
           </div>
@@ -789,12 +851,12 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
                 <span id="parTxt"></span>
               </div>
               <div class="f" data-campo="contatoEmail">
-                <label for="contatoEmail">E-mail do contato</label>
+                <label for="contatoEmail" data-en="Contact e-mail">E-mail do contato</label>
                 <input id="contatoEmail" name="contatoEmail" type="email" inputmode="email" placeholder="contato@estabelecimento.com" maxlength="140">
                 <div class="err" id="e_contatoEmail"></div>
               </div>
               <div class="f" data-campo="contatoFone">
-                <label for="contatoFone">Telefone ou WhatsApp do contato</label>
+                <label for="contatoFone" data-en="Contact phone or WhatsApp">Telefone ou WhatsApp do contato</label>
                 <input id="contatoFone" name="contatoFone" type="tel" inputmode="numeric" placeholder="(00) 00000-0000" maxlength="16">
                 <div class="err" id="e_contatoFone"></div>
               </div>
@@ -806,15 +868,15 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
 
       <!-- 5. a condição combinada -->
       <div class="sec">
-        <div class="sec-h"><div class="sec-n">5</div><div class="sec-t">A condição combinada</div></div>
+        <div class="sec-h"><div class="sec-n">5</div><div class="sec-t" data-en="The terms discussed">A condição combinada</div></div>
         <div class="grid">
           <div class="f wide destaque" data-campo="condicao">
             <div class="rot">
-              <label for="condicao">Qual é a condição?<span class="req">*</span></label>
+              <label for="condicao" data-en="What are the terms?">Qual é a condição?<span class="req">*</span></label>
               <button type="button" class="ajuda-btn" data-ajuda="condicao" aria-expanded="false"
                       aria-controls="aj_condicao" aria-label="O que escrever na condição">?</button>
             </div>
-            <div class="hint">Escreva com a maior quantidade de detalhes.</div>
+            <div class="hint" data-en="Describe it in as much detail as possible.">Escreva com a maior quantidade de detalhes.</div>
             <div class="ajuda" id="aj_condicao" hidden>
               <h4>O que escrever aqui</h4>
               <p>Quanto mais detalhe você puser aqui, menos o RH precisa voltar ao estabelecimento para
@@ -841,17 +903,22 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
                que faz o colaborador ser atendido sem constrangimento no balcão. -->
           <div class="f wide" data-campo="comoUsar">
             <label>Como utilizar o benefício <span class="opt">(opcional)</span></label>
-            <div class="hint">Uma etapa por linha, na ordem. No card elas aparecem numeradas.</div>
+            <div class="hint" data-en="One step per line, in order. They appear numbered on the card.">Uma etapa por linha, na ordem. No card elas aparecem numeradas.</div>
             <div class="hr-campo" id="comoUsar"></div>
             <div class="err" id="e_comoUsar"></div>
           </div>
           <div class="f wide" data-campo="evidencia">
             <div class="rot">
-              <label>Evidência da parceria <span class="opt">(opcional)</span></label>
+              <label data-en="Evidence of the conversation <span class=&quot;opt&quot;>(optional)</span>">Evidência da conversa <span class="opt">(opcional)</span></label>
               <button type="button" class="ajuda-btn" data-ajuda="evidencia" aria-expanded="false"
                       aria-controls="aj_evidencia" aria-label="O que serve de evidência">?</button>
             </div>
-            <div class="hint">Print da conversa, foto, e-mail, proposta.</div>
+            <!-- 🔴 POR QUE A EVIDÊNCIA EXISTE (pedido dele, 17/09): sem dizer para que
+                 serve, ela lê como desconfiança de quem indica. O motivo é outro: ela
+                 poupa uma rodada inteira de conversa com o estabelecimento. -->
+            <div class="hint" data-en="A screenshot, photo, e-mail or proposal. <b>It lets HR pick the negotiation up where you left it</b> instead of starting over, and records what was discussed. It is optional, stays with HR and never appears in the Partnership Club.">Print da conversa, foto, e-mail ou proposta. <b>Serve para o RH retomar a
+            negociação de onde você parou</b>, em vez de começar do zero, e para registrar o que foi
+            conversado. É opcional e fica restrita ao RH: não aparece no Clube de Parcerias.</div>
             <div class="ajuda" id="aj_evidencia" hidden>
               <h4>O que serve de evidência</h4>
               <p>Qualquer coisa que mostre que a conversa aconteceu e o que foi combinado:</p>
@@ -868,7 +935,7 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
             <div class="arq" id="arq">
               <div class="arq-lista" id="arqLista" hidden></div>
               <div id="arqVazio">
-                <label class="arq-btn" for="evidencia" id="arqBtn">Escolher arquivos</label>
+                <label class="arq-btn" for="evidencia" id="arqBtn" data-en="Choose files">Escolher arquivos</label>
                 <input id="evidencia" name="evidencia" type="file" multiple>
                 <div class="arq-dica" id="arqDica"></div>
               </div>
@@ -881,7 +948,7 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
 
       <!-- ===================== LEIA ANTES DE ENVIAR ===================== -->
       <div class="sec">
-        <div class="sec-h"><div class="sec-n">6</div><div class="sec-t">Leia antes de enviar</div></div>
+        <div class="sec-h"><div class="sec-n">6</div><div class="sec-t" data-en="Read before submitting">Leia antes de enviar</div></div>
         <div class="f" data-campo="consent">
           <div class="consent" id="consent">
             <div class="consent-top">
@@ -911,16 +978,17 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
   <!-- ===================== SUCESSO ===================== -->
   <div id="sucesso" class="card">
     <svg class="check" viewBox="0 0 60 60"><circle cx="30" cy="30" r="27"/><path d="M18 31l8.5 8.5L43 22"/></svg>
-    <h2>Indicação enviada</h2>
+    <h2 data-en="Suggestion submitted">Indicação enviada</h2>
     <p class="txt" id="sucTxt"></p>
     <div class="resumo" id="sucResumo"></div>
-    <p class="sair" id="podeSair">Obrigado por indicar. Você já pode sair desta página.</p>
+    <p class="sair" id="podeSair" data-en="Thank you for the suggestion. HR will assess the contact and follow up on its progress. You can close this page now.">Obrigado pela indicação. O RH avaliará o contato e dará retorno
+    sobre o andamento. Você já pode fechar esta página.</p>
     <div class="suc-acoes">
       <!-- 🔴 O CAMINHO DE VOLTA (pedido dele, 17/09): quem acabou de indicar é
            exatamente quem quer ver o que já existe no Clube. Sem este botão a
            página terminava num beco. -->
-      <a class="suc-app" id="btnVerApp" href="#" target="_blank" rel="noopener">Ver as parcerias do Clube</a>
-      <button type="button" id="btnOutra">Indicar outra parceria</button>
+      <a class="suc-app" id="btnVerApp" href="#" target="_blank" rel="noopener" data-en="See the Club partners">Ver as parcerias do Clube</a>
+      <button type="button" id="btnOutra" data-en="Submit another suggestion">Indicar outra parceria</button>
     </div>
     <div class="aviso" id="avisoSucesso"></div>
   </div>
@@ -2818,6 +2886,89 @@ function aplicarIdentidade(){
   return true;
 }
 
+/* ---------- IDIOMA: português e inglês (pedido dele, 17/09) ----------------
+   🔴 O PORTUGUÊS CONTINUA SENDO O TEXTO DO ARQUIVO. O inglês mora no atributo
+   `data-en` de cada elemento e só é aplicado quando alguém escolhe; ao voltar
+   para o português, o texto original é reposto de `data-pt`, guardado na
+   primeira troca. Foi assim, e não reescrevendo o HTML, porque a bateria mede
+   as frases da tela: um arquivo com duas versões de tudo deixaria de ser
+   verificável, e o formulário é a peça onde um texto errado custa uma indicação.
+   O que NÃO tem tradução automática: mensagens escritas pela pessoa e o que o
+   RH publica. */
+var IDIOMAS = [{ cod:'pt', nome:'Português', curto:'PT' }, { cod:'en', nome:'English', curto:'EN' }];
+function idiomaAtual(){
+  var l = document.documentElement.getAttribute('lang') || '';
+  return l.indexOf('en') === 0 ? 'en' : 'pt';
+}
+function aplicarIdioma(cod){
+  var ing = cod === 'en';
+  Array.prototype.forEach.call(document.querySelectorAll('[data-en]'), function(e){
+    if(e.dataset.pt === undefined) e.dataset.pt = e.innerHTML;
+    e.innerHTML = ing ? e.dataset.en : e.dataset.pt;
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-en-ph]'), function(e){
+    if(e.dataset.ptPh === undefined) e.dataset.ptPh = e.getAttribute('placeholder') || '';
+    e.setAttribute('placeholder', ing ? e.dataset.enPh : e.dataset.ptPh);
+  });
+  document.documentElement.setAttribute('lang', ing ? 'en' : 'pt-BR');
+  var at = document.getElementById('langAtual');
+  if(at) at.textContent = ing ? 'EN' : 'PT';
+  return cod;
+}
+function definirIdioma(cod, salvar){
+  /* 🔴 `salvar` é falso no arranque: gravar "pt" antes de a pessoa responder
+     fazia o convite aparecer uma vez na vida e nunca mais. */
+  aplicarIdioma(cod);
+  if(salvar !== false){ try{ localStorage.setItem('cp-lang', cod); }catch(e){} }
+  pintarMenuDeIdioma();
+  return cod;
+}
+function pintarMenuDeIdioma(){
+  var m = document.getElementById('langMenu'); if(!m) return false;
+  m.innerHTML = '';
+  IDIOMAS.forEach(function(x){
+    var b = document.createElement('button'); b.type = 'button';
+    b.setAttribute('role','menuitemradio'); b.dataset.idioma = x.cod;
+    b.setAttribute('aria-checked', idiomaAtual() === x.cod ? 'true' : 'false');
+    b.innerHTML = '<span class="lg-dot"></span>' + x.nome;
+    b.addEventListener('click', function(){ definirIdioma(x.cod); fecharMenuDeIdioma(); });
+    m.appendChild(b);
+  });
+  return true;
+}
+function abrirMenuDeIdioma(){
+  var m = document.getElementById('langMenu'); if(!m) return false;
+  if(!m.hidden){ fecharMenuDeIdioma(); return false; }
+  pintarMenuDeIdioma(); m.hidden = false;
+  document.getElementById('langBtn').setAttribute('aria-expanded','true');
+  return true;
+}
+function fecharMenuDeIdioma(){
+  var m = document.getElementById('langMenu'); if(!m) return false;
+  m.hidden = true;
+  document.getElementById('langBtn').setAttribute('aria-expanded','false');
+  return true;
+}
+function ligarIdioma(){
+  var bt = document.getElementById('langBtn');
+  if(bt){
+    bt.addEventListener('click', abrirMenuDeIdioma);
+    document.addEventListener('click', function(ev){
+      if(!ev.target.closest('#langMenu') && !ev.target.closest('#langBtn')) fecharMenuDeIdioma();
+    });
+  }
+  var salvo = null; try{ salvo = localStorage.getItem('cp-lang'); }catch(e){}
+  if(salvo === 'pt' || salvo === 'en'){ definirIdioma(salvo); return salvo; }
+  definirIdioma('pt', false);
+  var ov = document.getElementById('ovLang');
+  if(ov){
+    ov.hidden = false;
+    document.getElementById('btnLangPt').addEventListener('click', function(){ definirIdioma('pt'); ov.hidden = true; });
+    document.getElementById('btnLangEn').addEventListener('click', function(){ definirIdioma('en'); ov.hidden = true; });
+  }
+  return null;
+}
+
 /* ---------- tema claro e escuro ----------
    Mesmo mecanismo e MESMA chave do app Clube de Parceiros (`cp-theme`).
    Sem escolha salva, quem manda é o aparelho. */
@@ -3030,6 +3181,7 @@ function ligar(){
   montarCampoDeEnderecos();
   montarCampoDeEtapas();
   ligarInterruptores();
+  ligarIdioma();
 
   // leitura obrigatória do texto
   $('btnLerTermo').addEventListener('click', abrirTermo);
@@ -4159,6 +4311,47 @@ function selftest(){
     pintarUnidades(); montarCampoDeEtapas();
   })();
 
+  out.push('== Português e inglês (17/09) ==');
+  (function(){
+    var antes = idiomaAtual(), salvo = null;
+    try{ salvo = localStorage.getItem('cp-lang'); }catch(e){}
+    var marcados = document.querySelectorAll('[data-en]').length;
+    out.push('       elementos com tradução: ' + marcados);
+    t('★ o formulário tem os dois idiomas: há texto em inglês guardado na marcação',
+      marcados >= 15 && !!document.querySelector('.capa h1[data-en]'), marcados + ' elementos');
+    t('★ e o português continua sendo o texto do arquivo, não uma tradução aplicada por cima',
+      document.querySelector('.capa h1').textContent.trim() === 'Indicação de parceria');
+    t('o convite de idioma existe, com as duas opções', !!$('ovLang') && !!$('btnLangPt') && !!$('btnLangEn'));
+    t('e o seletor fica no cabeçalho, ao lado do botão de tema',
+      !!$('langBtn') && $('langBtn').closest('.capa') === $('temaBtn').closest('.capa'));
+    definirIdioma('en');
+    t('★ escolhendo English, a capa e as seções passam para o inglês',
+      document.querySelector('.capa h1').textContent.trim() === 'Partnership suggestion' &&
+      /Who is submitting/.test(document.body.textContent) &&
+      document.documentElement.getAttribute('lang') === 'en',
+      document.querySelector('.capa h1').textContent);
+    t('e o botão do topo passa a dizer EN', $('langAtual').textContent === 'EN');
+    t('★ a explicação do que acontece depois do envio também vira inglês',
+      /HR contacts the establishment, negotiates the terms and decides/i.test(document.body.textContent));
+    definirIdioma('pt');
+    t('★ voltando ao português, o texto original é reposto letra por letra',
+      document.querySelector('.capa h1').textContent.trim() === 'Indicação de parceria' &&
+      /Quem está indicando/.test(document.body.textContent) &&
+      document.documentElement.getAttribute('lang') === 'pt-BR');
+    abrirMenuDeIdioma();
+    var ops = Array.prototype.map.call($('langMenu').querySelectorAll('button'), function(b){
+      return b.textContent.trim() + (b.getAttribute('aria-checked') === 'true' ? '*' : ''); });
+    t('★ o menu lista Português e English, com o atual marcado',
+      !$('langMenu').hidden && ops.join('|') === 'Português*|English', ops.join('|'));
+    fecharMenuDeIdioma();
+    t('e fecha', $('langMenu').hidden === true);
+    /* 🔴 a chave é a MESMA do app: quem escolheu inglês lá não escolhe de novo aqui */
+    t('★ a escolha fica na chave `cp-lang`, a mesma do Clube de Parceiros',
+      String(definirIdioma).indexOf("'cp-lang'") >= 0);
+    definirIdioma(antes);
+    try{ if(salvo === null) localStorage.removeItem('cp-lang'); else localStorage.setItem('cp-lang', salvo); }catch(e){}
+  })();
+
   out.push('== Vocabulário dos tipos ==');
   (function(){
     var codigos = TIPOS.map(function(x){ return x.cod; });
@@ -4200,17 +4393,22 @@ function selftest(){
   out.push('== Texto da tela ==');
   (function(){
     function limpo(el){ return el.textContent.replace(/\s+/g,' ').trim(); }
-    t('a tela diz que indicar não é fechar',
-      /Indicar não é fechar/.test(limpo($('regras'))));
-    t('a tela diz que quem confirma a parceria é o RH',
-      /acerta os detalhes e confirma a parceria é o RH/i.test(limpo($('regras'))));
-    t('e diz, em português simples, que indicar é só avisar',
-      /Você só está avisando o RH/i.test(limpo($('regras'))));
-    t('pede pelo menos um contato DO RESPONSÁVEL',
-      /Um contato do responsável: e-mail ou telefone, pelo menos um dos dois/i.test(limpo($('regras'))));
-    t('fala de quem você FIRMOU a parceria, não de "quem você falou lá"',
-      /de quem você firmou a parceria/i.test(limpo($('regras'))) &&
-      /quem você falou lá/i.test(limpo($('regras'))) === false);
+    /* 🔴 17/09: o texto foi revisto para tom corporativo e para DIZER O QUE
+       ACONTECE DEPOIS. As asserções seguem cobrando a mesma ideia, com as
+       palavras novas: indicar não formaliza, quem decide é o RH, e a parceria
+       pode não se confirmar. */
+    t('★ a tela diz que indicar NÃO formaliza a parceria',
+      /não formaliza a parceria/i.test(limpo($('regras'))));
+    t('★ e diz que quem negocia e decide é o RH',
+      /RH entra em contato com o estabelecimento, negocia as condições e decide/i.test(limpo($('regras'))));
+    t('★ e avisa, sem rodeio, que a parceria pode não sair: é o que evita promessa em nome da empresa',
+      /pode não se confirmar/i.test(limpo($('regras'))) &&
+      /não assuma compromissos em nome da Brazilian Nickel/i.test(limpo($('regras'))));
+    t('pede pelo menos um contato DESSA PESSOA',
+      /Um contato dessa pessoa: e-mail ou telefone, pelo menos um dos dois/i.test(limpo($('regras'))));
+    t('fala da pessoa com quem você CONVERSOU, e não de quem "firmou" a parceria',
+      /o nome da pessoa com quem você conversou/i.test(limpo($('regras'))) &&
+      /firmou a parceria/i.test(limpo($('regras'))) === false);
     t('o e-mail do RH da tela sai da configuração',
       limpo($('duvida')).indexOf(REGRAS.contatoRH) >= 0);
     t('as etiquetas de tipo saem da MESMA lista do formulário',
@@ -4374,8 +4572,15 @@ function selftest(){
     var dicaCond = campoEl('condicao').querySelector('.hint').textContent.replace(/\s+/g,' ').trim();
     var dicaEvi  = campoEl('evidencia').querySelector('.hint').textContent.replace(/\s+/g,' ').trim();
     out.push('       dica na tela: condição ' + dicaCond.length + ' caracteres · evidência ' + dicaEvi.length);
-    t('a dica de tela ficou curta, o detalhe foi para a ajuda',
-      dicaCond.length > 0 && dicaCond.length <= 60 && dicaEvi.length > 0 && dicaEvi.length <= 60);
+    /* 🔴 17/09: a dica da evidência deixou de ser só "print, foto, e-mail" e
+       passou a dizer PARA QUE ela serve (pedido dele): sem isso ela lia como
+       desconfiança de quem indica. Ficou maior de propósito; a da condição, que
+       tem painel de ajuda ao lado, continua curta. */
+    t('a dica da condição é curta, porque o detalhe mora na ajuda ao lado',
+      dicaCond.length > 0 && dicaCond.length <= 60, dicaCond.length + ' letras');
+    t('★ e a da evidência explica PARA QUE ela serve, em vez de só listar formatos',
+      /retomar a negociação de onde você parou/i.test(dicaEvi) && /restrita ao RH/i.test(dicaEvi),
+      dicaEvi.slice(0, 70));
     var txt = $('aj_condicao').textContent.replace(/\s+/g,' ');
     t('a ajuda da condição cobra as 4 coisas',
       /Quanto/.test(txt) && /Sobre o quê/.test(txt) && /Quando vale/.test(txt) && /apresenta/.test(txt));

@@ -130,16 +130,35 @@ def lista_de_etapas(card):
     return out[:8]
 
 
+def d(pt, en):
+    """🔴 O PAR DE TEXTOS (17/09): os dois vivem na página e o idioma escolhido
+    esconde um deles por CSS. Assim a página continua funcionando sem script, e
+    em português, que é o idioma do documento."""
+    return '<span class="i18 lg-pt">%s</span><span class="i18 lg-en">%s</span>' % (pt, en)
+
+
+def nome_bi(cidade):
+    """🔴 só as ABRANGÊNCIAS têm nome em inglês (17/09): "Belo Horizonte" não se
+    traduz, "Brasil (todo o país)" sim, porque ali o nome é um rótulo nosso."""
+    pt = escape(cidade["nome"])
+    en = cidade.get("nome_en")
+    return d(pt, escape(en)) if en else pt
+
+
 def card_html(c, cidade):
     tipo = c.get("tipo") if c.get("tipo") in CATN else "outros"
     card = c.get("card") or {}
     estab = (c.get("estab") or "").strip()
     titulo = (card.get("titulo") or "").strip()
     pendente = "" if titulo else " pendente"
-    cond = titulo or "Condições a confirmar"
+    cond = escape(titulo) if titulo else d("Condições a confirmar", "Terms to be confirmed")
     cls_logo, ico = icone_html(card, tipo)
     linhas = []
-    def linha(simbolo, txt, href=None):
+    def linha(simbolo, txt, href=None, bruto=None):
+        """`bruto` já vem com marcação (o par de idiomas); `txt` é texto puro"""
+        if bruto:
+            linhas.append('          <div class="d-row"><svg class="ic"><use href="#i-%s"/></svg><span class="d-txt">%s</span></div>' % (simbolo, bruto))
+            return
         if not txt: return
         if href:
             # 🔴 ENDEREÇO É LINK (16/09): a própria linha abre o mapa; saiu o botão
@@ -155,13 +174,15 @@ def card_html(c, cidade):
     # 🔴 ENDEREÇO DENTRO DA CIDADE (16/09): esta seção é UMA cidade, então só os
     # endereços dela entram; endereço sem cidade (dado antigo) entra em todas.
     ends = [e for e in lista_de_enderecos(card) if not e["cidade"] or e["cidade"] == cidade["cod"]]
-    if not ends: linha("pin", ENDERECO_PADRAO)
+    if not ends: linha("pin", None, None, d("Consultar endereço na internet", "Check the address online"))
     for e in ends:
         end = e["endereco"]
         q = end if slug(cidade["nome"]) in slug(end) else end + ", " + cidade["nome"]
         linha("pin", end, "https://www.google.com/maps/search/?api=1&query=" + urllib.request.quote(q))
     # sem horário no formulário nem no card, o texto padrão (o MESMO do painel)
-    linha("clock", (card.get("horario") or "").strip() or HORARIO_PADRAO)
+    hora = (card.get("horario") or "").strip()
+    if hora: linha("clock", hora)
+    else: linha("clock", None, None, d("Consultar horário de funcionamento", "Check the opening hours"))
     # 🔴 O NÚMERO APARECE SEMPRE (16/09), como o endereço e o horário. Antes ele
     # só existia dentro do botão de WhatsApp, então quem não usa WhatsApp, ou
     # está no computador, não tinha o número: o card guardava e não mostrava.
@@ -178,8 +199,9 @@ def card_html(c, cidade):
     # isso não vira mais uma linha com ícone no meio das informações.
     etapas = lista_de_etapas(card)
     if etapas:
-        linhas.append('          <div class="p-como"><div class="p-como-t">Como usar o benefício</div><ol class="p-como-l">%s</ol></div>'
-                      % "".join("<li>%s</li>" % escape(e) for e in etapas))
+        linhas.append('          <div class="p-como"><div class="p-como-t">%s</div><ol class="p-como-l">%s</ol></div>'
+                      % (d("Como usar o benefício", "How to use it"),
+                         "".join("<li>%s</li>" % escape(e) for e in etapas)))
     return '''    <article class="p-card" data-nome="%(nome)s" data-ramo="%(ramo)s" data-cat="%(tipo)s" data-cidade="%(cidade)s" data-uf="%(uf)s">
       <div class="p-agua" aria-hidden="true"><svg class="ic"><use href="#i-%(tipo)s"/></svg></div>
       <details class="p-det">
@@ -196,7 +218,7 @@ def card_html(c, cidade):
     </article>
 ''' % {"nome": escape(estab, quote=True), "ramo": escape((CATN[tipo] + " " + (c.get("atendimento") or "")).strip(), quote=True),
        "tipo": tipo, "cidade": escape(cidade["nome"], quote=True), "uf": escape(cidade["uf"], quote=True),
-       "cls_logo": cls_logo, "ico": ico, "catn": escape(CATN[tipo]), "pend": pendente, "cond": escape(cond),
+       "cls_logo": cls_logo, "ico": ico, "catn": escape(CATN[tipo]), "pend": pendente, "cond": cond,
        "linhas": "\n".join(linhas)}
 
 
@@ -235,10 +257,11 @@ def gerar(template, grupos):
           <div class="city-name">%s%s</div>
           <div class="city-sub">%s</div>
         </div><svg class="ic chev"><use href="#i-chev"/></svg>
-      </a>''' % (sid, escape(cidade["nome"]), uf, plural(len(lista), "parceiro", "parceiros")))
+      </a>''' % (sid, nome_bi(cidade), uf, d(plural(len(lista), "parceiro", "parceiros"),
+                     plural(len(lista), "partner", "partners"))))
         secoes.append('''<!-- ==================== %s ==================== -->
 <section class="view" id="%s">
-  <a class="back-btn" href="#home"><svg class="ic"><use href="#i-back"/></svg>Todas as cidades</a>
+  <a class="back-btn" href="#home"><svg class="ic"><use href="#i-back"/></svg>%s</a>
   <div class="city-head">
     <h2>%s%s</h2>
     <div class="city-sub">%s</div>
@@ -248,11 +271,16 @@ def gerar(template, grupos):
 
 %s
   </div>
-  <div class="footnote"><b>Lembrete:</b> apresente o crachá funcional e informe o convênio com a Brazilian Nickel antes de fechar a compra. Descontos não são cumulativos com outras promoções, salvo indicação em contrário. As parcerias podem ser alteradas ou encerradas sem aviso prévio.</div>
+  <div class="footnote">%s</div>
 </section>
-''' % (escape(cidade["nome"].upper()), sid, escape(cidade["nome"]), uf,
-       plural(len(lista), "parceiro disponível nesta cidade", "parceiros disponíveis nesta cidade"),
-       "\n".join(card_html(c, cidade) for c in lista)))
+''' % (escape(cidade["nome"].upper()), sid,
+       d("Todas as localidades", "All locations"),
+       nome_bi(cidade), uf,
+       d(plural(len(lista), "parceiro disponível nesta localidade", "parceiros disponíveis nesta localidade"),
+         plural(len(lista), "partner available in this location", "partners available in this location")),
+       "\n".join(card_html(c, cidade) for c in lista),
+       d("<b>Lembrete:</b> apresente o crachá funcional e informe o convênio com a Brazilian Nickel antes de concluir a compra. As condições não são cumulativas com outras promoções, salvo indicação em contrário, e podem ser alteradas ou encerradas sem aviso prévio.",
+         "<b>Reminder:</b> present your employee badge and mention the Brazilian Nickel agreement before completing the purchase. Terms are not cumulative with other promotions unless stated otherwise, and may change or end without prior notice.")))
     s = template
     s = re.sub(r"<!-- GERADO:CIDADES -->.*?<!-- /GERADO:CIDADES -->", lambda _: "<!-- GERADO:CIDADES -->\n" + "\n".join(home) + "\n<!-- /GERADO:CIDADES -->", s, flags=re.S)
     s = re.sub(r"<!-- GERADO:SECOES -->.*?<!-- /GERADO:SECOES -->", lambda _: "<!-- GERADO:SECOES -->\n" + "\n".join(secoes) + "<!-- /GERADO:SECOES -->", s, flags=re.S)
