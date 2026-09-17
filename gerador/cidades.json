@@ -4,7 +4,7 @@
   {"cod": "CAF", "nome": "Campo Alegre do Fidalgo", "uf": "PI", "pais": "BR"},
   {"cod": "SJP", "nome": "São João do Piauí", "uf": "PI", "pais": "BR"},
   {"cod": "TOR", "nome": "Toronto", "uf": "ON", "pais": "CA"},
-  {"cod": "BRASIL", "nome": "Brasil", "uf": "BR", "ampla": true, "nome_en": "Brazil", "pais": "BR"},
-  {"cod": "CANADA", "nome": "Canadá", "uf": "CA", "ampla": true, "nome_en": "Canada", "pais": "CA"},
-  {"cod": "GLOBAL", "nome": "Global", "uf": "", "ampla": true, "nome_en": "Global"}
+  {"cod": "BRASIL", "nome": "Todo o Brasil", "uf": "BR", "ampla": true, "nome_en": "All Brazil", "pais": "BR"},
+  {"cod": "CANADA", "nome": "Todo o Canadá", "uf": "CA", "ampla": true, "nome_en": "All Canada", "pais": "CA"},
+  {"cod": "GLOBAL", "nome": "Qualquer lugar", "uf": "", "ampla": true, "nome_en": "Anywhere"}
 ]

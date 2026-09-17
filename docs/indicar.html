@@ -813,7 +813,7 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
                que preencher. Desmarcar limpa o valor: campo escondido com
                conteúdo dentro é o jeito clássico de mandar dado que ninguém viu. -->
           <div class="f wide" data-campo="endereco">
-            <label class="tem"><input type="checkbox" id="temEndereco"><span data-en="The establishment has an address for in-person service <span class=&quot;opt&quot;>(optional)</span>">O estabelecimento tem endereço de atendimento presencial <span class="opt">(opcional)</span></span></label>
+            <label class="tem"><input type="checkbox" id="temEndereco"><span data-en="The establishment has an address for service <span class=&quot;opt&quot;>(optional)</span>">O estabelecimento tem endereço de atendimento <span class="opt">(opcional)</span></span></label>
             <div class="tem-corpo" id="blocoEndereco" hidden>
               <div class="hint" id="hintEndereco" data-en="One address per line, inside the matching city. Chains with several branches: one line per branch.">Um endereço por linha, dentro da cidade correspondente. Rede com
                 várias unidades: uma linha por unidade.</div>
@@ -1121,9 +1121,11 @@ var UNIDADES = [
      uma cidade (loja on-line, rede nacional, assinatura internacional). Elas NÃO
      abrem endereço, porque endereço de "Brasil inteiro" não existe: o que o
      colaborador precisa saber ali é como usar, não onde ir. */
-  { cod:'BRASIL', nome:'Brasil', ampla:true },
-  { cod:'CANADA', nome:'Canadá', ampla:true },
-  { cod:'GLOBAL', nome:'Global', ampla:true },
+  /* `rotulo` é como a opção aparece na escolha: "Vale para todo o Brasil" diz o
+     que a marcação faz; "Brasil", solto no meio de cidades, parece mais uma. */
+  { cod:'BRASIL', nome:'Todo o Brasil', ampla:true, pais:'BR', rotulo:'Vale para todo o Brasil' },
+  { cod:'CANADA', nome:'Todo o Canadá', ampla:true, pais:'CA', rotulo:'Vale para todo o Canadá' },
+  { cod:'GLOBAL', nome:'Qualquer lugar', ampla:true, rotulo:'Vale em qualquer lugar' },
   { cod:'OUTRA', nome:'Outra cidade',               outra:true }
 ];
 /* abrangência ampla: vale em qualquer lugar daquele recorte, e por isso não tem
@@ -1317,7 +1319,7 @@ var R = { colaborador:'', identificadoPor:'digitado', colaboradorEmail:null,
           indicadorEmail:'', indicadorFone:'', semLogin:false,
           tipo:'', tipoOutro:'', atendimento:'', estab:'', enderecos:[],
           site:'', social:'', horario:'', comoUsar:[], contatoNome:'', contatoEmail:'', contatoFone:'',
-          unidades:[], cidadeOutra:'', cidadeOutraPais:'BR', condicao:'', consent:false };
+          unidades:[], cidadeOutra:'', cidadeOutraPais:'', condicao:'', consent:false };
 
 var arquivos = [];   // os File escolhidos, até REGRAS.evidenciaMax; nunca vão para o localStorage
 var termoLido = false;   // vira true quando a pessoa rola o texto até o fim
@@ -1372,6 +1374,14 @@ function enderecosDoPacote(){
   }).filter(function(e){ return validas.indexOf(e.cidade) >= 0; });
 }
 /* o nome da cidade para os títulos dos grupos; "outra" mostra o que foi digitado */
+/* 🔴 O PAÍS NA ETIQUETA (pedido dele, 17/09): "Belo Horizonte - BR". Com Toronto
+   na lista e com abrangências por país, a cidade solta deixou de dizer onde fica,
+   e é o país que decide quais benefícios alcançam aquela seção no app. */
+function rotuloDaUnidade(u){
+  if(!u) return '';
+  if(u.rotulo) return u.rotulo;
+  return u.pais ? u.nome + ' - ' + u.pais : u.nome;
+}
 function nomeDaCidade(cod){
   var u = unidadePorCod(cod);
   if(u && u.outra) return String(R.cidadeOutra||'').trim() || 'outra cidade';
@@ -1512,7 +1522,7 @@ function montarUnidades(){
     var q = document.createElement('span'); q.className = 'quad';
     q.innerHTML = '<svg viewBox="0 0 24 24"><path d="M4 12.5l5.5 5.5L20 7"/></svg>';
     var txt = document.createElement('span'); txt.className = 'nm';
-    txt.textContent = u.nome;
+    txt.textContent = rotuloDaUnidade(u);
     b.appendChild(q); b.appendChild(txt);
     b.addEventListener('click', function(){ alternarUnidade(u.cod); });
     box.appendChild(b);
@@ -1758,14 +1768,28 @@ function montarSeletorDePais(){
   var sel = document.getElementById('cidadeOutraPais');
   if(!sel) return false;
   sel.innerHTML = '';
+  /* 🔴 SEM PAÍS PADRÃO (pedido dele, 17/09): o seletor nasce vazio e a pessoa
+     escolhe. Com "Brasil" já marcado, quem indicasse fora do país passava reto
+     sem notar, e a cidade nascia com o país errado, que é pior que sem país
+     nenhum: errado ninguém vai conferir. */
+  var vazia = document.createElement('option');
+  vazia.value = ''; vazia.textContent = 'Selecione o país';
+  vazia.disabled = true;
+  if(!R.cidadeOutraPais) vazia.selected = true;
+  sel.appendChild(vazia);
   paisesParaEscolher().forEach(function(p){
     var o = document.createElement('option');
     o.value = p.cod; o.textContent = p.nome;
-    if(p.cod === (R.cidadeOutraPais || 'BR')) o.selected = true;
+    if(p.cod === R.cidadeOutraPais) o.selected = true;
     sel.appendChild(o);
   });
   if(!sel.__ligado){
-    sel.addEventListener('change', function(){ R.cidadeOutraPais = sel.value; atualizarProgresso(); });
+    sel.addEventListener('change', function(){
+      R.cidadeOutraPais = sel.value;
+      /* escolher o país tira o vermelho do campo na hora, como qualquer outro */
+      if(sel.value) marcar('cidadeOutra', respondido('cidadeOutra'), '');
+      atualizarProgresso();
+    });
     sel.__ligado = true;
   }
   return true;
@@ -2145,7 +2169,10 @@ function respondido(c){
     case 'contato':      return parResolvido();
     case 'retorno':      return contatoDoIndicadorResolvido();
     case 'unidades':     return R.unidades.length > 0;
-    case 'cidadeOutra':  return String(R.cidadeOutra||'').trim().length >= 3;
+    /* 🔴 cidade nova = nome E país: um sem o outro deixa a seção do app sem
+       saber a que país pertence, e o card de abrangência não a alcança. */
+    case 'cidadeOutra':  return String(R.cidadeOutra||'').trim().length >= 3 &&
+                                !!String(R.cidadeOutraPais||'').trim();
     case 'condicao':     return String(R.condicao||'').trim().length >= REGRAS.condicaoMinima;
     case 'consent':      return R.consent === true;
   }
@@ -2223,6 +2250,8 @@ function validar(){
 
   if(pediuOutraCidade()){
     if(String(R.cidadeOutra||'').trim().length < 3) p('cidadeOutra','Escreva o nome da cidade.');
+    else if(!String(R.cidadeOutraPais||'').trim())
+      p('cidadeOutra','Escolha o país dessa cidade: é ele que diz onde o benefício vale.');
     else marcar('cidadeOutra', true, '');
   }
 
@@ -2357,7 +2386,7 @@ function montarPacote(){
     cidadeOutra: pediuOutraCidade() ? String(R.cidadeOutra||'').trim() : null,
     /* 🔴 o país da cidade digitada (17/09): é ele que decide se um card de
        abrangência ("vale em todo o Brasil") entra nessa cidade no app. */
-    cidadeOutraPais: pediuOutraCidade() ? (String(R.cidadeOutraPais||'').trim() || 'BR') : null,
+    cidadeOutraPais: pediuOutraCidade() ? (String(R.cidadeOutraPais||'').trim() || null) : null,
     condicao: String(R.condicao).trim(),
     /* a caixa de "o contato sabe" saiu em 14/09: o aviso passou a ser o
        bloco de leitura no fim do formulário. Ver o LEIA-ME. */
@@ -2800,7 +2829,7 @@ function recomecar(){
   R = { colaborador:R.colaborador, indicadorEmail:R.indicadorEmail, indicadorFone:R.indicadorFone,
         tipo:'', tipoOutro:'', atendimento:'', estab:'',
         enderecos:[], site:'', social:'', horario:'', comoUsar:[], contatoNome:'', contatoEmail:'', contatoFone:'',
-        unidades:[], cidadeOutra:'', cidadeOutraPais:'BR', condicao:'', consent:false };
+        unidades:[], cidadeOutra:'', cidadeOutraPais:'', condicao:'', consent:false };
   arquivos = [];
   ['estab','site','social','contatoNome','contatoEmail','contatoFone','condicao','tipoOutro','cidadeOutra']
     .forEach(function(id){ $(id).value = ''; });
@@ -3740,7 +3769,14 @@ function selftest(){
       campoEl('cidadeOutra').offsetParent !== null);
     t('vazio, é barrado',                   validar().some(function(x){ return x.campo==='cidadeOutra'; }));
     R.cidadeOutra = 'Petrolina - PE';
-    t('preenchido, para de barrar',         validar().every(function(x){ return x.campo!=='cidadeOutra'; }));
+    /* 🔴 17/09: cidade nova precisa de NOME e PAÍS. Só o nome continua barrando,
+       porque sem país a seção do app não sabe a que país pertence e o card de
+       abrangência não a alcança. */
+    t('só com o nome, ainda barra, e a mensagem fala do país',
+      validar().some(function(x){ return x.campo === 'cidadeOutra' && /país/.test(x.msg); }),
+      (validar().filter(function(x){ return x.campo === 'cidadeOutra'; })[0] || {}).msg);
+    R.cidadeOutraPais = 'BR';
+    t('preenchido com nome e país, para de barrar', validar().every(function(x){ return x.campo!=='cidadeOutra'; }));
     t('e entra na conta do progresso',      camposAtivos().indexOf('cidadeOutra') >= 0);
     t('o pacote leva a cidade escrita à mão', montarPacote().cidadeOutra === 'Petrolina - PE');
     alternarUnidade('OUTRA');
@@ -4527,11 +4563,25 @@ function selftest(){
     t('★ sem "Outra cidade" marcada, o campo e o país ficam escondidos',
       campoEl('cidadeOutra').hidden === true);
     alternarUnidade('OUTRA'); revelarCidadeOutra();
+    /* 🔴 devolve o campo ao estado de chegada: um teste anterior já escolheu um
+       país para medir a validação, e sonda que mede o que OUTRO teste deixou não
+       mede o que a pessoa vê ao abrir a página. */
+    R.cidadeOutra = ''; R.cidadeOutraPais = ''; montarSeletorDePais();
     t('★ marcando "Outra cidade", aparecem o nome E o seletor de país',
       campoEl('cidadeOutra').hidden === false && !!$('cidadeOutraPais') &&
       $('cidadeOutraPais').options.length > 180);
-    t('★ e ele nasce em Brasil, que é onde estão todas as cidades do Clube hoje',
-      $('cidadeOutraPais').value === 'BR' && (R.cidadeOutraPais || 'BR') === 'BR');
+    /* 🔴 SEM PADRÃO (pedido dele, 17/09): com "Brasil" já marcado, quem indicasse
+       fora do país passava reto e a cidade nascia com o país errado, que é pior
+       que sem país nenhum, porque errado ninguém confere. */
+    t('★ o país NÃO vem escolhido: a pessoa tem de responder',
+      $('cidadeOutraPais').value === '' && !R.cidadeOutraPais &&
+      $('cidadeOutraPais').options[0].disabled === true &&
+      /Selecione o país/.test($('cidadeOutraPais').options[0].textContent));
+    R.cidadeOutra = 'Ottawa - ON';
+    t('★ e sem país o formulário não envia, mesmo com a cidade escrita',
+      validar().some(function(x){ return x.campo === 'cidadeOutra'; }) &&
+      respondido('cidadeOutra') === false &&
+      montarPacote().cidadeOutraPais === null);
     R.cidadeOutra = 'Ottawa - ON';
     $('cidadeOutraPais').value = 'CA';
     $('cidadeOutraPais').dispatchEvent(new Event('change'));
