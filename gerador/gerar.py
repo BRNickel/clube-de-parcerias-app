@@ -117,6 +117,19 @@ def lista_de_enderecos(card):
     return out
 
 
+def lista_de_etapas(card):
+    """🔴 as etapas do "como utilizar" (17/09), limpas pela MESMA regra do
+    formulário e do painel: oito no máximo, 140 letras cada, sem vazias."""
+    et = card.get("comoUsar")
+    if isinstance(et, str): et = [et] if et.strip() else []
+    if not isinstance(et, list): return []
+    out = []
+    for x in et:
+        v = re.sub(r"\s+", " ", str(x or "")).strip()[:140]
+        if v: out.append(v)
+    return out[:8]
+
+
 def card_html(c, cidade):
     tipo = c.get("tipo") if c.get("tipo") in CATN else "outros"
     card = c.get("card") or {}
@@ -160,6 +173,13 @@ def card_html(c, cidade):
     if fone_txt:
         wa = ('<a class="d-wa" target="_blank" rel="noopener" title="Abrir conversa no WhatsApp" aria-label="WhatsApp" href="https://wa.me/55%s"><svg class="ic"><use href="#i-wa"/></svg></a>' % fone) if (fone and card.get("whatsapp")) else ""
         linhas.append('          <div class="d-row"><svg class="ic"><use href="#i-phone"/></svg><span class="d-txt">%s%s</span></div>' % (escape(fone_txt), wa))
+    # 🔴 COMO USAR O BENEFÍCIO (17/09): bloco próprio, numerado, dentro do mesmo
+    # expandir. Ele responde a outra pergunta ("o que eu faço no balcão?") e por
+    # isso não vira mais uma linha com ícone no meio das informações.
+    etapas = lista_de_etapas(card)
+    if etapas:
+        linhas.append('          <div class="p-como"><div class="p-como-t">Como usar o benefício</div><ol class="p-como-l">%s</ol></div>'
+                      % "".join("<li>%s</li>" % escape(e) for e in etapas))
     return '''    <article class="p-card" data-nome="%(nome)s" data-ramo="%(ramo)s" data-cat="%(tipo)s" data-cidade="%(cidade)s" data-uf="%(uf)s">
       <div class="p-agua" aria-hidden="true"><svg class="ic"><use href="#i-%(tipo)s"/></svg></div>
       <details class="p-det">
@@ -184,14 +204,19 @@ def montar(cards, cidades_base):
     """cidades na ordem do painel; 'TODAS' entra em todas; código desconhecido
     (região digitada no painel) vira cidade própria, no fim"""
     por_cod = {c["cod"]: dict(c) for c in cidades_base}
-    ordem = [c["cod"] for c in cidades_base if c["cod"] != "TODAS"]
+    # 🔴 ABRANGÊNCIAS AMPLAS (17/09) vão para o FIM da lista: "Brasil" não é uma
+    # cidade onde alguém mora, é o recorte de quem vale em qualquer lugar. Quem
+    # abre o app procura a própria cidade primeiro.
+    comuns = [c["cod"] for c in cidades_base if c["cod"] != "TODAS" and not c.get("ampla")]
+    amplas = [c["cod"] for c in cidades_base if c.get("ampla")]
+    ordem = comuns
     extras = []
     for c in cards:
         for cod in c.get("cidades") or []:
             if cod not in por_cod and cod not in extras: extras.append(cod)
     extras.sort(key=lambda x: slug(x))
     for cod in extras: por_cod[cod] = {"cod": cod, "nome": cod, "uf": ""}
-    ordem += extras
+    ordem += extras + amplas
     grupos = []
     for cod in ordem:
         lista = [c for c in cards if cod in (c.get("cidades") or []) or "TODAS" in (c.get("cidades") or [])]
