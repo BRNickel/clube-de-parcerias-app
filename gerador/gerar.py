@@ -243,7 +243,16 @@ def montar(cards, cidades_base):
         for cod in c.get("cidades") or []:
             if cod not in por_cod and cod not in extras: extras.append(cod)
     extras.sort(key=lambda x: slug(x))
-    for cod in extras: por_cod[cod] = {"cod": cod, "nome": cod, "uf": ""}
+    # 🔴 A CIDADE DIGITADA TEM PAÍS (17/09): ele vem no card, em `paisesCidades`,
+    # e é o que decide se um benefício "válido em todo o Brasil" entra nela. Sem
+    # país a cidade ficava de fora dessas contas, em silêncio.
+    pais_de = {}
+    for c in cards:
+        for cod, pais in ((c.get("card") or {}).get("paisesCidades") or {}).items():
+            p = str(pais or "").strip().upper()
+            if len(p) == 2 and cod not in pais_de: pais_de[cod] = p
+    for cod in extras:
+        por_cod[cod] = {"cod": cod, "nome": cod, "uf": "", "pais": pais_de.get(cod, "")}
     ordem += extras + amplas
     grupos = []
 

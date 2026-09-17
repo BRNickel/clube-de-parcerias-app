@@ -788,10 +788,23 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
             <div class="err" id="e_unidades"></div>
           </div>
           <div class="f wide" data-campo="cidadeOutra" hidden>
-            <label for="cidadeOutra" data-en="Which city?">Qual cidade?<span class="req">*</span></label>
-            <div class="hint" data-en="Write the city and state. It does not exist in the Partnership Club yet, so HR will need to create the section.">Escreva a cidade e o estado. Ela ainda não existe no Clube de
-            Parcerias, então o RH vai precisar criar a seção.</div>
-            <input id="cidadeOutra" name="cidadeOutra" type="text" placeholder="Exemplo: Petrolina - PE" maxlength="80">
+            <label for="cidadeOutra" data-en="Which city?<span class=&quot;req&quot;>*</span>">Qual cidade?<span class="req">*</span></label>
+            <!-- 🔴 O PAÍS AO LADO DA CIDADE (pedido dele, 17/09): é ele que diz ao app
+                 se um benefício "válido em todo o Brasil" vale também nesta cidade
+                 nova. Sem ele a cidade nascia sem país e ficava de fora dessas
+                 contas, sem erro nenhum na tela. Nasce em Brasil, que é onde estão
+                 todas as cidades do Clube hoje. -->
+            <div class="hint" data-en="Write the city and state, and choose the country. It does not exist in the Partnership Club yet, so HR will need to create the section.">Escreva a cidade e o estado, e escolha o país. Ela ainda não existe no Clube
+            de Parcerias, então o RH vai precisar criar a seção.</div>
+            <div class="dupla">
+              <div>
+                <input id="cidadeOutra" name="cidadeOutra" type="text" placeholder="Exemplo: Petrolina - PE" maxlength="80"
+                       aria-label="Cidade e estado">
+              </div>
+              <div>
+                <select id="cidadeOutraPais" aria-label="País da cidade"></select>
+              </div>
+            </div>
             <div class="err" id="e_cidadeOutra"></div>
           </div>
           <!-- 🔴 CAIXA DE SELEÇÃO ANTES DO CAMPO (pedido dele, 17/09): quatro campos
@@ -1099,10 +1112,11 @@ var ATENDIMENTOS = [
    🔴 "Vale para todas" SAIU (decisão dele, 16/09): o endereço passou a
    morar dentro da cidade, e "todas" não tinha onde pendurar endereço. */
 var UNIDADES = [
-  { cod:'BHZ',   nome:'Belo Horizonte',            uf:'MG' },
-  { cod:'CGO',   nome:'Capitão Gervásio Oliveira', uf:'PI' },
-  { cod:'CAF',   nome:'Campo Alegre do Fidalgo',   uf:'PI' },
-  { cod:'SJP',   nome:'São João do Piauí',         uf:'PI' },
+  { cod:'BHZ',   nome:'Belo Horizonte',            uf:'MG', pais:'BR' },
+  { cod:'CGO',   nome:'Capitão Gervásio Oliveira', uf:'PI', pais:'BR' },
+  { cod:'CAF',   nome:'Campo Alegre do Fidalgo',   uf:'PI', pais:'BR' },
+  { cod:'SJP',   nome:'São João do Piauí',         uf:'PI', pais:'BR' },
+  { cod:'TOR',   nome:'Toronto',                   uf:'ON', pais:'CA' },
   /* 🔴 ABRANGÊNCIAS AMPLAS (pedido dele, 17/09): benefício que não está preso a
      uma cidade (loja on-line, rede nacional, assinatura internacional). Elas NÃO
      abrem endereço, porque endereço de "Brasil inteiro" não existe: o que o
@@ -1117,6 +1131,25 @@ var UNIDADES = [
 function ehAmpla(cod){
   for(var i=0;i<UNIDADES.length;i++) if(UNIDADES[i].cod === cod) return !!UNIDADES[i].ampla;
   return false;
+}
+
+/* 🔴 OS PAÍSES (pedido dele, 17/09), em UMA linha, no formato `CC:Nome`,
+   ordenada pelo nome. Ela é BYTE A BYTE a mesma do painel, e a paridade cobra:
+   duas listas separadas divergem no dia em que alguém corrige um acento só de
+   um lado, e aí a mesma cidade nasce com dois países diferentes.
+   O código é o ISO 3166-1 alfa-2, que é o que o gerador compara com o `pais`
+   das cidades fixas para decidir se um card de abrangência entra ali. */
+var PAISES_TXT = 'AF:Afeganistão|ZA:África do Sul|AL:Albânia|DE:Alemanha|AD:Andorra|AO:Angola|AI:Anguila|AQ:Antártida|AG:Antígua e Barbuda|SA:Arábia Saudita|DZ:Argélia|AR:Argentina|AM:Armênia|AW:Aruba|AU:Austrália|AT:Áustria|AZ:Azerbaijão|BS:Bahamas|BH:Bahrein|BD:Bangladesh|BB:Barbados|BE:Bélgica|BZ:Belize|BJ:Benin|BM:Bermudas|BY:Bielorrússia|BO:Bolívia|BA:Bósnia e Herzegovina|BW:Botsuana|BR:Brasil|BN:Brunei|BG:Bulgária|BF:Burkina Faso|BI:Burundi|BT:Butão|CV:Cabo Verde|CM:Camarões|KH:Camboja|CA:Canadá|QA:Catar|KZ:Cazaquistão|TD:Chade|CL:Chile|CN:China|CY:Chipre|SG:Cingapura|CO:Colômbia|KM:Comores|CG:Congo|CD:Congo (República Democrática)|KP:Coreia do Norte|KR:Coreia do Sul|CI:Costa do Marfim|CR:Costa Rica|HR:Croácia|CU:Cuba|CW:Curaçao|DK:Dinamarca|DJ:Djibuti|DM:Dominica|EG:Egito|SV:El Salvador|AE:Emirados Árabes Unidos|EC:Equador|ER:Eritreia|SK:Eslováquia|SI:Eslovênia|ES:Espanha|SZ:Essuatíni|US:Estados Unidos|EE:Estônia|ET:Etiópia|FJ:Fiji|PH:Filipinas|FI:Finlândia|FR:França|GA:Gabão|GM:Gâmbia|GH:Gana|GE:Geórgia|GI:Gibraltar|GD:Granada|GR:Grécia|GL:Groenlândia|GP:Guadalupe|GU:Guam|GT:Guatemala|GG:Guernsey|GY:Guiana|GF:Guiana Francesa|GN:Guiné|GQ:Guiné Equatorial|GW:Guiné-Bissau|HT:Haiti|NL:Holanda|HN:Honduras|HK:Hong Kong|HU:Hungria|YE:Iêmen|BV:Ilha Bouvet|CX:Ilha Christmas|IM:Ilha de Man|NF:Ilha Norfolk|KY:Ilhas Cayman|CC:Ilhas Cocos|CK:Ilhas Cook|FO:Ilhas Faroé|GS:Ilhas Geórgia do Sul|FK:Ilhas Malvinas|MP:Ilhas Marianas do Norte|MH:Ilhas Marshall|SB:Ilhas Salomão|TC:Ilhas Turcas e Caicos|VI:Ilhas Virgens Americanas|VG:Ilhas Virgens Britânicas|IN:Índia|ID:Indonésia|IR:Irã|IQ:Iraque|IE:Irlanda|IS:Islândia|IL:Israel|IT:Itália|JM:Jamaica|JP:Japão|JE:Jersey|JO:Jordânia|KW:Kuwait|LA:Laos|LS:Lesoto|LV:Letônia|LB:Líbano|LR:Libéria|LY:Líbia|LI:Liechtenstein|LT:Lituânia|LU:Luxemburgo|MO:Macau|MK:Macedônia do Norte|MG:Madagascar|MY:Malásia|MW:Malaui|MV:Maldivas|ML:Mali|MT:Malta|MA:Marrocos|MQ:Martinica|MU:Maurício|MR:Mauritânia|YT:Mayotte|MX:México|MM:Mianmar|FM:Micronésia|MZ:Moçambique|MD:Moldávia|MC:Mônaco|MN:Mongólia|ME:Montenegro|MS:Montserrat|NA:Namíbia|NR:Nauru|NP:Nepal|NI:Nicarágua|NE:Níger|NG:Nigéria|NU:Niue|NO:Noruega|NC:Nova Caledônia|NZ:Nova Zelândia|OM:Omã|PW:Palau|PS:Palestina|PA:Panamá|PG:Papua-Nova Guiné|PK:Paquistão|PY:Paraguai|PE:Peru|PF:Polinésia Francesa|PL:Polônia|PR:Porto Rico|PT:Portugal|KE:Quênia|KG:Quirguistão|KI:Quiribati|GB:Reino Unido|CF:República Centro-Africana|DO:República Dominicana|CZ:República Tcheca|RE:Reunião|RO:Romênia|RW:Ruanda|RU:Rússia|EH:Saara Ocidental|PM:Saint-Pierre e Miquelon|WS:Samoa|AS:Samoa Americana|SM:San Marino|SH:Santa Helena|LC:Santa Lúcia|BL:São Bartolomeu|KN:São Cristóvão e Névis|MF:São Martinho|ST:São Tomé e Príncipe|VC:São Vicente e Granadinas|SC:Seicheles|SN:Senegal|SL:Serra Leoa|RS:Sérvia|SY:Síria|SO:Somália|LK:Sri Lanka|SD:Sudão|SS:Sudão do Sul|SE:Suécia|CH:Suíça|SR:Suriname|SJ:Svalbard e Jan Mayen|TH:Tailândia|TW:Taiwan|TJ:Tajiquistão|TZ:Tanzânia|TL:Timor-Leste|TG:Togo|TO:Tonga|TK:Toquelau|TT:Trinidad e Tobago|TN:Tunísia|TM:Turcomenistão|TR:Turquia|TV:Tuvalu|UA:Ucrânia|UG:Uganda|UY:Uruguai|UZ:Uzbequistão|VU:Vanuatu|VA:Vaticano|VE:Venezuela|VN:Vietnã|ZM:Zâmbia|ZW:Zimbábue';
+function paisesParaEscolher(){
+  return PAISES_TXT.split('|').map(function(p){
+    var i = p.indexOf(':');
+    return { cod:p.slice(0, i), nome:p.slice(i + 1) };
+  });
+}
+function nomeDoPais(cod){
+  var l = paisesParaEscolher();
+  for(var i=0;i<l.length;i++) if(l[i].cod === cod) return l[i].nome;
+  return cod || '';
 }
 
 /* --- 1.4 REGRAS -------------------------------------------------- */
@@ -1284,7 +1317,7 @@ var R = { colaborador:'', identificadoPor:'digitado', colaboradorEmail:null,
           indicadorEmail:'', indicadorFone:'', semLogin:false,
           tipo:'', tipoOutro:'', atendimento:'', estab:'', enderecos:[],
           site:'', social:'', horario:'', comoUsar:[], contatoNome:'', contatoEmail:'', contatoFone:'',
-          unidades:[], cidadeOutra:'', condicao:'', consent:false };
+          unidades:[], cidadeOutra:'', cidadeOutraPais:'BR', condicao:'', consent:false };
 
 var arquivos = [];   // os File escolhidos, até REGRAS.evidenciaMax; nunca vão para o localStorage
 var termoLido = false;   // vira true quando a pessoa rola o texto até o fim
@@ -1719,6 +1752,25 @@ function pintarArquivo(){
 /* 🔴 COMO UTILIZAR O BENEFÍCIO (pedido dele, 17/09): a mesma interação do
    horário e do endereço, uma linha por etapa, com o número à frente para a
    pessoa ver na tela o que vai aparecer no card. */
+/* 🔴 O SELETOR DE PAÍS da cidade digitada (17/09). Ele só aparece junto com o
+   campo "Qual cidade?", porque é o único momento em que uma cidade nova nasce. */
+function montarSeletorDePais(){
+  var sel = document.getElementById('cidadeOutraPais');
+  if(!sel) return false;
+  sel.innerHTML = '';
+  paisesParaEscolher().forEach(function(p){
+    var o = document.createElement('option');
+    o.value = p.cod; o.textContent = p.nome;
+    if(p.cod === (R.cidadeOutraPais || 'BR')) o.selected = true;
+    sel.appendChild(o);
+  });
+  if(!sel.__ligado){
+    sel.addEventListener('change', function(){ R.cidadeOutraPais = sel.value; atualizarProgresso(); });
+    sel.__ligado = true;
+  }
+  return true;
+}
+
 function montarCampoDeEtapas(){
   var w = document.getElementById('comoUsar');
   if(!w) return false;
@@ -2303,6 +2355,9 @@ function montarPacote(){
     cidades: cidadesDoPacote(),
     cidadesTexto: unidadesTexto(),
     cidadeOutra: pediuOutraCidade() ? String(R.cidadeOutra||'').trim() : null,
+    /* 🔴 o país da cidade digitada (17/09): é ele que decide se um card de
+       abrangência ("vale em todo o Brasil") entra nessa cidade no app. */
+    cidadeOutraPais: pediuOutraCidade() ? (String(R.cidadeOutraPais||'').trim() || 'BR') : null,
     condicao: String(R.condicao).trim(),
     /* a caixa de "o contato sabe" saiu em 14/09: o aviso passou a ser o
        bloco de leitura no fim do formulário. Ver o LEIA-ME. */
@@ -2745,11 +2800,12 @@ function recomecar(){
   R = { colaborador:R.colaborador, indicadorEmail:R.indicadorEmail, indicadorFone:R.indicadorFone,
         tipo:'', tipoOutro:'', atendimento:'', estab:'',
         enderecos:[], site:'', social:'', horario:'', comoUsar:[], contatoNome:'', contatoEmail:'', contatoFone:'',
-        unidades:[], cidadeOutra:'', condicao:'', consent:false };
+        unidades:[], cidadeOutra:'', cidadeOutraPais:'BR', condicao:'', consent:false };
   arquivos = [];
   ['estab','site','social','contatoNome','contatoEmail','contatoFone','condicao','tipoOutro','cidadeOutra']
     .forEach(function(id){ $(id).value = ''; });
   montarCampoDeEtapas();
+  montarSeletorDePais();
   ['temEndereco','temSite','temHorario'].forEach(function(id){
     var cx = $(id); if(cx){ cx.checked = false; if(cx.__pintar) cx.__pintar(); }
   });
@@ -3237,6 +3293,7 @@ function ligar(){
   montarCampoDeHorario();
   montarCampoDeEnderecos();
   montarCampoDeEtapas();
+  montarSeletorDePais();
   ligarInterruptores();
   ligarIdioma();
 
@@ -3639,14 +3696,17 @@ function selftest(){
     /* as 4 cidades que o app Clube de Parceiros tem hoje, escritas EXATAMENTE
        como o `data-cidade` dos cards de lá. Se divergir uma letra, alguém
        traduz na mão na hora de publicar. */
-    var cidadesNoApp = ['Belo Horizonte','Capitão Gervásio Oliveira','Campo Alegre do Fidalgo','São João do Piauí'];
+    var cidadesNoApp = ['Belo Horizonte','Capitão Gervásio Oliveira','Campo Alegre do Fidalgo','São João do Piauí','Toronto'];
     /* 🔴 as ABRANGÊNCIAS AMPLAS (17/09) não são cidades: elas existem nos dois
        lados, mas não entram na comparação de "cidades do Clube". */
     var nomes = UNIDADES.filter(function(u){ return !u.todas && !u.outra && !u.ampla; })
                         .map(function(u){ return u.nome; });
     t('as cidades do formulário são as MESMAS do app, letra por letra',
       nomes.slice().sort().join('|') === cidadesNoApp.slice().sort().join('|'));
-    t('e são as quatro, nenhuma a mais nem a menos', nomes.length === 4);
+    t('e são as cinco de hoje, nenhuma a mais nem a menos', nomes.length === 5);
+    t('★ Toronto entrou como cidade fixa, com país próprio (17/09)',
+      UNIDADES.some(function(u){ return u.cod === 'TOR' && u.pais === 'CA'; }) &&
+      UNIDADES.filter(function(u){ return u.pais === 'BR' && !u.ampla; }).length === 4);
     t('★ e as três abrangências amplas ficam FORA da lista de cidades, com bandeira própria',
       UNIDADES.filter(function(u){ return u.ampla; }).length === 3 &&
       UNIDADES.filter(function(u){ return u.ampla; }).every(function(u){ return !u.uf; }));
@@ -4446,6 +4506,43 @@ function selftest(){
       String(definirIdioma).indexOf("'cp-lang'") >= 0);
     definirIdioma(antes);
     try{ if(salvo === null) localStorage.removeItem('cp-lang'); else localStorage.setItem('cp-lang', salvo); }catch(e){}
+  })();
+
+  out.push('== País da cidade digitada (17/09) ==');
+  (function(){
+    var gU = R.unidades.slice(), gC = R.cidadeOutra, gP = R.cidadeOutraPais;
+    var lista = paisesParaEscolher();
+    out.push('       países na lista: ' + lista.length);
+    t('★ a lista de países tem o mundo inteiro, não uma seleção',
+      lista.length > 180 && lista.every(function(p){ return /^[A-Z]{2}$/.test(p.cod) && p.nome.length > 2; }),
+      lista.length + ' países');
+    t('★ e vem em ordem alfabética pelo NOME, que é como a pessoa procura',
+      lista.map(function(p){ return p.nome; }).join('|') ===
+      lista.map(function(p){ return p.nome; }).slice().sort(function(a,b){ return a.localeCompare(b,'pt-BR'); }).join('|'));
+    t('Brasil e Canadá estão lá, com o código de duas letras',
+      nomeDoPais('BR') === 'Brasil' && nomeDoPais('CA') === 'Canadá');
+    /* 🔴 o seletor SÓ existe junto do campo da cidade nova: é o único momento em
+       que uma cidade nasce, e perguntar o país fora dali seria ruído. */
+    R.unidades = []; pintarUnidades(); revelarCidadeOutra();
+    t('★ sem "Outra cidade" marcada, o campo e o país ficam escondidos',
+      campoEl('cidadeOutra').hidden === true);
+    alternarUnidade('OUTRA'); revelarCidadeOutra();
+    t('★ marcando "Outra cidade", aparecem o nome E o seletor de país',
+      campoEl('cidadeOutra').hidden === false && !!$('cidadeOutraPais') &&
+      $('cidadeOutraPais').options.length > 180);
+    t('★ e ele nasce em Brasil, que é onde estão todas as cidades do Clube hoje',
+      $('cidadeOutraPais').value === 'BR' && (R.cidadeOutraPais || 'BR') === 'BR');
+    R.cidadeOutra = 'Ottawa - ON';
+    $('cidadeOutraPais').value = 'CA';
+    $('cidadeOutraPais').dispatchEvent(new Event('change'));
+    var pac = montarPacote();
+    t('★ o país escolhido viaja no pacote, junto do nome da cidade',
+      pac.cidadeOutra === 'Ottawa - ON' && pac.cidadeOutraPais === 'CA',
+      pac.cidadeOutra + ' · ' + pac.cidadeOutraPais);
+    R.unidades = []; pintarUnidades(); revelarCidadeOutra();
+    t('sem "Outra cidade", o país não viaja', montarPacote().cidadeOutraPais === null);
+    R.unidades = gU; R.cidadeOutra = gC; R.cidadeOutraPais = gP;
+    pintarUnidades(); revelarCidadeOutra(); montarSeletorDePais();
   })();
 
   out.push('== Vocabulário dos tipos ==');

@@ -3,6 +3,7 @@
   {"cod": "CGO", "nome": "Capitão Gervásio Oliveira", "uf": "PI", "pais": "BR"},
   {"cod": "CAF", "nome": "Campo Alegre do Fidalgo", "uf": "PI", "pais": "BR"},
   {"cod": "SJP", "nome": "São João do Piauí", "uf": "PI", "pais": "BR"},
+  {"cod": "TOR", "nome": "Toronto", "uf": "ON", "pais": "CA"},
   {"cod": "BRASIL", "nome": "Brasil", "uf": "BR", "ampla": true, "nome_en": "Brazil", "pais": "BR"},
   {"cod": "CANADA", "nome": "Canadá", "uf": "CA", "ampla": true, "nome_en": "Canada", "pais": "CA"},
   {"cod": "GLOBAL", "nome": "Global", "uf": "", "ampla": true, "nome_en": "Global"}
