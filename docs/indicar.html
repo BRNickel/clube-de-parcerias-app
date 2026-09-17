@@ -385,6 +385,10 @@ select{background-image:url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http:
 .tem input{width:17px;height:17px;flex:none;accent-color:var(--green);cursor:pointer}
 .tem-corpo{margin-top:10px;display:flex;flex-direction:column;gap:7px}
 .tem-corpo[hidden]{display:none}
+/* site e rede social dividem a linha dentro da mesma caixa */
+.dupla{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.dupla .hint{margin-bottom:5px}
+@media(max-width:560px){ .dupla{grid-template-columns:1fr} }
 /* o convite de idioma e o seletor do cabeçalho */
 .ov-lang{position:fixed;inset:0;z-index:130;background:rgba(10,20,16,.55);display:flex;
   align-items:center;justify-content:center;padding:20px}
@@ -420,7 +424,7 @@ body.js .sem-login[hidden] ~ .lang-btn{right:60px}
 .lang-menu button[aria-checked="true"]{background:var(--green-dim);color:var(--ok-txt)}
 .lang-menu button .lg-dot{width:8px;height:8px;border-radius:50%;background:currentColor;opacity:0;flex:none}
 .lang-menu button[aria-checked="true"] .lg-dot{opacity:1}
-.suc-acoes{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center}
+.suc-acoes{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center;margin:4px 0 14px}
 .suc-app{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;
   text-decoration:none;color:var(--btn-txt);background:var(--btn-bg);border:1px solid var(--btn-bg);
   border-radius:10px;padding:11px 18px;transition:opacity .15s}
@@ -565,9 +569,12 @@ body.js .sem-login[hidden] ~ .lang-btn{right:60px}
 .resumo b{font-weight:600}
 .sair{font-size:13.5px;font-weight:600;color:var(--txt);margin-bottom:6px;animation:up .45s .74s both}
 #sucesso .aviso{animation:up .45s .8s both}
+/* 🔴 CENTRADOS E NA MESMA LINHA (ele viu, 17/09): o botão trazia `margin:auto`
+   e `display:block` de quando era o único da tela, e dentro do flex isso o
+   empurrava para um lado. Quem centra agora é o `.suc-acoes`. */
 #btnOutra{font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:700;color:var(--txt);
   background:transparent;border:1px solid var(--txt);border-radius:999px;padding:11px 22px;cursor:pointer;
-  margin:4px auto 14px;display:block;animation:up .45s .78s both}
+  margin:0;display:inline-flex;align-items:center;animation:up .45s .78s both}
 #btnOutra:hover{background:var(--txt);color:var(--bg)}
 
 /* ---------- rodapé e painel de teste ---------- */
@@ -793,7 +800,7 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
                que preencher. Desmarcar limpa o valor: campo escondido com
                conteúdo dentro é o jeito clássico de mandar dado que ninguém viu. -->
           <div class="f wide" data-campo="endereco">
-            <label class="tem"><input type="checkbox" id="temEndereco"><span data-en="The establishment has a fixed address to report">O estabelecimento tem endereço fixo para informar</span></label>
+            <label class="tem"><input type="checkbox" id="temEndereco"><span data-en="The establishment has an address for in-person service <span class=&quot;opt&quot;>(optional)</span>">O estabelecimento tem endereço de atendimento presencial <span class="opt">(opcional)</span></span></label>
             <div class="tem-corpo" id="blocoEndereco" hidden>
               <div class="hint" id="hintEndereco" data-en="One address per line, inside the matching city. Chains with several branches: one line per branch.">Um endereço por linha, dentro da cidade correspondente. Rede com
                 várias unidades: uma linha por unidade.</div>
@@ -801,24 +808,30 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
               <div class="err" id="e_endereco"></div>
             </div>
           </div>
-          <div class="f" data-campo="site">
-            <label class="tem"><input type="checkbox" id="temSite"><span data-en="Has a website">Tem site</span></label>
+          <!-- 🔴 UMA PERGUNTA SÓ para site e rede social (pedido dele, 17/09): são a
+               mesma coisa para quem preenche, "onde eu vejo esse lugar na internet",
+               e duas caixas lado a lado faziam a seção parecer um questionário. -->
+          <div class="f wide" data-campo="site">
+            <label class="tem"><input type="checkbox" id="temSite"><span data-en="I want to provide the website or social media <span class=&quot;opt&quot;>(optional)</span>">Quero informar o site ou a rede social <span class="opt">(opcional)</span></span></label>
             <div class="tem-corpo" id="blocoSite" hidden>
-              <input id="site" name="site" type="text" inputmode="url" placeholder="www.exemplo.com.br" maxlength="180"
-                     aria-label="Endereço do site">
-              <div class="err" id="e_site"></div>
-            </div>
-          </div>
-          <div class="f" data-campo="social">
-            <label class="tem"><input type="checkbox" id="temSocial"><span data-en="Has social media">Tem rede social</span></label>
-            <div class="tem-corpo" id="blocoSocial" hidden>
-              <input id="social" name="social" type="text" placeholder="@estabelecimento" maxlength="180"
-                     aria-label="Perfil em rede social">
-              <div class="err" id="e_social"></div>
+              <div class="dupla">
+                <div>
+                  <div class="hint" data-en="Website">Site</div>
+                  <input id="site" name="site" type="text" inputmode="url" placeholder="www.exemplo.com.br" maxlength="180"
+                         aria-label="Endereço do site">
+                  <div class="err" id="e_site"></div>
+                </div>
+                <div>
+                  <div class="hint" data-en="Social media">Rede social</div>
+                  <input id="social" name="social" type="text" placeholder="@estabelecimento" maxlength="180"
+                         aria-label="Perfil em rede social">
+                  <div class="err" id="e_social"></div>
+                </div>
+              </div>
             </div>
           </div>
           <div class="f wide" data-campo="horario">
-            <label class="tem"><input type="checkbox" id="temHorario"><span data-en="I know the opening hours">Sei o horário de atendimento</span></label>
+            <label class="tem"><input type="checkbox" id="temHorario"><span data-en="I want to provide the opening hours <span class=&quot;opt&quot;>(optional)</span>">Quero informar o horário de atendimento <span class="opt">(opcional)</span></span></label>
             <div class="tem-corpo" id="blocoHorario" hidden>
               <div class="hint" data-en="Days and hours when the establishment is open. You can add more than one range.">Dias e horários em que o estabelecimento atende. É possível acrescentar mais de uma faixa.</div>
               <div class="hr-campo" id="horario"></div>
@@ -1094,9 +1107,9 @@ var UNIDADES = [
      uma cidade (loja on-line, rede nacional, assinatura internacional). Elas NÃO
      abrem endereço, porque endereço de "Brasil inteiro" não existe: o que o
      colaborador precisa saber ali é como usar, não onde ir. */
-  { cod:'BRASIL', nome:'Brasil (todo o país)', ampla:true },
-  { cod:'CANADA', nome:'Canadá',               ampla:true },
-  { cod:'GLOBAL', nome:'Global (qualquer lugar)', ampla:true },
+  { cod:'BRASIL', nome:'Brasil', ampla:true },
+  { cod:'CANADA', nome:'Canadá', ampla:true },
+  { cod:'GLOBAL', nome:'Global', ampla:true },
   { cod:'OUTRA', nome:'Outra cidade',               outra:true }
 ];
 /* abrangência ampla: vale em qualquer lugar daquele recorte, e por isso não tem
@@ -1268,7 +1281,7 @@ var $ = function(id){ return document.getElementById(id); };
 
 /* estado da resposta */
 var R = { colaborador:'', identificadoPor:'digitado', colaboradorEmail:null,
-          areaDeclarada:'', semLogin:false,
+          indicadorEmail:'', indicadorFone:'', semLogin:false,
           tipo:'', tipoOutro:'', atendimento:'', estab:'', enderecos:[],
           site:'', social:'', horario:'', comoUsar:[], contatoNome:'', contatoEmail:'', contatoFone:'',
           unidades:[], cidadeOutra:'', condicao:'', consent:false };
@@ -1782,10 +1795,12 @@ function ligarInterruptor(idCaixa, idBloco, aoLigar, aoDesligar){
 function ligarInterruptores(){
   ligarInterruptor('temEndereco','blocoEndereco', montarCampoDeEnderecos,
     function(){ R.enderecos = []; });
-  ligarInterruptor('temSite','blocoSite', null,
-    function(){ R.site = ''; if(document.getElementById('site')) document.getElementById('site').value = ''; });
-  ligarInterruptor('temSocial','blocoSocial', null,
-    function(){ R.social = ''; if(document.getElementById('social')) document.getElementById('social').value = ''; });
+  /* 🔴 uma caixa para os dois campos (17/09): desligar limpa os dois */
+  ligarInterruptor('temSite','blocoSite', null, function(){
+    R.site = ''; R.social = '';
+    if(document.getElementById('site')) document.getElementById('site').value = '';
+    if(document.getElementById('social')) document.getElementById('social').value = '';
+  });
   ligarInterruptor('temHorario','blocoHorario', montarCampoDeHorario,
     function(){ R.horario = ''; });
   return true;
@@ -2057,6 +2072,9 @@ function camposAtivos(){
   if(ehOutros()) l.push('tipoOutro');
   if(nomeTipo(R.tipo)) l.push('atendimento');
   /* ordem da TELA (16/09): cidades e endereços ficam na seção 3, com o estabelecimento */
+  /* sem login, o contato de retorno é obrigatório: sem ele o RH não tem como
+     avisar do andamento, que é o motivo de o campo existir. */
+  if(R.semLogin) l.push('retorno');
   l.push('estab','unidades');
   if(pediuOutraCidade()) l.push('cidadeOutra');
   l.push('contatoNome','contato','condicao','consent');
@@ -2073,6 +2091,7 @@ function respondido(c){
     case 'endereco':     return limparEnderecos(R.enderecos).length > 0;
     case 'contatoNome':  return nomeContatoValido(R.contatoNome);
     case 'contato':      return parResolvido();
+    case 'retorno':      return contatoDoIndicadorResolvido();
     case 'unidades':     return R.unidades.length > 0;
     case 'cidadeOutra':  return String(R.cidadeOutra||'').trim().length >= 3;
     case 'condicao':     return String(R.condicao||'').trim().length >= REGRAS.condicaoMinima;
@@ -2097,6 +2116,14 @@ function validar(){
 
   if(!nomeValido(R.colaborador)) p('colaborador','Escreva o seu nome completo, sem abreviação.');
   else marcar('colaborador', true, '');
+
+  /* 🔴 o contato de retorno é do MESMO assunto que o nome (quem indicou e como
+     falar com essa pessoa), e por isso é cobrado aqui, e não atrás do tipo. */
+  if(R.semLogin){
+    if(!contatoDoIndicadorResolvido())
+      p('retorno','Informe um e-mail ou um telefone válido para o RH dar retorno.');
+    else marcar('retorno', true, '');
+  }
 
   if(!nomeTipo(R.tipo)) p('tipo','Escolha o tipo de parceria.');
   else marcar('tipo', true, '');
@@ -2231,7 +2258,15 @@ function montarPacote(){
        duas fontes brigando pela mesma coluna. ⚠ Este `R.semLogin` foi achado
        pela bateria: sem ele o offline baixava um arquivo bonito, o painel
        importava sem erro, e a área simplesmente não estava lá. */
-    area:   R.semLogin ? (String(R.areaDeclarada||'').trim() || null) : null,
+    /* 🔴 a ÁREA digitada saiu em 17/09 junto com o campo: ver
+       `montarCampoDeContatoDoIndicador`. Indicação pública entra sem área. */
+    area:   null,
+    /* 🔴 o contato de quem indicou, só no modo sem login: é por ele que o RH dá
+       retorno e reconhece quem trouxe a parceria. Fica no pacote, e NÃO na
+       coluna `colaborador_email`: aquela coluna diz "identificado por login", e
+       este endereço não passou por login nenhum. */
+    indicadorEmail:    R.semLogin ? (String(R.indicadorEmail||'').trim() || null) : null,
+    indicadorTelefone: R.semLogin ? (String(R.indicadorFone||'').trim() || null) : null,
     /* 🔴 FILIAL SAIU do painel em 15/09, junto com o gênero: o campo do Azure
        que a alimentaria repete o departamento em 78% das pessoas, e qualquer
        origem ligada por e-mail cobriria 99% de BH contra 42% do Piauí. Deixou
@@ -2483,7 +2518,7 @@ function ligarModoOffline(){
   /* o atalho "versão sem login" apontaria para esta mesma página */
   var ls = $('linkSemLogin'); if(ls) ls.hidden = true;
   $('btnTxt').textContent = 'Baixar formulário';
-  montarCampoDeArea();
+  montarCampoDeContatoDoIndicador();
   /* 🔴 A LEGENDA SAIU DA TELA (pedido dele, 16/09): virou o popup que aparece
      DEPOIS de baixar, quando a instrução tem para o que servir. E ao entrar, um
      convite: quem tem e-mail da empresa vai para o formulário do portal. */
@@ -2509,29 +2544,56 @@ function ligarModoOffline(){
    para não existirem duas respostas para a mesma pessoa. Aqui não existe a
    primeira resposta, então perguntar é a única opção honesta. Lista fechada
    com sugestão, pelo mesmo motivo de sempre: campo livre vira 40 grafias. */
-function montarCampoDeArea(){
-  if($('offArea')) return false;
+/* 🔴 O CONTATO DE QUEM INDICA (pedido dele, 17/09) toma o lugar de "Sua área ou
+   empresa". O arquivo chegava ao RH com o nome da pessoa e nenhum jeito de falar
+   com ela: não dava para avisar do andamento nem reconhecer quem trouxe a
+   parceria. Pede-se e-mail OU telefone, e não os dois, porque exigir os dois
+   barra quem só tem um. Qualquer um serve, inclusive pessoal: aqui não existe
+   conta da empresa para consultar.
+   ⚠ A área digitada SAIU junto. Ela alimentava o gráfico "Por área" do painel
+   para as indicações públicas, e essas passam a entrar sem área. */
+function montarCampoDeContatoDoIndicador(){
+  if($('offEmail')) return false;
   var alvo = campoEl('colaborador');
   if(!alvo || !alvo.parentNode) return false;
-  /* `f wide`, como os campos vizinhos: com uma classe própria ele saía estreito
-     dentro da grade e o exemplo do placeholder aparecia cortado (print dele, 16/09) */
-  var f = document.createElement('div'); f.className = 'f wide'; f.dataset.campo = 'areaDeclarada';
-  var lb = document.createElement('label'); lb.setAttribute('for','offArea');
-  lb.textContent = 'Sua área ou empresa';
-  var inp = document.createElement('input');
-  inp.id = 'offArea'; inp.type = 'text'; inp.autocomplete = 'off';
-  inp.setAttribute('list','offAreaLista');
-  inp.placeholder = 'Ex.: Operações, ou o nome da sua empresa';
-  var dl = document.createElement('datalist'); dl.id = 'offAreaLista';
-  areasParaEscolher().forEach(function(a){
-    var o = document.createElement('option'); o.value = a; dl.appendChild(o);
-  });
+  var f = document.createElement('div'); f.className = 'f wide'; f.dataset.campo = 'retorno';
+  var lb = document.createElement('label');
+  lb.setAttribute('for','offEmail');
+  lb.innerHTML = 'Seu contato, para o RH dar retorno<span class="req">*</span>';
+  lb.setAttribute('data-en', 'Your contact details, so HR can get back to you<span class="req">*</span>');
   var dica = document.createElement('div'); dica.className = 'hint';
-  dica.textContent = 'Se você não é da Brazilian Nickel, escreva o nome da sua empresa.';
-  inp.addEventListener('input', function(){ R.areaDeclarada = inp.value; });
-  f.appendChild(lb); f.appendChild(inp); f.appendChild(dl); f.appendChild(dica);
+  dica.textContent = 'E-mail ou telefone, um dos dois. Pode ser pessoal: é por aqui que o RH avisa se a ' +
+    'parceria avançou e reconhece quem a trouxe. Não vai para o Clube de Parcerias.';
+  dica.setAttribute('data-en', 'An e-mail or a phone number, either one. It can be a personal one: this is how HR ' +
+    'tells you whether the partnership moved forward and credits whoever brought it. It never goes to the Partnership Club.');
+  var dupla = document.createElement('div'); dupla.className = 'dupla';
+  function campo(id, rot, rotEn, ph, tipo){
+    var cx = document.createElement('div');
+    var h = document.createElement('div'); h.className = 'hint'; h.textContent = rot;
+    h.setAttribute('data-en', rotEn);
+    var i = document.createElement('input');
+    i.id = id; i.type = tipo; i.placeholder = ph; i.maxLength = 120; i.autocomplete = 'off';
+    i.setAttribute('aria-label', rot);
+    cx.appendChild(h); cx.appendChild(i);
+    return { caixa:cx, campo:i };
+  }
+  var e1 = campo('offEmail', 'E-mail', 'E-mail', 'voce@exemplo.com', 'email');
+  var e2 = campo('offFone', 'Telefone ou WhatsApp', 'Phone or WhatsApp', '(00) 00000-0000', 'tel');
+  e1.campo.addEventListener('input', function(){ R.indicadorEmail = e1.campo.value; atualizarProgresso(); });
+  e2.campo.addEventListener('input', function(){ R.indicadorFone = e2.campo.value; atualizarProgresso(); });
+  dupla.appendChild(e1.caixa); dupla.appendChild(e2.caixa);
+  var err = document.createElement('div'); err.className = 'err'; err.id = 'e_retorno';
+  f.appendChild(lb); f.appendChild(dica); f.appendChild(dupla); f.appendChild(err);
   alvo.parentNode.insertBefore(f, alvo.nextSibling);
   return true;
+}
+/* 🔴 pelo menos um canal: é o que faz a indicação pública deixar de ser anônima
+   para efeito de retorno. Vazio nos dois, o formulário não envia. */
+function contatoDoIndicadorResolvido(){
+  var em = String(R.indicadorEmail||'').trim(), fo = String(R.indicadorFone||'').trim();
+  if(em && emailValido(em)) return true;
+  if(fo && foneValido(fo)) return true;
+  return false;
 }
 
 /* 🔴 QUEM CHEGA AQUI NÃO TEM CONTA DA EMPRESA: não sabe o que é o brnapps, não
@@ -2658,9 +2720,16 @@ function mostrarSucesso(pacote){
   var linhas = [
     ['Estabelecimento', pacote.estabelecimento],
     ['Tipo', pacote.tipoNome],
-    ['Contato', pacote.contatoNome],
+    ['Contato no estabelecimento', pacote.contatoNome],
     ['Cidades', pacote.cidadesTexto]
   ];
+  /* 🔴 no arquivo do modo público, quem indicou e como falar com essa pessoa
+     aparecem no resumo: é o que ela confere antes de mandar o e-mail ao RH. */
+  if(ENVIO.modo === 'arquivo'){
+    linhas.unshift(['Indicado por', pacote.colaborador]);
+    var canal = [pacote.indicadorEmail, pacote.indicadorTelefone].filter(Boolean).join(' · ');
+    if(canal) linhas.push(['Seu contato', canal]);
+  }
   $('sucResumo').innerHTML = linhas.map(function(l){
     var d = document.createElement('div');
     var b = document.createElement('b'); b.textContent = l[0] + ': ';
@@ -2673,14 +2742,15 @@ function mostrarSucesso(pacote){
 }
 
 function recomecar(){
-  R = { colaborador:R.colaborador, tipo:'', tipoOutro:'', atendimento:'', estab:'',
+  R = { colaborador:R.colaborador, indicadorEmail:R.indicadorEmail, indicadorFone:R.indicadorFone,
+        tipo:'', tipoOutro:'', atendimento:'', estab:'',
         enderecos:[], site:'', social:'', horario:'', comoUsar:[], contatoNome:'', contatoEmail:'', contatoFone:'',
         unidades:[], cidadeOutra:'', condicao:'', consent:false };
   arquivos = [];
   ['estab','site','social','contatoNome','contatoEmail','contatoFone','condicao','tipoOutro','cidadeOutra']
     .forEach(function(id){ $(id).value = ''; });
   montarCampoDeEtapas();
-  ['temEndereco','temSite','temSocial','temHorario'].forEach(function(id){
+  ['temEndereco','temSite','temHorario'].forEach(function(id){
     var cx = $(id); if(cx){ cx.checked = false; if(cx.__pintar) cx.__pintar(); }
   });
   montarCampoDeHorario();
@@ -2830,24 +2900,11 @@ function usuarioDoPortal(){
    público, digitar, baixar e importar: um caminho só, e a autoria fica no
    histórico como "importado por". */
 
-/* 🔴 AS ÁREAS E FILIAIS REAIS DA BRN. Publicado, elas vêm da TABELA do app
-   (`config_opcao`), carregada do RM por `comum/carregar_opcoes_do_rm.py` e
-   entregue pela função `meu_acesso` a quem é admin. A lista abaixo é a RESERVA,
-   usada quando a função não responde e no arquivo aberto do disco: ela é a
-   fotografia do RM em 15/09 e envelhece, por isso a tabela existe.
-   A lista ANTERIOR a esta era inventada por mim ("Operações", "Financeiro",
-   "Manutenção") e NENHUMA delas existia no cadastro: o RH digitava uma coisa e
-   o dashboard cruzava outra. Continua sendo SUGESTÃO (datalist): dá para
-   digitar o que não estiver aqui, porque terceiro e estagiário aparecem. */
-var AREAS_SUGERIDAS = ['Administrative Office','Business Excellence','Communication and Engagement',
-  'Construction Owner Team','Environmental','ESG','Facilities','Finance','FP&A','HSE','Human Resources',
-  'IT','Laboratory','Land Management','Legal','Licensing','Mine','Occupational Health','PPN Owner Team',
-  'Procurement','Recovery and Refining','Suppression','Tax'];
-/* o que a função devolveu; quando existe, ganha da reserva acima */
-function areasParaEscolher(){
-  return (acessoAtual && acessoAtual.opcoes && (acessoAtual.opcoes.areas||[]).length)
-    ? acessoAtual.opcoes.areas : AREAS_SUGERIDAS;
-}
+/* 🔴 A LISTA DE ÁREAS SAIU (17/09) junto com o campo que a usava. Ela era a
+   sugestão do campo "Sua área ou empresa" do modo offline, e esse campo deu
+   lugar ao contato de retorno. Deixar a lista aqui seria peça declarada e nunca
+   ligada, que é pior que peça ausente: quem lê o código acredita que funciona.
+   A área continua existindo para quem entra pelo LOGIN, e vem do cadastro. */
 /* 🔴 a função ainda DEVOLVE `opcoes.filiais`, porque a tabela de opções é
    imutável e continua carregada do RM. O formulário simplesmente não lê mais:
    a filial saiu em 15/09. Não é sobra, é a origem viva de um campo aposentado. */
@@ -3255,7 +3312,7 @@ window.FP = {
   PLATAFORMA: PLATAFORMA, naPlataforma: naPlataforma, destinoReal: destinoReal,
   corpoDoEnvio: corpoDoEnvio, cabecalhosAuth: cabecalhosAuth,
   arquivos: function(){ return arquivos; }, porArquivos: porArquivos, tipoAceito: tipoAceito,
-  areasParaEscolher: areasParaEscolher,
+
   validar: validar,
   montarPacote: montarPacote,
   indicacoesLocais: function(){
@@ -3326,25 +3383,13 @@ function selftest(){
       p.identificadoPor === 'login' && p.preenchidoPor === null);
     t('e a área NÃO viaja para quem entra pelo login: ela vem do cadastro', p.area === null);
 
-    /* 🔴 as áreas sugeridas continuam vivas: o modo offline usa a lista para o
-       campo de área. São as REAIS do RM, não uma lista inventada. */
-    t('★ as áreas sugeridas são as do cadastro da BRN, não inventadas',
-      AREAS_SUGERIDAS.length === 23 && AREAS_SUGERIDAS.indexOf('Human Resources') >= 0 &&
-      AREAS_SUGERIDAS.indexOf('Recovery and Refining') >= 0 && AREAS_SUGERIDAS.indexOf('Operações') < 0);
-    t('e a lista está em ordem alfabética, para achar',
-      AREAS_SUGERIDAS.slice().sort(function(a,b){ return a.localeCompare(b,'pt-BR'); }).join('|') === AREAS_SUGERIDAS.join('|'));
-    var aSalvo = acessoAtual;
-    acessoAtual = null;
-    t('sem resposta da função, vale a lista do arquivo', areasParaEscolher() === AREAS_SUGERIDAS);
-    acessoAtual = { ok:true, email:'x@brnickel.com', opcoes:{ areas:['Área Nova do RM','Outra Área'], filiais:['Belo Horizonte'] } };
-    t('★ com a resposta da função, vale a lista do RM',
-      areasParaEscolher().join('|') === 'Área Nova do RM|Outra Área');
+    /* 🔴 17/09: a lista de áreas sumiu com o campo. A asserção passa a cobrar a
+       AUSÊNCIA, para ninguém reintroduzir metade da peça sem decidir de novo. */
+    t('★ a lista de áreas saiu junto com o campo: nada declarado e sem uso',
+      typeof window.AREAS_SUGERIDAS === 'undefined' && typeof window.FP.areasParaEscolher === 'undefined');
     t('★ e a filial NÃO é perguntada, mesmo a função mandando a lista',
       !$('rhFilial') && typeof window.FP.filiaisParaEscolher === 'undefined');
     t('★ e gênero NÃO é perguntado', !$('rhGenero'));
-    acessoAtual = { ok:true, email:'x@brnickel.com', opcoes:{ areas:[], filiais:[] } };
-    t('lista vazia da função não apaga a reserva', areasParaEscolher() === AREAS_SUGERIDAS);
-    acessoAtual = aSalvo;
 
     try{ localStorage.removeItem(K); }catch(e){}
     aplicarIdentidade();
@@ -3670,17 +3715,31 @@ function selftest(){
     /* os dois ficam lado a lado no desktop. Antes um tinha dica e o outro
        não, então os campos começavam em alturas diferentes. A pergunta
        certa não é "tem dica?", é "os dois campos começam na mesma linha?" */
+    /* 🔴 os dois vivem atrás da caixa desde 17/09: fechado, medem zero */
+    $('temSite').checked = true; $('temSite').dispatchEvent(new Event('change'));
     var a = $('site').getBoundingClientRect(), b = $('social').getBoundingClientRect();
     var lado = Math.abs(a.top - b.top) < 400 && a.left !== b.left;
     out.push('       topo do Site ' + Math.round(a.top) + ' · topo da Rede social ' + Math.round(b.top));
     if(lado) t('lado a lado, os dois campos começam na MESMA altura', Math.abs(a.top - b.top) <= 1);
     else t('numa coluna só, não há o que alinhar', true);
-    t('os dois têm a mesma anatomia: caixa de seleção, campo escondido e erro',
-      ['site','social'].every(function(k){
-        var f = campoEl(k);
-        return !!f.querySelector('.tem input[type="checkbox"]') && !!f.querySelector('.tem-corpo') &&
-               !!f.querySelector('.err');
-      }));
+    /* 🔴 17/09: site e rede social viraram UMA pergunta só, com os dois campos
+       dentro da mesma caixa. Não existe mais `[data-campo="social"]`: a asserção
+       passa a medir o bloco único, que é o que a pessoa vê. */
+    var bloco = campoEl('site');
+    t('★ site e rede social são UMA caixa de seleção só, com os dois campos dentro',
+      !!bloco && !!bloco.querySelector('.tem input[type="checkbox"]') &&
+      !campoEl('social') && !!bloco.querySelector('#site') && !!bloco.querySelector('#social') &&
+      !!bloco.querySelector('.err'));
+    t('★ e a pergunta diz "quero informar", com o (opcional) dentro dela',
+      /Quero informar o site ou a rede social/.test(bloco.querySelector('.tem').textContent) &&
+      !!bloco.querySelector('.tem .opt'), bloco.querySelector('.tem').textContent.trim());
+    t('★ desmarcar limpa OS DOIS campos, não só o site', (function(){
+        $('temSite').checked = true; $('temSite').dispatchEvent(new Event('change'));
+        R.site = 'www.x.com'; R.social = '@x';
+        $('site').value = 'www.x.com'; $('social').value = '@x';
+        $('temSite').checked = false; $('temSite').dispatchEvent(new Event('change'));
+        return !R.site && !R.social && $('site').value === '' && $('social').value === '';
+      })());
   })();
 
   out.push('== O campo em destaque ==');
@@ -4110,11 +4169,44 @@ function selftest(){
     t('★ e o nome fica destravado, porque não há login de onde tirá-lo',
       $('colaborador').readOnly === false && IDENTIDADE.modo === 'livre');
 
-    /* a área é perguntada aqui porque não existe cadastro para ler */
-    t('★ aparece o campo de área, com lista de sugestões',
-      !!$('offArea') && !!$('offAreaLista') && $('offAreaLista').options.length > 5);
-    t('★ o campo de área tem a largura dos outros (f wide), sem o exemplo cortado',
-      !!$('offArea').closest('.f.wide') && $('offArea').getBoundingClientRect().width >= $('colaborador').getBoundingClientRect().width - 2);
+    /* 🔴 17/09: "Sua área ou empresa" SAIU e no lugar entrou o contato de quem
+       indica. Sem ele o arquivo chegava ao RH com o nome da pessoa e nenhum
+       jeito de falar com ela, e o retorno sobre o andamento era impossível. */
+    t('★ o campo de área saiu, e ninguém pergunta mais a área no formulário público',
+      !$('offArea') && !$('offAreaLista') && montarPacote().area === null);
+    t('★ no lugar dele entra o contato de quem indica: e-mail e telefone',
+      !!$('offEmail') && !!$('offFone') && !!campoEl('retorno'));
+    t('e ele tem a largura dos outros campos (f wide)',
+      !!$('offEmail').closest('.f.wide'));
+    t('★ a dica diz para que serve: retorno do andamento, e que pode ser pessoal',
+      /RH avisa se a parceria avançou/.test(campoEl('retorno').textContent) &&
+      /pessoal/.test(campoEl('retorno').textContent));
+    /* 🔴 pelo menos UM canal é obrigatório: é o que liga a indicação pública à
+       pessoa, para dar notícia e para reconhecer quem trouxe a parceria. */
+    (function(){
+      var gE = R.indicadorEmail, gF = R.indicadorFone;
+      R.indicadorEmail = ''; R.indicadorFone = '';
+      out.push('       semLogin: ' + R.semLogin + ' · problemas: ' +
+        validar().map(function(x){ return x.campo; }).join(',').slice(0, 80));
+      t('★ sem nenhum contato, o formulário barra o envio',
+        validar().some(function(x){ return x.campo === 'retorno'; }) && contatoDoIndicadorResolvido() === false);
+      R.indicadorEmail = 'nao-e-email';
+      t('e contato inválido também barra', contatoDoIndicadorResolvido() === false);
+      R.indicadorEmail = 'maria@exemplo.com';
+      t('★ com o e-mail, libera', contatoDoIndicadorResolvido() === true &&
+        validar().every(function(x){ return x.campo !== 'retorno'; }));
+      R.indicadorEmail = ''; R.indicadorFone = '(31) 99999-8888';
+      t('★ e só com o telefone também', contatoDoIndicadorResolvido() === true);
+      R.indicadorEmail = 'maria@exemplo.com';
+      var pac = montarPacote();
+      t('★ os dois viajam no arquivo, junto do nome completo de quem indicou',
+        pac.indicadorEmail === 'maria@exemplo.com' && pac.indicadorTelefone === '(31) 99999-8888' &&
+        typeof pac.colaborador === 'string' && pac.colaborador.length > 2,
+        pac.colaborador + ' · ' + pac.indicadorEmail + ' · ' + pac.indicadorTelefone);
+      t('★ e NÃO entram na coluna de e-mail identificado por login, que continua nula',
+        pac.colaboradorEmail === null && pac.identificadoPor === 'digitado');
+      R.indicadorEmail = gE; R.indicadorFone = gF;
+    })();
     /* 🔴 A LEGENDA SAIU DA TELA (16/09): virou dois popups */
     t('★ a legenda não fica mais no meio do formulário',
       !$('offAviso') && typeof montarInstrucoesOffline === 'undefined');
@@ -4164,9 +4256,10 @@ function selftest(){
       /sem nome/.test(nomeDoArquivo({ enviadoEm:'2026-09-16T00:00:00Z' })));
 
     /* --- e o pacote é o MESMO que a função receberia --- */
-    var gc = R.colaborador, ge = R.estab, gt = R.tipo, gar = R.areaDeclarada,
+    var gc = R.colaborador, ge = R.estab, gt = R.tipo,
         gcon = R.condicao, gcid = R.cidades, gat = R.atendimento, gcs = R.consent;
-    R.colaborador = 'Maria da Silva'; R.estab = 'Padaria do Bairro'; R.areaDeclarada = 'Padaria Souza';
+    R.colaborador = 'Maria da Silva'; R.estab = 'Padaria do Bairro';
+    R.indicadorEmail = 'maria@exemplo.com'; R.indicadorFone = '';
     R.tipo = 'alimentacao'; R.condicao = '10% no pão de queijo';
     R.cidades = ['BHZ']; R.atendimento = 'local'; R.consent = true;
     var pac = montarPacote();
@@ -4177,14 +4270,17 @@ function selftest(){
     /* 🔴 A AUTORIA É DECLARADA, e o registro NÃO pode se passar por
        identificada: um arquivo baixado dá para editar à mão antes de mandar.
        Não é problema, o RH lê e decide, mas o painel tem de mostrar a diferença. */
-    /* 🔴 foi a bateria que achou: sem o `semLogin`, a área digitada ia NULA e
-       ninguém veria, porque o arquivo sai bonito e o painel importa sem erro. */
-    t('★ a ÁREA digitada viaja no pacote: aqui não há cadastro de onde tirá-la',
-      pac.area === 'Padaria Souza', String(pac.area));
+    /* 🔴 17/09: a ÁREA deixou de ser perguntada no formulário público (o campo
+       virou o contato de retorno). O pacote passa a levá-la nula, e a asserção
+       cobra isso: se alguém reintroduzir o campo sem decidir de novo, aparece. */
+    t('★ a ÁREA não viaja mais: o campo saiu em 17/09 e deu lugar ao contato de retorno',
+      pac.area === null, String(pac.area));
+    t('★ e o contato de retorno viaja no lugar dela',
+      typeof pac.indicadorEmail !== 'undefined' && typeof pac.indicadorTelefone !== 'undefined');
     t('★ a autoria vai como DIGITADA, nunca como identificada por login',
       pac.identificadoPor === 'digitado' && pac.colaboradorEmail === null,
       pac.identificadoPor + ' | e-mail: ' + pac.colaboradorEmail);
-    R.colaborador = gc; R.estab = ge; R.tipo = gt; R.areaDeclarada = gar;
+    R.colaborador = gc; R.estab = ge; R.tipo = gt;
     R.condicao = gcon; R.cidades = gcid; R.atendimento = gat; R.consent = gcs;
 
     /* desliga e devolve a tela como estava: teste que deixa sujeira contamina
@@ -4238,10 +4334,10 @@ function selftest(){
        🔴 devolve as quatro ao estado de chegada antes de medir: um teste anterior
        já abriu o horário para medir a linha, e sonda que mede o que OUTRO teste
        deixou não mede o que a pessoa vê ao abrir a página. */
-    ['temSite','temSocial','temHorario'].forEach(function(id){
+    ['temSite','temHorario'].forEach(function(id){
       $(id).checked = false; $(id).dispatchEvent(new Event('change'));
     });
-    [['temSite','blocoSite','site'], ['temSocial','blocoSocial','social'], ['temHorario','blocoHorario','horario']].forEach(function(par){
+    [['temSite','blocoSite','site'], ['temHorario','blocoHorario','horario']].forEach(function(par){
       t('★ "' + $(par[0]).parentNode.textContent.trim() + '" começa desmarcado e com o campo escondido',
         $(par[0]).checked === false && $(par[1]).hidden === true);
     });
@@ -4749,11 +4845,15 @@ function selftest(){
           return Math.abs(ops[0].getBoundingClientRect().left -
                           ops[1].getBoundingClientRect().left) < 1;
         })());
-      /* 🔴 mede o BLOCO do campo, não o <input>: desde 17/09 o input vive atrás de
-         uma caixa de seleção e, fechado, mede zero. Zero passa em qualquer limite. */
+      /* 🔴 17/09: site e rede social viraram uma caixa só, com os dois campos
+         numa grade que vira UMA coluna no celular. A pergunta continua a mesma:
+         eles empilham em vez de se espremer. Abre a caixa para medir. */
+      $('temSite').checked = true; $('temSite').dispatchEvent(new Event('change'));
       t('os campos de Site e Rede social empilham em vez de espremer',
-        Math.abs(campoEl('site').getBoundingClientRect().top -
-                 campoEl('social').getBoundingClientRect().top) > 10);
+        Math.abs($('site').getBoundingClientRect().top -
+                 $('social').getBoundingClientRect().top) > 10,
+        Math.round($('social').getBoundingClientRect().top - $('site').getBoundingClientRect().top) + 'px');
+      $('temSite').checked = false; $('temSite').dispatchEvent(new Event('change'));
     } else {
       t('no desktop o botão de tema aparece', $('temaBtn').offsetParent !== null);
     }

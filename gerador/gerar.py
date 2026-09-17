@@ -31,6 +31,11 @@ PROIBIDOS = {"colaborador", "colaboradorEmail", "preenchidoPor", "contatoNome", 
              "contatoFone", "historico", "evidencia", "pacote", "area", "filial", "genero", "nota", "motivo"}
 RE_EMAIL = re.compile(r"[\w.+-]+@[\w-]+\.[\w.-]+")
 HORARIO_PADRAO = "Consultar horário de funcionamento"   # o mesmo texto do painel (HORARIO_PADRAO)
+# 🔴 TODO CARD TEM "COMO USAR" (pedido dele, 17/09): sem etapas escritas, vale o
+# padrão. Card sem a seção fazia o colaborador achar que não havia regra, e a
+# regra existe: confirmar no balcão. O MESMO texto do painel (ETAPAS_PADRAO).
+ETAPAS_PADRAO = ["Apresente o crachá funcional e informe o convênio com a Brazilian Nickel.",
+                 "Confirme a condição vigente com o responsável do estabelecimento antes de fechar a compra."]
 # 🔴 endereço é OPCIONAL desde 16/09 (parceria com rede de unidades não tem um
 # endereço para listar): vazio, o card diz isto, e não tem botão de mapa.
 ENDERECO_PADRAO = "Consultar endereço na internet"    # o mesmo texto do painel (ENDERECO_PADRAO)
@@ -194,10 +199,11 @@ def card_html(c, cidade):
     if fone_txt:
         wa = ('<a class="d-wa" target="_blank" rel="noopener" title="Abrir conversa no WhatsApp" aria-label="WhatsApp" href="https://wa.me/55%s"><svg class="ic"><use href="#i-wa"/></svg></a>' % fone) if (fone and card.get("whatsapp")) else ""
         linhas.append('          <div class="d-row"><svg class="ic"><use href="#i-phone"/></svg><span class="d-txt">%s%s</span></div>' % (escape(fone_txt), wa))
-    # 🔴 COMO USAR O BENEFÍCIO (17/09): bloco próprio, numerado, dentro do mesmo
-    # expandir. Ele responde a outra pergunta ("o que eu faço no balcão?") e por
-    # isso não vira mais uma linha com ícone no meio das informações.
-    etapas = lista_de_etapas(card)
+    # 🔴 COMO USAR O BENEFÍCIO (17/09): bloco próprio, numerado, e SEMPRE O ÚLTIMO
+    # do card (pedido dele). Ele responde a outra pergunta ("o que eu faço no
+    # balcão?") e fecha o card; o telefone é informação do lugar e fica junto do
+    # endereço e do horário, logo acima.
+    etapas = lista_de_etapas(card) or ETAPAS_PADRAO
     if etapas:
         linhas.append('          <div class="p-como"><div class="p-como-t">%s</div><ol class="p-como-l">%s</ol></div>'
                       % (d("Como usar o benefício", "How to use it"),
@@ -240,9 +246,27 @@ def montar(cards, cidades_base):
     for cod in extras: por_cod[cod] = {"cod": cod, "nome": cod, "uf": ""}
     ordem += extras + amplas
     grupos = []
+
+    def vale_na_cidade(c, cidade):
+        """🔴 ABRANGÊNCIA AMPLA ENTRA NAS CIDADES DO ESCOPO (17/09): quem marca
+        "Brasil" quer o card à vista de quem abre Belo Horizonte, e não escondido
+        numa seção que ninguém procura. "Global" entra em todas; "Canadá" só nas
+        cidades canadenses, que hoje não existem, então fica só na seção dele."""
+        cods = c.get("cidades") or []
+        if cidade["cod"] in cods: return True
+        if "TODAS" in cods: return True                      # dado anterior a 16/09
+        if cidade.get("ampla"): return False                 # a seção da abrangência é exata
+        for cod in cods:
+            amp = por_cod.get(cod)
+            if not amp or not amp.get("ampla"): continue
+            if not amp.get("pais"): return True              # Global: qualquer lugar
+            if amp.get("pais") == cidade.get("pais"): return True
+        return False
+
     for cod in ordem:
-        lista = [c for c in cards if cod in (c.get("cidades") or []) or "TODAS" in (c.get("cidades") or [])]
-        if lista: grupos.append((por_cod[cod], lista))
+        cidade = por_cod[cod]
+        lista = [c for c in cards if vale_na_cidade(c, cidade)]
+        if lista: grupos.append((cidade, lista))
     return grupos
 
 
