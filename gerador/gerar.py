@@ -236,6 +236,9 @@ def montar(cards, cidades_base):
     # cidade onde alguém mora, é o recorte de quem vale em qualquer lugar. Quem
     # abre o app procura a própria cidade primeiro.
     comuns = [c["cod"] for c in cidades_base if c["cod"] != "TODAS" and not c.get("ampla")]
+    # as que existem no cadastro: cidade digitada no painel não entra aqui, e
+    # não deve mesmo, porque ela só existe por causa de um card
+    fixas = set(comuns)
     amplas = [c["cod"] for c in cidades_base if c.get("ampla")]
     ordem = comuns
     extras = []
@@ -275,7 +278,12 @@ def montar(cards, cidades_base):
     for cod in ordem:
         cidade = por_cod[cod]
         lista = [c for c in cards if vale_na_cidade(c, cidade)]
-        if lista: grupos.append((cidade, lista))
+        # 🔴 CIDADE FIXA ENTRA MESMO VAZIA (19/09, pedido dele por causa de
+        # Toronto): quem é de lá precisa achar a própria cidade e LER que ainda
+        # não há parceria, em vez de não achar nada e concluir que o Clube não é
+        # para ele. Abrangência vazia continua fora: ela não é lugar de ninguém.
+        if lista or (cod in por_cod and not cidade.get("ampla") and cod in fixas):
+            grupos.append((cidade, lista))
     return grupos
 
 
@@ -304,6 +312,7 @@ def gerar(template, grupos):
 
 %s
   </div>
+  %s
   <div class="footnote">%s</div>
 </section>
 ''' % (escape(cidade["nome"].upper()), sid,
@@ -312,6 +321,9 @@ def gerar(template, grupos):
        d(plural(len(lista), "parceiro disponível nesta localidade", "parceiros disponíveis nesta localidade"),
          plural(len(lista), "partner available in this location", "partners available in this location")),
        "\n".join(card_html(c, cidade) for c in lista),
+       ("" if lista else '<div class="vazio-cidade">%s</div>' % d(
+           "Ainda não há parceria cadastrada aqui. Conhece um lugar que valha a pena? Indique pelo formulário do Clube.",
+           "There are no partners here yet. Know a place worth adding? Send it through the Club form.")),
        d("<b>Lembrete:</b> apresente o crachá funcional e informe o convênio com a Brazilian Nickel antes de concluir a compra. As condições não são cumulativas com outras promoções, salvo indicação em contrário, e podem ser alteradas ou encerradas sem aviso prévio.",
          "<b>Reminder:</b> present your employee badge and mention the Brazilian Nickel agreement before completing the purchase. Terms are not cumulative with other promotions unless stated otherwise, and may change or end without prior notice.")))
     s = template

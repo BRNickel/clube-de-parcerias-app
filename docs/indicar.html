@@ -198,6 +198,14 @@ body.js .tema-btn{display:inline-flex}
 label{font-size:11.5px;font-weight:600;letter-spacing:.01em;color:var(--txt);line-height:1.4}
 label .req{color:var(--green);margin-left:2px}
 label .opt{color:var(--muted);font-weight:400}
+/* 🔴 AVISO QUE PRECISA SER LIDO (pedido dele, 19/09). Ele é dica no lugar e
+   dica no tamanho, e some no meio das outras; mas o que ele diz muda o que a
+   pessoa escreve no campo de baixo: é uma PESSOA que vai receber uma ligação.
+   Vermelho, com a barra do lado, e a mesma gramática do erro: nesta tela o
+   vermelho já quer dizer "olhe para isto". */
+.hint.aviso-forte{color:var(--err-txt);background:rgba(200,74,74,.06);
+  border-left:3px solid var(--red);border-radius:0 8px 8px 0;padding:8px 10px;margin-top:2px}
+.hint.aviso-forte b{color:var(--err-txt)}
 .hint{font-size:10.5px;color:var(--muted);line-height:1.55}
 
 /* ---------- ajuda ("tooltip") ----------
@@ -887,7 +895,7 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
             <!-- 🔴 DIZER QUEM SERÁ PROCURADO (pedido dele, 17/09): quem preenche precisa
                  saber que está indicando uma PESSOA para receber o contato do RH, e
                  avisá-la. Sem isso o RH liga para alguém que não esperava a ligação. -->
-            <div class="hint" data-en="<b>This is the person HR will contact</b> to discuss the partnership: the owner, manager or person in charge. Give someone with authority to negotiate, and let them know HR will be in touch."><b>É esta a pessoa que o RH vai procurar</b> para tratar da parceria:
+            <div class="hint aviso-forte" data-en="<b>This is the person HR will contact</b> to discuss the partnership: the owner, manager or person in charge. Give someone with authority to negotiate, and let them know HR will be in touch."><b>É esta a pessoa que o RH vai procurar</b> para tratar da parceria:
             proprietário, gerente ou responsável pelo estabelecimento. Informe alguém que tenha
             autonomia para negociar e avise essa pessoa de que o RH entrará em contato.</div>
             <input id="contatoNome" name="contatoNome" type="text" placeholder="Nome de quem te atendeu" maxlength="120">
@@ -926,7 +934,11 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
               <button type="button" class="ajuda-btn" data-ajuda="condicao" aria-expanded="false"
                       aria-controls="aj_condicao" aria-label="O que escrever na condição">?</button>
             </div>
-            <div class="hint" data-en="Describe it in as much detail as possible.">Escreva com a maior quantidade de detalhes.</div>
+            <!-- 🔴 A DICA PEDE AS DUAS COISAS (pedido dele, 19/09): com o campo de
+                 etapas fora, é aqui que o detalhe tem de caber. Quem lê isto no
+                 balcão é o RH, que vai negociar, e depois o colaborador, no card. -->
+            <div class="hint" data-en="Describe in as much detail as possible what the partnership is and also the conditions to use it.">Escreva com a maior quantidade de detalhes qual é a parceria e também
+            as condições para usufruir dela.</div>
             <div class="ajuda" id="aj_condicao" hidden>
               <h4>O que escrever aqui</h4>
               <p>Quanto mais detalhe você puser aqui, menos o RH precisa voltar ao estabelecimento para
@@ -947,16 +959,13 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
             <div class="conta"><span id="condicaoConta"></span></div>
             <div class="err" id="e_condicao"></div>
           </div>
-          <!-- 🔴 COMO USAR O BENEFÍCIO (pedido dele, 17/09; nome fechado em 18/09): a condição diz O QUE
-               o colaborador ganha; isto diz O QUE ELE FAZ para receber. São as duas
-               perguntas que chegavam misturadas num parágrafo só, e a segunda é a
-               que faz o colaborador ser atendido sem constrangimento no balcão. -->
-          <div class="f wide" data-campo="comoUsar">
-            <label data-en="How to use the benefit <span class=&quot;opt&quot;>(optional)</span>">Como usar o benefício <span class="opt">(opcional)</span></label>
-            <div class="hint" data-en="One step per line, in order. They appear numbered on the card.">Uma etapa por linha, na ordem. No card elas aparecem numeradas.</div>
-            <div class="hr-campo" id="comoUsar"></div>
-            <div class="err" id="e_comoUsar"></div>
-          </div>
+          <!-- 🔴 "COMO USAR O BENEFÍCIO" SAIU DAQUI (decisão dele, 19/09). Ele existiu
+               entre 17 e 19/09 e a decisão é boa: quem indica sabe O QUE conseguiu,
+               e quase nunca sabe o passo a passo de balcão, que depende do que o RH
+               fechar com o parceiro. Perguntar produzia etapa chutada, que ia para o
+               app como se fosse regra. O campo continua existindo no EDITOR DO CARD,
+               onde quem escreve é quem negociou; em branco, vale o texto padrão.
+               A condição, logo acima, é que passou a pedir o detalhe. -->
           <div class="f wide" data-campo="evidencia">
             <div class="rot">
               <label data-en="Evidence of the conversation <span class=&quot;opt&quot;>(optional)</span>">Evidência da conversa <span class="opt">(opcional)</span></label>
@@ -1192,8 +1201,11 @@ var REGRAS = {
   evidenciaMax: 3,             // quantos arquivos, no máximo (pedido dele, 15/09)
   evidenciaTipos: 'image/*,application/pdf,audio/*',   // print, PDF ou áudio de WhatsApp
 
-  /* Para onde o colaborador liga se tiver dúvida. */
-  contatoRH: 'rh@brnickel.com'
+  /* 🔴 Para onde o colaborador escreve se tiver dúvida. Em 19/09 deixou de ser
+     `rh@brnickel.com`, que era uma caixa que ninguém confirmou que existe, e
+     passou a ser a pessoa que de fato recebe. Endereço de e-mail escrito numa
+     tela pública é promessa: se ninguém lê, a promessa é falsa. */
+  contatoRH: 'ldias@brnickel.com'
 };
 
 /* --- 1.4.1 QUEM ESTÁ PREENCHENDO (login do portal) ---------------
@@ -1345,7 +1357,7 @@ var $ = function(id){ return document.getElementById(id); };
 var R = { colaborador:'', identificadoPor:'digitado', colaboradorEmail:null,
           indicadorEmail:'', indicadorFone:'', semLogin:false,
           tipo:'', tipoOutro:'', atendimento:'', estab:'', enderecos:[],
-          site:'', social:'', horario:'', comoUsar:[], contatoNome:'', contatoEmail:'', contatoFone:'',
+          site:'', social:'', horario:'', contatoNome:'', contatoEmail:'', contatoFone:'',
           unidades:[], cidadeOutra:'', cidadeOutraPais:'', condicao:'', consent:false };
 
 var arquivos = [];   // os File escolhidos, até REGRAS.evidenciaMax; nunca vão para o localStorage
@@ -1847,87 +1859,12 @@ function montarSeletorDePais(){
   return true;
 }
 
-/* o nome de cada etapa, na ordem. Depois da oitava não há mais nome escrito:
-   o número sozinho resolve, e inventar "nona" para um teto de oito seria texto
-   que nunca aparece. */
-var NOMES_DE_ETAPA = { pt:['Primeira etapa','Segunda etapa','Terceira etapa','Quarta etapa',
-                           'Quinta etapa','Sexta etapa','Sétima etapa','Oitava etapa'],
-                       en:['First step','Second step','Third step','Fourth step',
-                           'Fifth step','Sixth step','Seventh step','Eighth step'] };
-function nomeDaEtapa(i, idioma){
-  var l = NOMES_DE_ETAPA[idioma === 'en' ? 'en' : 'pt'];
-  return l[i] || ((idioma === 'en' ? 'Step ' : 'Etapa ') + (i + 1));
-}
-function montarCampoDeEtapas(){
-  var w = document.getElementById('comoUsar');
-  if(!w) return false;
-  w.innerHTML = '';
-  var corpo = document.createElement('div'); corpo.className = 'hr-linhas';
-  w.appendChild(corpo);
-  var estado = limparEtapas(R.comoUsar);
-  if(!estado.length) estado = [''];
-  function novo(tag, cls, txt){
-    var e = document.createElement(tag); if(cls) e.className = cls;
-    if(txt !== undefined && txt !== null) e.textContent = txt;
-    return e;
-  }
-  function lerLinhas(){
-    return Array.prototype.map.call(corpo.querySelectorAll('.et-txt'), function(i){ return i.value; });
-  }
-  function guardar(){
-    estado = lerLinhas();
-    R.comoUsar = limparEtapas(estado);
-    atualizarProgresso();
-  }
-  function desenhar(){
-    corpo.innerHTML = '';
-    estado.forEach(function(txt, i){
-      /* 🔴 A ETAPA GANHA NOME (pedido dele, 18/09): a bolinha com o número
-         sozinha, ao lado de um campo vazio, deixava um vão que lia como campo
-         quebrado. "1 - Primeira etapa" em cima diz o que se espera ali. Isto é
-         só o RÓTULO do campo: o card continua mostrando o texto escrito. */
-      var bloco = novo('div','et-bloco');
-      var cab = novo('div','et-cab');
-      cab.appendChild(novo('span','et-n', String(i + 1)));
-      var nm = novo('span','et-rot');
-      nm.textContent = nomeDaEtapa(i);
-      nm.dataset.en = nomeDaEtapa(i, 'en');
-      cab.appendChild(nm);
-      bloco.appendChild(cab);
-      var linha = novo('div','hr-linha et-linha');
-      var t = novo('input','et-txt'); t.type = 'text'; t.value = txt || '';
-      t.placeholder = i === 0 ? 'Exemplo: apresente o crachá funcional no caixa' : 'Próxima etapa';
-      t.maxLength = 140;
-      t.setAttribute('aria-label', 'Etapa ' + (i + 1));
-      t.addEventListener('input', guardar);
-      linha.appendChild(t);
-      var x = novo('button','hr-x','×'); x.type = 'button';
-      x.setAttribute('aria-label','Remover esta etapa');
-      x.hidden = estado.length < 2;
-      x.addEventListener('click', function(){
-        estado = lerLinhas(); estado.splice(i, 1);
-        if(!estado.length) estado = [''];
-        desenhar(); guardar();
-      });
-      linha.appendChild(x);
-      bloco.appendChild(linha);
-      corpo.appendChild(bloco);
-    });
-    var mais = novo('button','hr-mais','+ Adicionar etapa'); mais.type = 'button';
-    /* oito é o teto de `limparEtapas`: oferecer a nona seria prometer o que não entra */
-    mais.disabled = estado.length >= 8;
-    mais.addEventListener('click', function(){
-      estado = lerLinhas(); estado.push('');
-      desenhar(); guardar();
-    });
-    corpo.appendChild(mais);
-  }
-  desenhar();
-  /* conteúdo desenhado DEPOIS da troca de idioma não passou pela varredura:
-     repassar aqui é o que faz o rótulo novo nascer na língua certa */
-  if(idiomaAtual() === 'en') aplicarIdioma('en');
-  return true;
-}
+/* 🔴 O CAMPO DE ETAPAS SAIU em 19/09 junto com a pergunta (ver o comentário no
+   HTML). `limparEtapas` FICA: ela ainda limpa a lista que chega de um pacote
+   antigo, e é a mesma função do painel e do gerador, que a paridade cobra.
+   O desenho do campo, os nomes das etapas e `R.comoUsar` foram embora: peça
+   declarada e nunca ligada é pior que peça ausente, porque quem lê o código
+   acredita que ela funciona. */
 
 /* 🔴 A CAIXA DE SELEÇÃO QUE ABRE O CAMPO (pedido dele, 17/09). Desmarcar LIMPA o
    valor: campo escondido com conteúdo dentro é o jeito clássico de mandar para o
@@ -2514,7 +2451,6 @@ function montarPacote(){
     /* v3: horário de atendimento, opcional. Vazio = o card diz "consultar" */
     horario: String(R.horario||'').trim() || null,
     /* 🔴 as etapas do "como utilizar" (17/09): lista limpa, nunca texto corrido */
-    comoUsar: limparEtapas(R.comoUsar)
   };
 }
 
@@ -2807,7 +2743,7 @@ function contatoDoIndicadorResolvido(){
 /* 🔴 QUEM CHEGA AQUI NÃO TEM CONTA DA EMPRESA: não sabe o que é o brnapps, não
    sabe quem é o RH e não tem a quem perguntar. A instrução tem o e-mail ESCRITO
    e aparece no momento em que serve: depois de baixar. */
-var EMAIL_DO_RH = 'rh@brnickel.com';
+var EMAIL_DO_RH = 'ldias@brnickel.com';
 /* o formulário de dentro do portal, para quem tem login: é para onde o público
    manda quem tem e-mail da empresa */
 var URL_FORMULARIO_PORTAL = 'https://brnapps.brnickel.com/apps/clube-de-parcerias/formulario.html';
@@ -2952,12 +2888,11 @@ function mostrarSucesso(pacote){
 function recomecar(){
   R = { colaborador:R.colaborador, indicadorEmail:R.indicadorEmail, indicadorFone:R.indicadorFone,
         tipo:'', tipoOutro:'', atendimento:'', estab:'',
-        enderecos:[], site:'', social:'', horario:'', comoUsar:[], contatoNome:'', contatoEmail:'', contatoFone:'',
+        enderecos:[], site:'', social:'', horario:'', contatoNome:'', contatoEmail:'', contatoFone:'',
         unidades:[], cidadeOutra:'', cidadeOutraPais:'', condicao:'', consent:false };
   arquivos = [];
   ['estab','site','social','contatoNome','contatoEmail','contatoFone','condicao','tipoOutro','cidadeOutra']
     .forEach(function(id){ $(id).value = ''; });
-  montarCampoDeEtapas();
   montarSeletorDePais();
   ['temEndereco','temSite','temHorario'].forEach(function(id){
     var cx = $(id); if(cx){ cx.checked = false; if(cx.__pintar) cx.__pintar(); }
@@ -3445,7 +3380,6 @@ function ligar(){
   $('evidencia').addEventListener('change', function(){ porArquivos(this.files); this.value = ''; });
   montarCampoDeHorario();
   montarCampoDeEnderecos();
-  montarCampoDeEtapas();
   montarSeletorDePais();
   ligarInterruptores();
   ligarIdioma();
@@ -3861,17 +3795,43 @@ function selftest(){
     /* 🔴 O NOME DA ETAPA é só rótulo de campo: o que viaja no pacote continua
        sendo o texto escrito. A asserção mede as duas coisas, senão um rótulo
        novo poderia estar entrando no dado sem ninguém ver. */
-    var g = R.comoUsar;
-    R.comoUsar = ['apresente o crachá']; montarCampoDeEtapas();
-    var rots = Array.prototype.map.call($('comoUsar').querySelectorAll('.et-rot'),
-      function(e){ return e.textContent; });
-    t('★ cada etapa mostra "Primeira etapa", "Segunda etapa"… acima do campo (18/09)',
-      rots[0] === 'Primeira etapa' && $('comoUsar').querySelector('.et-n').textContent === '1',
-      rots.join(' | '));
-    t('★ e o rótulo NÃO entra no pacote: o que viaja é só o que foi escrito',
-      montarPacote().comoUsar.join('|') === 'apresente o crachá',
-      JSON.stringify(montarPacote().comoUsar));
-    R.comoUsar = g; montarCampoDeEtapas();
+    /* 🔴 19/09: o campo de etapas SAIU do formulário (ele decidiu que o passo a
+       passo é do RH, no editor do card). As asserções que mediam o rótulo de
+       cada etapa viraram a asserção de que o campo não está mais aqui: campo
+       removido sem asserção volta por acidente e ninguém vê. */
+    t('★ o campo "Como usar o benefício" NÃO existe mais no formulário (19/09)',
+      !$('comoUsar') && !document.querySelector('[data-campo="comoUsar"]') &&
+      !/Como usar o benefício/.test($('form') ? $('form').textContent : document.body.textContent));
+    t('★ e o pacote não leva mais a chave `comoUsar`: o que não se pergunta não viaja',
+      !('comoUsar' in montarPacote()), Object.keys(montarPacote()).filter(function(k){
+        return k.indexOf('como') === 0; }).join() || '(nenhuma)');
+    t('★ `limparEtapas` FICA, porque pacote antigo ainda pode trazer a lista',
+      typeof limparEtapas === 'function' && limparEtapas(['  a ', '', null]).join() === 'a');
+  })();
+
+  out.push('== Lote de 19/09: a dica da condição, o e-mail que recebe e o aviso vermelho ==');
+  (function(){
+    var f = campoEl('condicao');
+    t('★ a dica da condição pede a PARCERIA e as CONDIÇÕES, agora que as etapas saíram',
+      /qual é a parceria/i.test(f.textContent) && /condições para usufruir/i.test(f.textContent),
+      (f.querySelector('.hint')||{}).textContent);
+
+    /* 🔴 `rh@brnickel.com` era uma caixa que ninguém confirmou que existe, e ela
+       estava escrita numa tela PÚBLICA. Endereço que ninguém lê é promessa
+       falsa. */
+    t('★ o contato escrito na tela é o de quem recebe de verdade (19/09)',
+      REGRAS.contatoRH === 'ldias@brnickel.com' && EMAIL_DO_RH === 'ldias@brnickel.com' &&
+      !/rh@brnickel\.com/.test($('form').textContent), REGRAS.contatoRH);
+
+    var av = document.querySelector('[data-campo="contatoNome"] .hint.aviso-forte');
+    t('★ o aviso "é esta a pessoa que o RH vai procurar" está em destaque, não como dica comum',
+      !!av && /É esta a pessoa que o RH vai procurar/.test(av.textContent));
+    /* mede a COR na tela: dizer que pus a classe não prova que ela pinta */
+    if(av){
+      var cor = getComputedStyle(av).color;
+      var comum = getComputedStyle(document.querySelector('[data-campo="estab"] .hint')).color;
+      t('★ e ele é lido em vermelho, diferente das outras dicas', cor !== comum, cor + ' vs ' + comum);
+    }
   })();
 
   out.push('== O atalho para a versão sem login (16/09) ==');
@@ -4626,7 +4586,7 @@ function selftest(){
 
   out.push('== Lote de 17/09: abrangências amplas, caixas de seleção e etapas ==');
   (function(){
-    var gU = R.unidades.slice(), gE = R.enderecos, gC = R.comoUsar;
+    var gU = R.unidades.slice(), gE = R.enderecos;
 
     /* --- abrangências amplas: Brasil, Canadá, Global --- */
     t('★ existem as três abrangências amplas, além das cidades',
@@ -4691,27 +4651,8 @@ function selftest(){
       $('blocoSite').hidden === true && !R.site && $('site').value === '' &&
       montarPacote().site === null, String(R.site));
 
-    /* --- como utilizar o benefício --- */
-    R.comoUsar = []; montarCampoDeEtapas();
-    var we = $('comoUsar');
-    t('★ o campo de etapas começa com uma linha numerada e um "+ Adicionar etapa"',
-      we.querySelectorAll('.et-linha').length === 1 &&
-      we.querySelector('.et-n').textContent === '1' && !!we.querySelector('.hr-mais'));
-    t('com uma linha só, remover não aparece', we.querySelector('.hr-x').hidden === true);
-    we.querySelector('.et-txt').value = 'Apresente o crachá funcional no caixa';
-    we.querySelector('.et-txt').dispatchEvent(new Event('input'));
-    we.querySelector('.hr-mais').click();
-    we = $('comoUsar');
-    var txts = we.querySelectorAll('.et-txt');
-    txts[1].value = 'Informe que é colaborador da Brazilian Nickel';
-    txts[1].dispatchEvent(new Event('input'));
-    t('★ cada etapa é uma linha, numerada na ordem, e entra no pacote como lista',
-      we.querySelectorAll('.et-linha').length === 2 &&
-      Array.prototype.map.call(we.querySelectorAll('.et-n'), function(n){ return n.textContent; }).join() === '1,2' &&
-      montarPacote().comoUsar.length === 2 &&
-      montarPacote().comoUsar[0].indexOf('crachá') > 0,
-      JSON.stringify(montarPacote().comoUsar));
-    t('★ e o teto é oito etapas: passo a passo maior que isso é a condição escrita de novo',
+    /* --- o teto das etapas continua valendo para quem as recebe --- */
+    t('★ o teto é oito etapas: quem escreve agora é o RH, mas a regra de limpeza é a MESMA nas três peças',
       limparEtapas(['a','b','c','d','e','f','g','h','i','j']).length === 8 &&
       limparEtapas(['  ', '', null]).length === 0);
 
@@ -4741,10 +4682,10 @@ function selftest(){
       !!$('btnVerApp') && $('btnVerApp').getAttribute('href') === URL_APP &&
       $('btnVerApp').closest('#sucesso') !== null);
 
-    R.unidades = gU; R.enderecos = gE; R.comoUsar = gC;
+    R.unidades = gU; R.enderecos = gE;
     $('temHorario').checked = false; $('temHorario').dispatchEvent(new Event('change'));
     $('temEndereco').checked = false; $('temEndereco').dispatchEvent(new Event('change'));
-    pintarUnidades(); montarCampoDeEtapas();
+    pintarUnidades();
   })();
 
   out.push('== Português e inglês (17/09) ==');
@@ -5063,8 +5004,12 @@ function selftest(){
        passou a dizer PARA QUE ela serve (pedido dele): sem isso ela lia como
        desconfiança de quem indica. Ficou maior de propósito; a da condição, que
        tem painel de ajuda ao lado, continua curta. */
-    t('a dica da condição é curta, porque o detalhe mora na ajuda ao lado',
-      dicaCond.length > 0 && dicaCond.length <= 60, dicaCond.length + ' letras');
+    /* 🔴 19/09: a dica deixou de ser curta DE PROPÓSITO. Com o campo de etapas
+       fora, é ela que tem de pedir o detalhe, e o teto antigo (60 letras) passou
+       a cobrar o contrário do que a tela precisa. O teto continua existindo,
+       porque dica que vira parágrafo ninguém lê: subiu para 160. */
+    t('a dica da condição pede o detalhe, e ainda assim cabe em duas linhas',
+      dicaCond.length > 60 && dicaCond.length <= 160, dicaCond.length + ' letras');
     t('★ e a da evidência explica PARA QUE ela serve, em vez de só listar formatos',
       /retomar a negociação de onde você parou/i.test(dicaEvi) && /restrita ao RH/i.test(dicaEvi),
       dicaEvi.slice(0, 70));
