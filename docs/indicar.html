@@ -201,11 +201,13 @@ label .opt{color:var(--muted);font-weight:400}
 /* 🔴 AVISO QUE PRECISA SER LIDO (pedido dele, 19/09). Ele é dica no lugar e
    dica no tamanho, e some no meio das outras; mas o que ele diz muda o que a
    pessoa escreve no campo de baixo: é uma PESSOA que vai receber uma ligação.
-   Vermelho, com a barra do lado, e a mesma gramática do erro: nesta tela o
-   vermelho já quer dizer "olhe para isto". */
-.hint.aviso-forte{color:var(--err-txt);background:rgba(200,74,74,.06);
-  border-left:3px solid var(--red);border-radius:0 8px 8px 0;padding:8px 10px;margin-top:2px}
-.hint.aviso-forte b{color:var(--err-txt)}
+   🔴 AMARELO, e não vermelho (ele corrigiu em 20/09, com razão): nesta tela o
+   vermelho é a cor do ERRO, e um aviso vermelho num campo ainda em branco faz a
+   pessoa procurar o que ela fez de errado. Amarelo quer dizer "preste atenção",
+   que é exatamente o que este texto pede. */
+.hint.aviso-forte{color:var(--warn-txt);background:var(--creme);
+  border-left:3px solid var(--amber);border-radius:0 8px 8px 0;padding:8px 10px;margin-top:2px}
+.hint.aviso-forte b{color:var(--warn-txt)}
 .hint{font-size:10.5px;color:var(--muted);line-height:1.55}
 
 /* ---------- ajuda ("tooltip") ----------

@@ -322,8 +322,8 @@ def gerar(template, grupos):
          plural(len(lista), "partner available in this location", "partners available in this location")),
        "\n".join(card_html(c, cidade) for c in lista),
        ("" if lista else '<div class="vazio-cidade">%s</div>' % d(
-           "Ainda não há parceria cadastrada aqui. Conhece um lugar que valha a pena? Indique pelo formulário do Clube.",
-           "There are no partners here yet. Know a place worth adding? Send it through the Club form.")),
+           "Ainda não há parceria cadastrada aqui. Conhece um lugar ou alguém que possa se tornar parceiro da Brazilian Nickel? Indique pelo formulário do Clube!",
+           "No partners here yet. Know a place or someone that could become a Brazilian Nickel partner? Send it through the Club form!")),
        d("<b>Lembrete:</b> apresente o crachá funcional e informe o convênio com a Brazilian Nickel antes de concluir a compra. As condições não são cumulativas com outras promoções, salvo indicação em contrário, e podem ser alteradas ou encerradas sem aviso prévio.",
          "<b>Reminder:</b> present your employee badge and mention the Brazilian Nickel agreement before completing the purchase. Terms are not cumulative with other promotions unless stated otherwise, and may change or end without prior notice.")))
     s = template
