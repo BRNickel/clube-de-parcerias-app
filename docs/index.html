@@ -210,6 +210,17 @@ body.js .chips.on{display:flex}
    `start`. Card com menos informação fica mais alto por causa do vizinho, e foi
    isso que ele pediu: fileira alinhada vale mais que card justo. */
 .partners{display:grid;grid-template-columns:1fr;gap:12px;margin-top:14px;align-items:stretch}
+/* 🔴 OS DOIS PEDIDOS DELE BRIGAM, e em 21/09 a briga apareceu na tela: ele viu
+   um card aberto e o vizinho fechado esticado do lado, alto e vazio. São as
+   duas decisões colidindo: `start` (15/09) evitava o vazio, `stretch` (16/09)
+   alinhava a fileira. O que mudou desde então foi o CONTEÚDO: com o bloco "Como
+   usar o benefício" e os endereços, um card aberto ficou muito mais alto que um
+   fechado, e o vazio que antes eram 20 pixels virou meia tela.
+   A regra passa a depender do estado: enquanto TODOS estão fechados vale o
+   alinhamento que ele pediu; assim que um abre, cada card volta a ter a altura
+   do próprio conteúdo. Sem JS, e num navegador sem `:has()` fica o de 16/09,
+   que é o comportamento de hoje. */
+.partners:has(details[open]){align-items:start}
 @media(min-width:760px){.partners{grid-template-columns:1fr 1fr}}
 /* 🔴 A EXPANSÃO VALE EM TODA TELA (pedido dele, 17/09). Até 15/09 o card vinha
    aberto no computador, porque lá sobrava espaço; com o bloco "Como usar o
