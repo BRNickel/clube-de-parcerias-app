@@ -1084,6 +1084,7 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
     </div>
   </div>
 </div>
+
 <script>
 (function(){
 'use strict';
@@ -3603,7 +3604,7 @@ function selftest(){
   })();
 
   out.push('== Nome do colaborador ==');
-  t('aceita nome composto',      nomeValido('Fernando Leandro'));
+  t('aceita nome composto',      nomeValido('Pessoa de Teste'));
   t('aceita com acento',         nomeValido('Antônia Gervásio'));
   t('aceita três partes',        nomeValido('José da Silva Filho'));
   t('recusa só o primeiro nome', nomeValido('Fernando') === false);
@@ -4061,26 +4062,26 @@ function selftest(){
     t('e não inventa e-mail',               montarPacote().colaboradorEmail === null);
 
     /* sessão de mentira no formato que o Supabase grava */
-    var falsa = { user: { email: 'FLeandro@BRNickel.com',
-                          user_metadata: { full_name: 'Fernando Leandro' } } };
+    var falsa = { user: { email: 'Pessoa.Teste@BRNickel.com',
+                          user_metadata: { full_name: 'Pessoa de Teste' } } };
     try{ localStorage.setItem(CH, JSON.stringify(falsa)); }catch(e){}
     var u = usuarioDoPortal();
     t('com login, acha o usuário',          !!u);
-    t('o e-mail vem em minúsculas',         u && u.email === 'fleandro@brnickel.com');
-    t('o nome vem do metadado do login',    u && u.nome === 'Fernando Leandro');
+    t('o e-mail vem em minúsculas',         u && u.email === 'pessoa.teste@brnickel.com');
+    t('o nome vem do metadado do login',    u && u.nome === 'Pessoa de Teste');
     aplicarIdentidade();
-    t('o campo é preenchido sozinho',       $('colaborador').value === 'Fernando Leandro');
+    t('o campo é preenchido sozinho',       $('colaborador').value === 'Pessoa de Teste');
     t('e TRAVA, para ninguém indicar no nome de outro',
       $('colaborador').readOnly === true &&
       $('colaborador').getAttribute('aria-readonly') === 'true');
     t('o campo travado PARECE travado, não só se comporta',
       getComputedStyle($('colaborador')).cursor === 'default');
     t('a tela diz de onde veio o nome',
-      /Identificado pelo seu login: fleandro@brnickel\.com/.test($('avisoLogin').textContent));
+      /Identificado pelo seu login: pessoa\.teste@brnickel\.com/.test($('avisoLogin').textContent));
     t('o ícone do aviso sobrevive ao texto (o textContent no bloco apagaria)',
       !!$('avisoLogin').querySelector('svg'));
     t('o pacote passa a dizer que veio do LOGIN', montarPacote().identificadoPor === 'login');
-    t('e leva o e-mail que o login deu',    montarPacote().colaboradorEmail === 'fleandro@brnickel.com');
+    t('e leva o e-mail que o login deu',    montarPacote().colaboradorEmail === 'pessoa.teste@brnickel.com');
 
     /* sessão sem nome: e-mail existe mas o metadado não veio */
     try{ localStorage.setItem(CH, JSON.stringify({ user:{ email:'x@brnickel.com' } })); }catch(e){}
@@ -4133,7 +4134,7 @@ function selftest(){
   out.push('== Validação de um formulário completo ==');
   (function(){
     termoLido = true;
-    R.colaborador='Fernando Leandro';
+    R.colaborador='Pessoa de Teste';
     R.tipo='alimentacao'; R.tipoOutro=''; R.atendimento='presencial';
     R.estab='Madame Underground Club'; R.enderecos = [{endereco:'Rua das Flores, 120, Centro, Belo Horizonte', rotulo:''}];
     R.site='www.madameunderground.com.br'; R.social='@madameunderground';
@@ -4174,15 +4175,15 @@ function selftest(){
     t('sem quem pode usar é barrado', validar().some(function(x){ return x.campo==='unidades'; }));
     R.unidades = ['BHZ'];
 
-    R.colaborador = 'Fernando';
+    R.colaborador = 'Pessoa';
     t('nome sem sobrenome é barrado', validar().some(function(x){ return x.campo==='colaborador'; }));
-    R.colaborador = 'Fernando Leandro';
+    R.colaborador = 'Pessoa de Teste';
   })();
 
   out.push('== O pacote que vai gravado ==');
   (function(){
     var pc = montarPacote();
-    t('leva o nome de quem indicou, sem espaço sobrando', pc.colaborador === 'Fernando Leandro');
+    t('leva o nome de quem indicou, sem espaço sobrando', pc.colaborador === 'Pessoa de Teste');
     t('leva o código E o nome do tipo',
       pc.tipoCodigo === 'alimentacao' && pc.tipoNome === 'Restaurante e alimentação');
     t('fora de "Outros", o campo extra vai nulo', pc.tipoOutro === null);
