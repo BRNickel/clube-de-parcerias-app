@@ -2923,7 +2923,16 @@ function nomeDoArquivo(corpo){
   var cat = limpo(corpo.tipoCodigo || 'outros');
   var quem = limpo(corpo.colaborador || 'sem nome');
   var dia = String(corpo.enviadoEm || '').slice(0, 10) || 'sem data';
-  return (cat + ' - ' + quem + ' - ' + dia).slice(0, 120) + '.json';
+  /* 🔴 `.txt`, e NAO `.json` (23/09). O arquivo vai como `text/plain` desde a
+     rodada anterior, porque `application/json` nao esta na lista de tipos que a
+     Web Share aceita. Mas o NOME continuava `.json`, e no celular quem manda e'
+     a extensao: nome `.json` com conteudo declarado `text/plain` e um
+     desencontro, e desencontro e' motivo de recusa.
+     O conteudo nao mudou: continua sendo JSON por dentro, e o painel le pela
+     mesma tradução. O que muda é a etiqueta.
+     ⚠ O painel passou a aceitar `.json` E `.txt` no seletor, para os arquivos
+     que já foram enviados continuarem entrando. */
+  return (cat + ' - ' + quem + ' - ' + dia).slice(0, 120) + '.txt';
 }
 /* o corpo do último envio offline, guardado porque quem baixa (ou compartilha)
    passou a ser a PESSOA, num toque depois do envio, e não mais o `enviar()` */
@@ -2943,7 +2952,11 @@ var ULTIMO_CORPO = null;
    vazio), ou seja, ele não aplica a lista e não serve para prever o celular.
    O NOME continua terminando em `.json`, que é o que o painel filtra na hora de
    importar; quem muda é só o rótulo de tipo que viaja junto. */
-var TIPO_ARQUIVO = 'application/json';
+/* 🔴 o arquivo BAIXADO segue o mesmo tipo do compartilhado (23/09). Eram dois
+   tipos para o mesmo conteudo, e o resultado era a pessoa baixar um `.json` e
+   compartilhar um `.txt`: dois arquivos com a mesma informacao e nomes
+   diferentes chegando ao RH. Um so', `text/plain`, com nome `.txt`. */
+var TIPO_ARQUIVO = 'text/plain';
 var TIPO_COMPARTILHAR = 'text/plain';
 function arquivoDoPacote(corpo){
   var txt = JSON.stringify(corpo, null, 2);
@@ -3397,8 +3410,21 @@ function abrirInstrucoesOffline(pacote, corpo){
          tipo do arquivo, nem se foi o gesto. A instrução vem primeiro e o nome
          do erro depois, entre parênteses. */
       var nome = (e && (e.name || e.message)) ? String(e.name || e.message).slice(0, 40) : '?';
-      baixarEDizer(T('O compartilhamento não abriu neste aparelho (' + nome + ').',
-                     'Sharing did not open on this device (' + nome + ').'));
+      /* 🔴 `NotAllowedError` NAO e' "este aparelho nao sabe": e' "o navegador nao
+         reconheceu o seu toque como permissao". Medido no celular dele em 23/09.
+         A causa de longe mais comum e' a pagina estar aberta DENTRO de outro
+         aplicativo (o navegador embutido do WhatsApp, do Teams, do Instagram),
+         onde `canShare` responde que sim e o `share` e' barrado mesmo assim.
+         Dizer "nao conseguiu" ali deixa a pessoa sem o que fazer; dizer para
+         abrir no navegador do celular resolve na maioria dos casos. */
+      var msg = /NotAllowed/i.test(nome)
+        ? T('O seu navegador não liberou o compartilhamento. Isso acontece quando a página ' +
+            'está aberta dentro de outro aplicativo: abra o link no Chrome ou no Safari e tente de novo.',
+            'Your browser did not allow sharing. This happens when the page is open inside ' +
+            'another app: open the link in Chrome or Safari and try again.')
+        : T('O compartilhamento não abriu neste aparelho (' + nome + ').',
+            'Sharing did not open on this device (' + nome + ').');
+      baixarEDizer(msg);
     });
   });
 
@@ -5820,7 +5846,7 @@ function selftest(){
     t('★ o popup diz o e-mail do RH e o nome do arquivo',
       !!$('ovInstrucoes') && $('ovInstrucoes').classList.contains('on') &&
       $('ovInstrucoes').textContent.indexOf(EMAIL_DO_RH) >= 0 &&
-      /alimentacao - Maria da Silva - 2026-09-16\.json/.test($('ovInstrucoes').textContent));
+      /alimentacao - Maria da Silva - 2026-09-16\.txt/.test($('ovInstrucoes').textContent));
     /* 🔴 O PEDIDO LITERAL DELE: "ao invés de baixar automático, trazer o botão
        'baixar arquivo agora'". A asserção cobra o botão E o texto dele. */
     t('★ o download deixou de ser automático: existe o botão "Baixar arquivo agora", em destaque',
@@ -5896,7 +5922,7 @@ function selftest(){
         $('btnBaixarAgora').click();
         t('★ o clique entrega um ARQUIVO de verdade à folha, com o nome certo e o texto para o RH',
           !!pedido && !!pedido.files && pedido.files.length === 1 &&
-          pedido.files[0].name === 'alimentacao - Maria da Silva - 2026-09-16.json' &&
+          pedido.files[0].name === 'alimentacao - Maria da Silva - 2026-09-16.txt' &&
           pedido.text.indexOf(EMAIL_DO_RH) >= 0,
           pedido && pedido.files ? pedido.files[0].name : 'nada foi compartilhado');
         /* 🔴 O TIPO DO ARQUIVO COMPARTILHADO. A Web Share tem lista fechada de
@@ -5904,8 +5930,13 @@ function selftest(){
            "este aparelho não conseguiu compartilhar" que ele viu no celular.
            O que viaja é `text/plain`; o NOME continua `.json`, que é o que o
            painel filtra ao importar. */
-        t('★ o arquivo vai como text/plain (json não é compartilhável), mas o nome continua .json',
-          pedido.files[0].type === 'text/plain' && /\.json$/.test(pedido.files[0].name),
+        /* 🔴 TIPO E EXTENSÃO TÊM DE CONCORDAR (23/09). `application/json` não está
+           na lista de tipos da Web Share, então o conteúdo vai como `text/plain`;
+           mas o nome continuava `.json`, e no celular quem manda é a EXTENSÃO.
+           O desencontro é candidato à recusa que ele viu (`NotAllowedError`).
+           A asserção cobra os dois juntos, que é o que faltava antes. */
+        t('★ tipo e extensão concordam: text/plain com nome .txt',
+          pedido.files[0].type === 'text/plain' && /\.txt$/.test(pedido.files[0].name),
           pedido.files[0].type + ' · ' + pedido.files[0].name);
         /* 🔴 e BAIXA ANTES de compartilhar: no teste dele a folha falhou, e com a
            ordem invertida a pessoa ficaria sem nada nas mãos. O título atrás do
@@ -5962,7 +5993,7 @@ function selftest(){
     var nome = nomeDoArquivo({ tipoCodigo:'alimentacao', colaborador:'Maria da Silva',
                                enviadoEm:'2026-09-16T13:40:00.000Z' });
     t('★ o arquivo se chama categoria, quem indicou e a data',
-      nome === 'alimentacao - Maria da Silva - 2026-09-16.json', nome);
+      nome === 'alimentacao - Maria da Silva - 2026-09-16.txt', nome);
     /* 🔴 acento e barra saem do nome: o Windows RECUSA o nome, e o sintoma seria
        um download que simplesmente não acontece, sem erro nenhum. */
     var feio = nomeDoArquivo({ tipoCodigo:'saúde/bem-estar', colaborador:'João D\'Ávila: o "Mestre"',
