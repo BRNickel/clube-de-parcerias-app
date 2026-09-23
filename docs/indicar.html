@@ -124,7 +124,11 @@ body.js .tema-btn{display:inline-flex}
   transition:max-width .25s,gap .25s,border-color .15s,color .15s,background .15s}
 .sem-login svg{width:17px;height:17px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .sem-login .rot{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;opacity:0;transition:opacity .2s}
-.sem-login:hover,.sem-login:focus-visible{max-width:220px;gap:8px;border-color:#fff;color:#fff;background:rgba(255,255,255,.08)}
+/* 🔴 240 e não 220 (23/09): o rótulo passou de "versão sem login" para
+   "sem e-mail corporativo" e ficou mais largo. Com `overflow:hidden`, um rótulo
+   maior que o `max-width` é CORTADO em silêncio, sem erro nenhum. A bateria
+   mede a largura de verdade do rótulo contra este número. */
+.sem-login:hover,.sem-login:focus-visible{max-width:240px;gap:8px;border-color:#fff;color:#fff;background:rgba(255,255,255,.08)}
 .sem-login:hover .rot,.sem-login:focus-visible .rot{opacity:1}
 .sem-login[hidden]{display:none}
 .tema-btn:active{transform:scale(.88)}
@@ -173,6 +177,10 @@ body.js .tema-btn{display:inline-flex}
   color:var(--warn-txt);margin-bottom:6px}
 .callout p{font-size:13px;line-height:1.6;margin:0 0 8px}
 .callout p:last-child{margin-bottom:0}
+/* o prazo ganha um fio em cima: ele é a resposta de "e agora, quanto tempo?",
+   e dentro do bloco corrido passava como mais uma frase (23/09) */
+.callout .prazo-linha{border-top:1px solid var(--line);padding-top:9px;margin-top:10px}
+.prazo-resp{font-weight:700;white-space:nowrap}
 .duvida{background:var(--grey);border-radius:12px;padding:13px 16px;margin-top:16px;
   font-size:13px;line-height:1.6}
 
@@ -373,6 +381,15 @@ select{background-image:url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http:
 .off-aviso p{font-size:13px;line-height:1.6;color:var(--txt)}
 .off-aviso .off-sub{font-size:12px;color:var(--muted)}
 .off-aviso b{font-weight:700}
+/* o e-mail do RH no popup do fim (23/09): caixa própria porque ele é o dado que
+   a pessoa precisa LER e COPIAR, e dentro de um parágrafo ele se perde */
+.off-email{background:var(--grey);border:1px solid var(--line);border-radius:12px;
+  padding:11px 14px;margin:0 0 12px;display:flex;flex-direction:column;gap:3px}
+.off-email-rot{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.01em}
+/* 🔴 `user-select:all` e `break-all`: no celular o endereço é selecionado com um
+   toque longo, e sem a quebra ele estoura a largura do popup em tela estreita */
+.off-email b{font-size:14px;font-weight:700;color:var(--txt);user-select:all;word-break:break-all}
+.off-p.off-arq{font-size:12px;color:var(--muted);word-break:break-all;margin-bottom:12px}
 
 .hr-campo{display:flex;flex-direction:column;gap:8px}
 .hr-linhas{display:flex;flex-direction:column;gap:7px}
@@ -670,10 +687,16 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
            repassa o link a quem não tem conta da empresa); na página pública ele
            leva à versão COM login, que é onde a indicação é enviada na hora. Ele
            sumia na pública, e quem tinha conta não tinha como voltar. -->
+      <!-- 🔴 "LOGIN" SAIU DO TEXTO (pedido dele, 23/09). "Com login / sem login"
+           descreve o MECANISMO, e quem lê não sabe se tem login; "com e-mail
+           corporativo / sem e-mail corporativo" descreve o que a pessoa SABE
+           sobre si mesma. É a mesma troca de vocabulário que já vale no resto do
+           formulário. O `title` continua explicando por extenso. -->
       <a class="sem-login" id="linkSemLogin" href="https://brnickel.github.io/clube-de-parcerias-app/indicar.html"
-         target="_blank" rel="noopener" aria-label="Versão sem login" title="Versão sem login, para quem não tem conta da empresa">
+         target="_blank" rel="noopener" aria-label="Versão para quem não tem e-mail corporativo"
+         title="Versão para quem não tem e-mail corporativo da Brazilian Nickel">
         <svg id="icoAtalho" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8"/><path d="M8 12h8"/><path d="M8 16h5"/></svg>
-        <span class="rot">versão sem login</span>
+        <span class="rot">sem e-mail corporativo</span>
       </a>
       <!-- 🔴 IDIOMA (pedido dele, 17/09): ao lado do tema, porque são a mesma
            família de escolha (como a página se apresenta). -->
@@ -716,7 +739,7 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
 
     <p data-en="This form records a suggestion of an establishment willing to offer special terms to Brazilian Nickel employees: a discount, a better price on a service, a gift or any other benefit.">Este formulário registra a indicação de um estabelecimento disposto a oferecer uma
     condição diferenciada aos colaboradores da Brazilian Nickel: desconto, preço especial em um
-    serviço, brinde ou qualquer outra vantagem.</p>
+    serviço, brinde ou qualquer outro benefício.</p>
 
     <p data-en="The more complete the information, the faster HR can assess it.">Quanto mais completa for a informação, mais rápida é a avaliação pelo RH.</p>
 
@@ -737,6 +760,14 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
       <p data-en="<b>HR</b> contacts the establishment, negotiates the terms and decides on publication. The partnership may not go ahead, and that is a normal part of the process. Until then, do not make commitments on behalf of Brazilian Nickel.">O <b>RH</b> entra em contato com o estabelecimento, negocia as condições e decide sobre a
       publicação. A parceria pode não se confirmar, e isso é parte normal do processo. Até a decisão,
       não assuma compromissos em nome da Brazilian Nickel.</p>
+      <!-- 🔴 O PRAZO (pedido dele, 23/09), dito ANTES de preencher e de novo no fim.
+           Ele existe para a pessoa não ficar no escuro achando que a indicação se
+           perdeu, e para o RH não receber cobrança no terceiro dia. O número está
+           num `span` vazio de propósito: quem escreve o número é o JS, a partir de
+           `REGRAS.prazoRespostaDiasUteis`, nos dois idiomas. -->
+      <p class="prazo-linha" data-en="<b>Response time:</b> the HR review may take up to <span class=&quot;prazo-resp&quot;></span> from the moment the suggestion arrives, depending on how many are in the queue. If anything is missing, HR will get in touch before that."><b>Tempo de resposta:</b> a análise do RH pode levar até <span class="prazo-resp"></span>
+      a partir da chegada da indicação, dependendo do volume de indicações na fila. Se faltar alguma
+      informação, o RH procura você antes.</p>
     </div>
 
     <div class="duvida" id="duvida"></div>
@@ -976,27 +1007,32 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
                A condição, logo acima, é que passou a pedir o detalhe. -->
           <div class="f wide" data-campo="evidencia">
             <div class="rot">
-              <label data-en="Evidence of the conversation <span class=&quot;opt&quot;>(optional)</span>">Evidência da conversa <span class="opt">(opcional)</span></label>
+              <label data-en="Supporting files <span class=&quot;opt&quot;>(optional)</span>">Arquivos de apoio <span class="opt">(opcional)</span></label>
               <button type="button" class="ajuda-btn" data-ajuda="evidencia" aria-expanded="false"
-                      aria-controls="aj_evidencia" aria-label="O que serve de evidência">?</button>
+                      aria-controls="aj_evidencia" aria-label="O que serve como arquivo de apoio">?</button>
             </div>
-            <!-- 🔴 POR QUE A EVIDÊNCIA EXISTE (pedido dele, 17/09): sem dizer para que
-                 serve, ela lê como desconfiança de quem indica. O motivo é outro: ela
-                 poupa uma rodada inteira de conversa com o estabelecimento. -->
-            <div class="hint" data-en="A screenshot, photo, e-mail or proposal. <b>It lets HR pick the negotiation up where you left it</b> instead of starting over, and records what was discussed. It is optional, stays with HR and never appears in the Partnership Club.">Print da conversa, foto, e-mail ou proposta. <b>Serve para o RH retomar a
-            negociação de onde você parou</b>, em vez de começar do zero, e para registrar o que foi
-            conversado. É opcional e fica restrita ao RH: não aparece no Clube de Parcerias.</div>
+            <!-- 🔴 POR QUE ISTO EXISTE (pedido dele, 17/09): sem dizer para que
+                 serve, o campo lê como desconfiança de quem indica. O motivo é outro: ele
+                 poupa uma rodada inteira de conversa com o estabelecimento.
+                 🔴 23/09: era "Evidência da conversa" e virou "Arquivos de apoio" (pedido
+                 dele). "Evidência" é palavra de quem apura; quem preenche está ajudando,
+                 não se defendendo. A legenda passa a DAR EXEMPLO, porque o nome novo é
+                 mais largo e sozinho não diz o que serve. -->
+            <div class="hint" data-en="For example: a screenshot of the conversation, an audio message, a photo, an e-mail, a proposal or the contract. <b>It lets HR pick the negotiation up where you left it</b> instead of starting over. It is optional, stays with HR and never appears in the Partnership Club.">Exemplo: print da conversa, áudio, foto, e-mail, proposta ou contrato.
+            <b>Serve para o RH retomar a negociação de onde você parou</b>, em vez de começar do
+            zero. É opcional e fica restrito ao RH: não aparece no Clube de Parcerias.</div>
             <div class="ajuda" id="aj_evidencia" hidden>
-              <h4>O que serve de evidência</h4>
+              <h4>O que serve como arquivo de apoio</h4>
               <p>Qualquer coisa que mostre que a conversa aconteceu e o que foi combinado:</p>
               <ul>
                 <li>print da conversa no WhatsApp com o responsável;</li>
-                <li>e-mail ou proposta que o estabelecimento mandou;</li>
+                <li>áudio que o responsável mandou;</li>
+                <li>e-mail, proposta ou contrato que o estabelecimento mandou;</li>
                 <li>foto do cardápio, da tabela ou do cartaz com a condição;</li>
                 <li>foto sua no local com quem te atendeu.</li>
               </ul>
-              <p>É opcional, mas muda o tempo de resposta: com evidência o RH retoma a conversa de
-              onde você parou, em vez de começar do zero.</p>
+              <p>É opcional, mas muda o tempo de resposta: com um arquivo de apoio o RH retoma a
+              conversa de onde você parou, em vez de começar do zero.</p>
               <p id="ajudaEvidenciaLimite"></p>
             </div>
             <div class="arq" id="arq">
@@ -1206,9 +1242,38 @@ var REGRAS = {
      conseguir voltar a falar com a pessoa se faltar informação. */
 
   condicaoMinima: 15,          // caracteres; abaixo disso não descreve nada
-  evidenciaMaxMB: 10,          // tamanho máximo de CADA arquivo de evidência
+
+  /* 🔴 QUANTO O RH DEMORA PARA RESPONDER (pedido dele, 23/09). Um número só,
+     aqui, e a tela repete. Ele aparece em três lugares (antes de preencher, na
+     tela de sucesso e no termo) e escrever "14" à mão nos três é como o limite
+     de arquivo já divergiu uma vez: muda-se um e os outros mentem. A bateria
+     confere que os três dizem o MESMO número.
+     ⚠ É uma MÉDIA, e a tela diz isso com todas as letras: prometer prazo certo
+     numa fila que ninguém controla é promessa que o RH não pode cumprir. */
+  prazoRespostaDiasUteis: 14,
+
+  /* 🔴 O LIMITE DE ARQUIVO, e o que ele resolve de verdade (medido em 23/09).
+     Ele pediu 25 MB pensando em contrato. Um contrato de 10 páginas em Word
+     pesa 35 KB, e os documentos mais pesados que existem na máquina dele
+     (19 páginas, com imagem e fonte de emoji) param em 201 KB: Word nunca foi
+     o caso apertado, e os 10 MB de antes já eram 50 vezes o necessário.
+     O que ENCOSTA no teto é papel fotografado: 10 fotos de página com celular
+     dão 7,3 MB, e um PDF escaneado das mesmas 10 páginas, 7,0 MB.
+     Os 25 MB entram como ele pediu, com uma diferença: existe TETO DO CONJUNTO.
+     3 x 25 MB seriam 75 MB crus, ~100 MB depois do base64, num corpo que a
+     função recebe inteiro na memória. ⚠ Esse teto de transporte NÃO está
+     provado: a função recusa quem não tem login ANTES de ler o corpo, então
+     não há como medi-lo sem gravar linha de verdade em produção. O conjunto
+     preso em 25 MB é o que mantém o envio dentro do que já rodava. */
+  evidenciaMaxMB: 25,          // tamanho máximo de CADA arquivo
+  evidenciaTotalMB: 25,        // e o teto da SOMA deles, que é o que o envio carrega
   evidenciaMax: 3,             // quantos arquivos, no máximo (pedido dele, 15/09)
-  evidenciaTipos: 'image/*,application/pdf,audio/*',   // print, PDF ou áudio de WhatsApp
+  /* 🔴 WORD ENTROU (23/09). Ele falou em "contrato em word" e a lista de antes
+     era `image/*,application/pdf,audio/*`: um .docx era RECUSADO pelo campo, o
+     que faria o pedido dele não funcionar justamente no exemplo que ele deu. */
+  evidenciaTipos: 'image/*,application/pdf,audio/*,' +
+                  'application/msword,' +
+                  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 
   /* 🔴 Para onde o colaborador escreve se tiver dúvida. Em 19/09 deixou de ser
      `rh@brnickel.com`, que era uma caixa que ninguém confirmou que existe, e
@@ -1247,31 +1312,71 @@ var IDENTIDADE = {
    Formato: [título, [parágrafos...]]. 'LISTA' abre marcadores e 'FIM'
    fecha. '__CONTATO__' vira REGRAS.contatoRH.
    ⚠ Este texto é rascunho e NÃO passou por jurídico. */
-var TERMO_VERSAO = 'v1 (14/09/2026, rascunho, sem revisão jurídica)';
+/* 🔴 v2, 23/09/2026. O QUE MUDOU e POR QUÊ, para o jurídico ler a diferença em
+   vez de reler tudo:
+   1. Entrou o PAPEL de cada um: a Brazilian Nickel como CONTROLADORA (art. 5º,
+      VI da LGPD). Sem isso o texto informava o tratamento sem dizer quem
+      responde por ele.
+   2. Entrou a BASE LEGAL, e ela é diferente para cada bloco. Os seus dados e os
+      do estabelecimento entram por LEGÍTIMO INTERESSE (art. 7º, IX), não por
+      consentimento: o formulário é uma ferramenta de trabalho e "consentimento"
+      numa relação de emprego é frágil justamente por causa da subordinação.
+      ⚠ Isto é a parte que mais precisa do aval do jurídico.
+   3. Entraram os DIREITOS DO TITULAR por nome (art. 18): confirmação, acesso,
+      correção, anonimização, eliminação e oposição. Antes havia só "corrigir ou
+      apagar".
+   4. O PRAZO DE GUARDA ficou objetivo (a parceria mais o período em que ela
+      valer, e depois eliminação ou anonimização), em vez de "enquanto estiver
+      sendo avaliada".
+   5. Entrou o que o texto NÃO dizia e o sistema FAZ: quem tem acesso (o RH, no
+      painel restrito), o que vai para o site público (só o card) e que o
+      arquivo de apoio NUNCA sai do painel.
+   6. Entrou o PRAZO DE RESPOSTA, pedido dele em 23/09.
+
+   🔴 O TOM É DELIBERADAMENTE DIFERENTE POR PARTE. Os blocos 1 e 2 são o
+   compromisso da empresa e falam a língua da lei. O bloco 3 é sobre o que
+   acontece com a parceria da PESSOA, e ali o texto volta a ser leve: é o que
+   ela lê para decidir se envia, e juridiquês nesse ponto não protege ninguém,
+   só faz a pessoa clicar sem ler.
+   ⚠ Continua sendo texto NOSSO, sem revisão do jurídico: a versão diz isso em
+   voz alta e viaja dentro de cada pacote. */
+var TERMO_VERSAO = 'v2 (23/09/2026, aguardando revisão jurídica)';
 
 var TERMO = [
   ['O que a Brazilian Nickel faz com o que você escreveu',
-   ['Ao enviar esta indicação, a Brazilian Nickel passa a guardar:',
+   ['A Brazilian Nickel é a controladora dos dados deste formulário: é ela quem decide para que eles servem e responde por eles, nos termos da Lei nº 13.709/2018 (LGPD).',
+    'Ao enviar esta indicação, passamos a tratar:',
     'LISTA',
-    'o seu nome;',
+    'o seu nome e, quando você não entra pelo e-mail corporativo, o contato que você informar para retorno;',
     'os dados do estabelecimento: nome, endereço, site e rede social;',
-    'o nome e o contato do responsável com quem você firmou a parceria;',
-    'a condição combinada e o arquivo que você anexar.',
+    'o nome e o contato do responsável com quem você conversou;',
+    'a condição combinada e os arquivos de apoio que você anexar.',
     'FIM',
-    'Esses dados servem para uma coisa só: avaliar, negociar e publicar esta parceria no Clube de Parcerias. Nada disso entra em avaliação sua, nem é usado para outra finalidade.',
-    'Eles ficam guardados enquanto a parceria estiver sendo avaliada e, se ela for fechada, enquanto estiver valendo.',
-    'Para corrigir ou apagar alguma informação, fale com o RH em __CONTATO__. O tratamento segue a Lei Geral de Proteção de Dados (Lei nº 13.709/2018).']],
+    'A finalidade é uma só: avaliar, negociar, publicar e acompanhar esta parceria no Clube de Parcerias. Nada disso é usado em avaliação de desempenho, processo disciplinar ou qualquer outra finalidade.',
+    'A base legal é o legítimo interesse da Brazilian Nickel em manter o programa de parcerias (art. 7º, IX da LGPD). Não pedimos consentimento para isso, e não indicar não traz nenhuma consequência para você.',
+    'Quem acessa é a equipe de RH responsável pelo Clube de Parcerias, num painel restrito. Os dados não são vendidos, cedidos nem usados para publicidade.',
+    'Se a parceria for publicada, o que aparece no site do Clube é apenas o cartão da parceria: estabelecimento, categoria, cidade, condição e contato comercial do estabelecimento. O seu nome, o seu contato e os arquivos de apoio nunca saem do painel do RH.',
+    'Guardamos enquanto a indicação estiver em análise e, se a parceria for fechada, enquanto ela estiver valendo. Encerrada a parceria, os dados são eliminados ou anonimizados, salvo o que a lei exigir manter.',
+    'Você pode pedir, a qualquer momento e sem custo, confirmação de que tratamos os seus dados, acesso a eles, correção, anonimização, bloqueio, eliminação e oposição ao tratamento (art. 18 da LGPD). Para isso, escreva ao RH em __CONTATO__.']],
 
   ['Sobre o contato do estabelecimento',
-   ['O nome, o e-mail e o telefone que você informar são de uma pessoa de fora da empresa, que não preencheu este formulário.',
-    'A Brazilian Nickel vai procurar essa pessoa para falar desta parceria, e só disso. O contato não é usado para nenhuma outra finalidade nem repassado a terceiros.',
-    'Avise a ela que você passou o contato. É o combinado mais básico com quem te atendeu.']],
+   ['O nome, o e-mail e o telefone que você informar são de uma pessoa de fora da Brazilian Nickel, que não preencheu este formulário e não está diante desta tela.',
+    'Trataremos esse contato exclusivamente para falar desta parceria, com base no legítimo interesse de avaliar a proposta (art. 7º, IX da LGPD). Ele não é usado para nenhuma outra finalidade, não é repassado a terceiros e não entra em nenhuma lista de divulgação.',
+    'Na primeira vez que procurarmos essa pessoa, informamos de onde veio o contato e quais são os direitos dela, incluindo o de pedir a exclusão.',
+    'Avise a ela que você passou o contato. Além de ser o combinado mais básico com quem te atendeu, é o que evita que a nossa ligação chegue como surpresa.',
+    'Informe apenas o contato comercial do estabelecimento, e não dados pessoais que não sejam necessários para esta conversa.']],
 
   ['Sobre a condição que você negociou',
    ['Indicar não é fechar. Você está avisando o RH de que a oportunidade existe. Quem conversa de novo com o estabelecimento e acerta os detalhes é o RH.',
     'Por isso, a condição final pode ser diferente da que você combinou, e pode não sair. A negociação é entre a Brazilian Nickel e o estabelecimento.',
     'Mesmo depois de publicada, a condição pode mudar ou acabar a qualquer momento, por decisão do estabelecimento, sem aviso.',
-    'Enviar esta indicação não garante nenhuma recompensa, bonificação ou vantagem para você.']]
+    /* 🔴 "vantagem" SAIU de toda a tela (pedido dele, 23/09). Aqui ela não virou
+       "benefício": no Clube, "benefício" é o desconto que o parceiro dá, e usar a
+       mesma palavra para o que quem indicou NÃO ganha embaralharia as duas coisas
+       na frase mais delicada do termo. As duas que sobraram já dizem tudo. */
+    'Enviar esta indicação não garante nenhuma recompensa ou bonificação para você.',
+    'A análise do RH pode levar até __PRAZO__, contados da chegada da indicação, dependendo do volume de indicações na fila. Se faltar alguma informação, procuramos você antes.',
+    'Até a decisão do RH, não assuma compromissos em nome da Brazilian Nickel.']]
 ];
 
 /* --- 1.5 PARA ONDE VAI A INDICAÇÃO ------------------------------
@@ -1309,11 +1414,15 @@ function modoOffline(){
   if(/[?&]offline=1/.test(location.search)) return true;
   return PUBLICO.hosts.indexOf(location.hostname) >= 0;
 }
-/* 🔴 no offline a evidência é MENOR, e é aritmética: o arquivo viaja dentro do
-   JSON em base64, que infla um terço. Três anexos de 10 MB virariam um e-mail
-   de 40 MB, que a maioria dos servidores recusa. Limite honesto na tela vale
-   mais que um e-mail que volta. */
-var OFFLINE_EVID_MAX = 1, OFFLINE_EVID_MB = 3;
+/* 🔴 no offline o arquivo de apoio é MENOR, e é aritmética: ele viaja DENTRO do
+   JSON em base64, que infla um terço, e esse JSON é anexo de e-mail. Limite
+   honesto na tela vale mais que um e-mail que volta.
+   A conta que manda aqui é a caixa de quem recebe, não a nossa: o teto usual de
+   anexo é 20 a 25 MB. 10 MB de arquivo viram ~13,4 MB de JSON, que passa com
+   folga; os 25 MB do formulário de dentro virariam ~33,4 MB, que volta.
+   ⚠ Subiu de 3 para 10 MB em 23/09 junto com o pedido do contrato: 10 fotos de
+   página com celular dão 7,3 MB e agora cabem, o que antes não acontecia. */
+var OFFLINE_EVID_MAX = 1, OFFLINE_EVID_MB = 10;
 
 /* --- 1.4.2 A PLATAFORMA (brnapps) ---------------------------------
    Publicado no brnapps, o formulário LIGA sozinho quando três coisas valem:
@@ -1769,11 +1878,28 @@ function tamanhoLegivel(bytes){
 }
 
 /* o tipo entra pelo MIME e, quando o navegador não diz (áudio de WhatsApp em
-   .opus costuma vir vazio), pela extensão */
+   .opus costuma vir vazio, e .docx vem vazio em alguns Android), pela extensão */
 function tipoAceito(f){
   var t = String(f.type || '').toLowerCase(), n = String(f.name || '').toLowerCase();
   if(/^image\//.test(t) || /^audio\//.test(t) || t === 'application/pdf') return true;
-  return /\.(pdf|jpe?g|png|gif|webp|heic|heif|bmp|mp3|m4a|aac|ogg|oga|opus|wav|amr|3gp|weba)$/.test(n);
+  if(t === 'application/msword' ||
+     t === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') return true;
+  return /\.(pdf|docx?|jpe?g|png|gif|webp|heic|heif|bmp|mp3|m4a|aac|ogg|oga|opus|wav|amr|3gp|weba)$/.test(n);
+}
+/* 🔴 O TETO DO CONJUNTO, e por que ele não é o mesmo que o teto de cada um.
+   Quem carrega o envio é UM corpo de requisição com todos os arquivos em base64
+   dentro. Três arquivos de 25 MB passam um a um na regra de cada arquivo e
+   estouram juntos, e o erro apareceria só no envio, depois de a pessoa ter
+   preenchido tudo. A conta é feita na HORA DE ESCOLHER, que é quando ela ainda
+   pode trocar o arquivo. */
+function somaDosArquivos(extra){
+  var s = arquivos.reduce(function(a, f){ return a + f.size; }, 0);
+  return s + (extra ? extra.size : 0);
+}
+function tetoDoConjunto(){
+  /* sem `evidenciaTotalMB` escrito, o teto do conjunto é o de um arquivo vezes
+     a quantidade: é o comportamento de antes, e não passa a recusar sozinho */
+  return (REGRAS.evidenciaTotalMB || (REGRAS.evidenciaMaxMB * REGRAS.evidenciaMax)) * 1024 * 1024;
 }
 /* junta os arquivos escolhidos aos que já estão; recusa o que passa do teto de
    tamanho ou de quantidade e diz por quê. O mesmo arquivo duas vezes conta uma. */
@@ -1784,7 +1910,12 @@ function porArquivos(lista){
     if(arquivos.some(function(a){ return a.name === f.name && a.size === f.size; })) return;
     if(arquivos.length >= REGRAS.evidenciaMax){ recusa = 'No máximo ' + REGRAS.evidenciaMax + ' arquivos.'; return; }
     if(f.size > REGRAS.evidenciaMaxMB * 1024 * 1024){ recusa = 'Arquivo grande demais: ' + f.name + '. O limite é ' + REGRAS.evidenciaMaxMB + ' MB cada.'; return; }
-    if(!tipoAceito(f)){ recusa = 'Tipo não aceito: ' + f.name + '. Vale imagem, PDF ou áudio.'; return; }
+    if(somaDosArquivos(f) > tetoDoConjunto()){
+      recusa = 'Os arquivos somam mais que ' + (tetoDoConjunto()/1024/1024) + ' MB juntos. ' +
+               'Tire um deles ou mande o maior em separado para ' + REGRAS.contatoRH + '.';
+      return;
+    }
+    if(!tipoAceito(f)){ recusa = 'Tipo não aceito: ' + f.name + '. Vale imagem, PDF, Word ou áudio.'; return; }
     arquivos.push(f);
   });
   if(recusa) marcar('evidencia', false, recusa);
@@ -2595,13 +2726,17 @@ function enviar(pacote){
     return fetch(ENVIO.url, { method:'POST', headers:ENVIO.cabecalhos, body:JSON.stringify(pacote) })
       .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return true; });
   }
-  /* 🔴 OFFLINE: em vez de mandar, BAIXA. É o mesmo pacote que a função
-     receberia, então o painel lê o arquivo pela mesma tradução, sem um segundo
-     formato para manter. */
+  /* 🔴 OFFLINE: em vez de mandar, entrega o arquivo NA MÃO da pessoa. É o mesmo
+     pacote que a função receberia, então o painel lê o arquivo pela mesma
+     tradução, sem um segundo formato para manter.
+     🔴 23/09, MUDANÇA DE COMPORTAMENTO: aqui ele BAIXAVA sozinho. Agora só
+     PREPARA, e quem dispara é a pessoa, no popup. O motivo é o celular: download
+     automático some na pasta de downloads e a pessoa fica sem saber o que
+     aconteceu; com botão, o toque dela vira o gesto que o navegador exige para
+     abrir a folha de compartilhamento. Ver `abrirInstrucoesOffline`. */
   if(ENVIO.modo === 'arquivo'){
     return lerEvidencias().then(function(evs){
-      var corpo = corpoDoEnvio(pacote, evs);
-      baixarPacote(corpo);
+      ULTIMO_CORPO = corpoDoEnvio(pacote, evs);
       return { ok:true, arquivo:true };
     });
   }
@@ -2625,17 +2760,94 @@ function nomeDoArquivo(corpo){
   var dia = String(corpo.enviadoEm || '').slice(0, 10) || 'sem data';
   return (cat + ' - ' + quem + ' - ' + dia).slice(0, 120) + '.json';
 }
-function baixarPacote(corpo){
+/* o corpo do último envio offline, guardado porque quem baixa (ou compartilha)
+   passou a ser a PESSOA, num toque depois do envio, e não mais o `enviar()` */
+var ULTIMO_CORPO = null;
+
+/* 🔴 UM arquivo só, montado num lugar só, e usado pelos DOIS caminhos (baixar e
+   compartilhar). Se cada caminho montasse o seu, o que a pessoa compartilha
+   poderia divergir do que ela baixa, e ninguém descobriria até o RH abrir. */
+function arquivoDoPacote(corpo){
   var txt = JSON.stringify(corpo, null, 2);
+  var nome = nomeDoArquivo(corpo);
+  var tipo = 'application/json';
+  /* `File` não existe como construtor em navegador muito velho; o Blob sim.
+     Quem não tem File também não tem compartilhamento, então só o baixar usa. */
+  var arq = null;
+  try { arq = new File([txt], nome, { type: tipo }); } catch(e){ arq = null; }
+  return { texto:txt, nome:nome, tipo:tipo, arquivo:arq,
+           blob: arq || new Blob([txt], { type: tipo }) };
+}
+
+/* 🔴 DÁ PARA COMPARTILHAR ESTE ARQUIVO? Pergunta-se ao navegador, com o arquivo
+   NA MÃO, e não "é celular?". Testar o aparelho erra dos dois lados: Windows
+   com a folha de compartilhamento ligada sabe fazer, e navegador de celular
+   antigo não sabe. `canShare` com `files` é a única resposta que vale, e ela é
+   falsa em toda máquina que não consegue. */
+function podeCompartilharArquivo(arq){
+  if(!arq || !navigator.share || !navigator.canShare) return false;
+  try { return navigator.canShare({ files: [arq] }); } catch(e){ return false; }
+}
+
+/* 🔴 SABER COMPARTILHAR NÃO BASTA, e isto foi MEDIDO em 23/09: o Edge do
+   Windows tem folha de compartilhamento, então "pergunte ao navegador" colocava
+   o botão "Enviar arquivo" no COMPUTADOR, que é o contrário do que ele pediu
+   ("sobre o web, ao invés de baixar automático, trazer o botão baixar arquivo
+   agora e só ser instruções mesmo").
+   O que separa os dois casos é o PONTEIRO, não o sistema nem a largura da tela:
+   `pointer:coarse` é verdadeiro quando o ponteiro PRINCIPAL é o dedo, ou seja
+   celular e tablet, e falso num notebook com tela sensível ao toque e mouse,
+   que é exatamente a distinção que interessa. Largura de janela não serve:
+   quem estreita a janela no computador continua com mouse e com Outlook. */
+function ehAparelhoDeToque(){
+  try {
+    if(!window.matchMedia) return false;
+    return window.matchMedia('(pointer:coarse)').matches === true;
+  } catch(e){ return false; }
+}
+
+/* quem decide a cara do popup do fim. Um lugar só, para a bateria ter um
+   ponto único para medir e para fingir. */
+function modoDeEntrega(arq){
+  if(!podeCompartilharArquivo(arq)) return 'baixar';
+  return ehAparelhoDeToque() ? 'compartilhar' : 'baixar';
+}
+
+function baixarPacote(corpo){
+  var f = arquivoDoPacote(corpo);
   /* blob, e não `data:`: endereço `data:` é bloqueado em aba nova e em
      download por alguns navegadores. Este projeto já pagou por isso uma vez,
-     com a evidência que não baixava. */
-  var url = URL.createObjectURL(new Blob([txt], { type:'application/json' }));
+     com o arquivo de apoio que não baixava. */
+  var url = URL.createObjectURL(f.blob);
   var a = document.createElement('a');
-  a.href = url; a.download = nomeDoArquivo(corpo);
+  a.href = url; a.download = f.nome;
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
   return a.download;
+}
+
+/* 🔴 COMPARTILHAR (pedido dele, 23/09): a folha do sistema, a mesma que o
+   Instagram abre, com WhatsApp, e-mail e o resto do que a pessoa tem instalado.
+   Devolve promessa que resolve em true (compartilhou), false (a pessoa
+   desistiu) e rejeita quando o aparelho recusou o arquivo, que é o caso em que
+   a tela precisa oferecer o e-mail. */
+function compartilharPacote(corpo){
+  var f = arquivoDoPacote(corpo);
+  if(!podeCompartilharArquivo(f.arquivo)) return Promise.reject(new Error('sem compartilhamento'));
+  return navigator.share({
+    files: [f.arquivo],
+    title: 'Indicação de parceria',
+    /* 🔴 o texto vai junto porque em e-mail ele vira o CORPO da mensagem, e é
+       ele que diz ao RH o que é esse arquivo. Sem isso chega um anexo mudo. */
+    text: 'Indicação de parceria para o Clube de Parcerias da Brazilian Nickel. ' +
+          'Mandar para ' + EMAIL_DO_RH + '.'
+  }).then(function(){ return true; })
+    .catch(function(e){
+      /* desistir NÃO é erro: quem fecha a folha de compartilhamento recebe
+         AbortError, e tratar isso como falha faria a tela gritar sozinha. */
+      if(e && (e.name === 'AbortError' || /abort/i.test(e.message || ''))) return false;
+      throw e;
+    });
 }
 
 /* O aviso de MODO DE TESTE só desaparece quando ENVIO aponta para um
@@ -2651,6 +2863,10 @@ function ligarModoOffline(){
   R.semLogin = true;
   REGRAS.evidenciaMax = OFFLINE_EVID_MAX;
   REGRAS.evidenciaMaxMB = OFFLINE_EVID_MB;
+  /* 🔴 o teto do CONJUNTO desce junto. Esquecê-lo deixaria a regra de 25 MB
+     somados de pé numa página que aceita um arquivo de 10: a trava do conjunto
+     nunca pegaria, e a frase da tela poderia prometer os 25. */
+  REGRAS.evidenciaTotalMB = OFFLINE_EVID_MB * OFFLINE_EVID_MAX;
   document.body.classList.add('offline');
   /* a entrada pelo portal não existe aqui: esconder é obrigatório, senão a
      pessoa clica em "entre com a sua conta" e cai numa tela de login de uma
@@ -2665,9 +2881,10 @@ function ligarModoOffline(){
   if(ls){
     ls.hidden = false;
     ls.href = URL_FORMULARIO_PORTAL;
-    ls.setAttribute('aria-label','Versão com login');
-    ls.title = 'Versão com login, para quem tem conta da empresa: a indicação é enviada na hora';
-    var rot = ls.querySelector('.rot'); if(rot){ rot.textContent = 'versão com login'; rot.dataset.en = 'sign-in version'; }
+    ls.setAttribute('aria-label','Versão para quem tem e-mail corporativo');
+    ls.title = 'Versão para quem tem e-mail corporativo da Brazilian Nickel: a indicação é enviada na hora';
+    var rot = ls.querySelector('.rot');
+    if(rot){ rot.textContent = 'com e-mail corporativo'; rot.dataset.en = 'with company e-mail'; }
     var ico = ls.querySelector('svg');
     if(ico) ico.innerHTML = '<path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/>';
   }
@@ -2793,16 +3010,20 @@ function paragrafo(pai, cls, texto){
    "continuar sem login" não é perguntado de novo a cada recarga. */
 function abrirConviteLogin(){
   try { if(sessionStorage.getItem(CHAVE_CONVITE) === '1') return false; } catch(e){}
-  var p = popupSimples('ovConvite', 'Antes de começar', 'Quer entrar com o seu login?');
-  paragrafo(p.corpo, 'off-p', 'Com o login da Brazilian Nickel, a indicação é enviada na hora para o RH.');
+  /* 🔴 a pergunta deixou de ser sobre LOGIN e passou a ser sobre o que a pessoa
+     tem (23/09). Quem nunca entrou no portal não sabe responder "você tem
+     login?", mas sabe muito bem se tem ou não um e-mail @brnickel.com. */
+  var p = popupSimples('ovConvite', 'Antes de começar', 'Você tem e-mail da Brazilian Nickel?');
+  paragrafo(p.corpo, 'off-p', 'Com o e-mail corporativo, a indicação é enviada na hora para o RH, ' +
+    'sem baixar nem mandar arquivo nenhum.');
   var seguir = document.createElement('button'); seguir.type = 'button'; seguir.id = 'btnConviteSeguir';
-  seguir.textContent = 'Continuar sem login';
+  seguir.textContent = 'Não tenho';
   seguir.addEventListener('click', function(){
     try { sessionStorage.setItem(CHAVE_CONVITE, '1'); } catch(e){}
     p.ov.classList.remove('on');
   });
   var entrar = document.createElement('button'); entrar.type = 'button'; entrar.className = 'pri'; entrar.id = 'btnConviteEntrar';
-  entrar.textContent = 'Entrar com meu login';
+  entrar.textContent = 'Tenho e-mail corporativo';
   entrar.dataset.url = URL_FORMULARIO_PORTAL;
   entrar.addEventListener('click', function(){ location.href = URL_FORMULARIO_PORTAL; });
   p.rodape.appendChild(seguir); p.rodape.appendChild(entrar);
@@ -2810,24 +3031,100 @@ function abrirConviteLogin(){
   return true;
 }
 
-/* 🔴 AS INSTRUÇÕES DEPOIS DE BAIXAR (pedido dele, 16/09): o arquivo já está no
-   computador da pessoa, e é agora que ela precisa saber o que fazer com ele. */
-function abrirInstrucoesOffline(pacote){
+/* 🔴 O POPUP DO FIM, no formulário público (16/09, refeito em 23/09).
+   Antes: o arquivo baixava sozinho e este popup só CONTAVA o que fazer com ele.
+   Agora ele é o lugar onde a coisa ACONTECE, e muda de forma conforme o
+   aparelho, porque o problema de cada um é diferente:
+
+   - CELULAR: baixar não resolve nada. O arquivo cai numa pasta que a pessoa não
+     sabe abrir, e mandar por e-mail do celular exige achar o anexo. Então o
+     botão principal abre a FOLHA DE COMPARTILHAMENTO do sistema, a mesma do
+     Instagram, e ela escolhe WhatsApp, e-mail ou o que tiver. Um toque.
+   - COMPUTADOR: compartilhar quase nunca existe, e baixar resolve. O botão
+     principal é "Baixar arquivo agora" (e não mais um download automático), e
+     embaixo ficam as instruções de mandar por e-mail.
+
+   Quem decide qual dos dois é o NAVEGADOR (`podeCompartilharArquivo`), com o
+   arquivo na mão, e não um palpite sobre a largura da tela.
+   ⚠ o e-mail do RH aparece nos DOIS casos: aplicativo que recuse o arquivo
+   deixa a pessoa sem saída se a única instrução for "compartilhe". */
+function abrirInstrucoesOffline(pacote, corpo){
+  corpo = corpo || ULTIMO_CORPO || pacote;
+  var f = arquivoDoPacote(corpo);
+  var compartilha = modoDeEntrega(f.arquivo) === 'compartilhar';
+
   var p = popupSimples('ovInstrucoes', 'Falta um passo', 'Mande o arquivo para o RH');
-  var nome = pacote ? nomeDoArquivo(pacote) : '';
-  paragrafo(p.corpo, 'off-p', 'O arquivo' + (nome ? ' "' + nome + '"' : '') +
-    ' foi baixado para o seu computador. Mande esse arquivo por e-mail para ' + EMAIL_DO_RH + ' e o RH cuida do resto.');
-  var forte = p.corpo.lastChild; forte.innerHTML = forte.innerHTML.replace(EMAIL_DO_RH, '<b>' + EMAIL_DO_RH + '</b>');
-  /* sem explicação de limite nem de anexo (pedido dele): só o que fazer agora */
-  var t3 = paragrafo(p.corpo, 'off-p off-sub', 'Tem e-mail da empresa? Na próxima vez, prefira o ');
+  p.ov.dataset.modo = compartilha ? 'compartilhar' : 'baixar';
+
+  paragrafo(p.corpo, 'off-p', compartilha
+    ? 'A sua indicação virou um arquivo. Toque em "Enviar arquivo" e escolha o WhatsApp, ' +
+      'o e-mail ou outro aplicativo para mandar para o RH. A indicação só chega quando você mandar.'
+    : 'A sua indicação virou um arquivo. Baixe abaixo e mande esse arquivo por e-mail para ' +
+      EMAIL_DO_RH + '. A indicação só chega quando você mandar.');
+  if(!compartilha){
+    var forte = p.corpo.lastChild;
+    forte.innerHTML = forte.innerHTML.replace(EMAIL_DO_RH, '<b>' + EMAIL_DO_RH + '</b>');
+  }
+
+  /* 🔴 O E-MAIL ESCRITO E COPIÁVEL, sempre. No celular ele é o plano B de quem
+     compartilhou num aplicativo que recusou o arquivo; no computador ele é o
+     plano A. Escrever "mande para o RH" sem dizer PARA QUEM é o tipo de
+     instrução que termina em ninguém mandando nada. */
+  var cx = document.createElement('div'); cx.className = 'off-email'; cx.id = 'offEmailRH';
+  var rot = document.createElement('span'); rot.className = 'off-email-rot';
+  rot.textContent = compartilha ? 'Se o aplicativo recusar o arquivo, mande por e-mail para' : 'E-mail do RH';
+  var val = document.createElement('b'); val.textContent = EMAIL_DO_RH;
+  cx.appendChild(rot); cx.appendChild(val);
+  p.corpo.appendChild(cx);
+
+  paragrafo(p.corpo, 'off-p off-arq', 'Arquivo: ' + f.nome);
+
+  var t3 = paragrafo(p.corpo, 'off-p off-sub', 'Tem e-mail da Brazilian Nickel? Na próxima vez, prefira o ');
   var a = document.createElement('a'); a.href = URL_FORMULARIO_PORTAL; a.textContent = 'formulário do portal';
   a.target = '_blank'; a.rel = 'noopener';
   t3.appendChild(a);
   t3.appendChild(document.createTextNode(': ele envia direto para o RH, sem arquivo nem e-mail.'));
-  var ok = document.createElement('button'); ok.type = 'button'; ok.className = 'pri'; ok.id = 'btnInstrucoesOk';
-  ok.textContent = 'Entendi';
-  ok.addEventListener('click', function(){ p.ov.classList.remove('on'); });
-  p.rodape.appendChild(ok);
+
+  /* o estado fica numa linha do rodapé, e não num alerta: o popup é a tela
+     inteira da pessoa neste momento, e alerta some sem deixar rastro */
+  var estado = document.createElement('div'); estado.className = 'estado'; estado.id = 'offEstado';
+  p.rodape.appendChild(estado);
+
+  var fechar = document.createElement('button'); fechar.type = 'button'; fechar.id = 'btnInstrucoesOk';
+  fechar.textContent = 'Fechar';
+  fechar.addEventListener('click', function(){ p.ov.classList.remove('on'); });
+
+  var baixar = document.createElement('button'); baixar.type = 'button'; baixar.id = 'btnBaixarAgora';
+  baixar.textContent = compartilha ? 'Baixar arquivo' : 'Baixar arquivo agora';
+  if(!compartilha) baixar.className = 'pri';
+  baixar.addEventListener('click', function(){
+    baixarPacote(corpo);
+    estado.textContent = 'Arquivo baixado. Agora anexe num e-mail para ' + EMAIL_DO_RH + '.';
+  });
+
+  p.rodape.appendChild(fechar);
+  p.rodape.appendChild(baixar);
+
+  if(compartilha){
+    var env = document.createElement('button'); env.type = 'button'; env.className = 'pri'; env.id = 'btnCompartilhar';
+    env.textContent = 'Enviar arquivo';
+    env.addEventListener('click', function(){
+      estado.textContent = '';
+      /* 🔴 a chamada nasce DENTRO do clique. `navigator.share` só vale com gesto
+         da pessoa: montar o arquivo antes num `then` e compartilhar depois faz
+         o navegador recusar com NotAllowedError, e o botão não faria nada. */
+      compartilharPacote(corpo).then(function(mandou){
+        estado.textContent = mandou
+          ? 'Pronto. Confira no aplicativo se a mensagem saiu.'
+          : 'Envio cancelado. Dá para tentar de novo ou baixar o arquivo.';
+      }).catch(function(){
+        estado.textContent = 'Este aparelho não conseguiu compartilhar o arquivo. ' +
+                             'Baixe e mande por e-mail para ' + EMAIL_DO_RH + '.';
+      });
+    });
+    p.rodape.appendChild(env);
+  }
+
   p.ov.classList.add('on');
   return true;
 }
@@ -2849,11 +3146,41 @@ function textoAviso(){
 
 /* aviso separado, porque o arquivo é a parte que nenhum modo local
    resolve: em 'local' ele nunca sai da máquina de quem preencheu */
+/* ---------- o prazo de resposta do RH (pedido dele, 23/09) ---------- */
+
+/* 🔴 O NÚMERO MORA EM `REGRAS`, e a tela o RECEBE. A frase aparece em três
+   lugares e em dois idiomas: escrito à mão seriam seis cópias do mesmo 14, e a
+   sétima edição deixaria uma delas para trás. No HTML o lugar do número é um
+   `<span class="prazo-resp">` VAZIO, em português e em inglês, preenchido aqui. */
+function prazoRespostaTexto(){
+  var n = REGRAS.prazoRespostaDiasUteis;
+  return idiomaAtual() === 'en' ? n + ' working days' : n + ' dias úteis';
+}
+/* 🔴 devolve QUANTOS lugares preencheu, e a bateria cobra esse número. Uma
+   sonda que só pergunta "o texto está certo?" num `span` que não existe mais
+   (porque alguém renomeou a classe) mede o vazio e aprova. */
+function pintarPrazoResposta(){
+  var l = document.querySelectorAll('.prazo-resp');
+  Array.prototype.forEach.call(l, function(e){ e.textContent = prazoRespostaTexto(); });
+  return l.length;
+}
+
 function avisoEvidencia(){
-  if(destinoReal())
-    return 'Até ' + REGRAS.evidenciaMax + ' arquivos, de até ' + REGRAS.evidenciaMaxMB + ' MB cada. Imagem, PDF ou áudio.';
-  return 'Até ' + REGRAS.evidenciaMax + ' arquivos, de até ' + REGRAS.evidenciaMaxMB + ' MB cada. Imagem, PDF ou áudio.\n' +
-         'Em modo de teste o arquivo não é enviado: fica registrado só o nome dele.';
+  /* 🔴 a frase se MONTA a partir de REGRAS, e não está escrita à mão: foi assim
+     que o limite do portal apareceu embaixo do campo da página pública, que
+     aceita bem menos. Um lugar só decide, e a tela repete. */
+  var um = REGRAS.evidenciaMax === 1;
+  var base = um
+    ? 'Um arquivo, de até ' + REGRAS.evidenciaMaxMB + ' MB. Imagem, PDF, Word ou áudio.'
+    : 'Até ' + REGRAS.evidenciaMax + ' arquivos, de até ' + REGRAS.evidenciaMaxMB + ' MB cada' +
+      /* o teto do conjunto só é dito quando ele de fato aperta: repetir "25 MB
+         cada, 25 MB no total" quando um arquivo já ocupa tudo não informa nada */
+      (REGRAS.evidenciaTotalMB && REGRAS.evidenciaTotalMB < REGRAS.evidenciaMaxMB * REGRAS.evidenciaMax
+        ? ' e ' + REGRAS.evidenciaTotalMB + ' MB somados'
+        : '') +
+      '. Imagem, PDF, Word ou áudio.';
+  if(destinoReal()) return base;
+  return base + '\nEm modo de teste o arquivo não é enviado: fica registrado só o nome dele.';
 }
 
 /* ---------- tela de sucesso ---------- */
@@ -2864,12 +3191,17 @@ function mostrarSucesso(pacote){
   $('sucesso').classList.add('on');
 
   /* 🔴 no modo offline o RH ainda NÃO recebeu nada: recebe quando o arquivo
-     chegar por e-mail. Dizer "recebeu" aqui seria mentir na tela mais lida. */
+     chegar. Dizer "recebeu" aqui seria mentir na tela mais lida.
+     ⚠ 23/09: e também não dá mais para dizer "foi baixado", porque agora quem
+     baixa é a pessoa, no popup. A frase passa a descrever o que ela TEM (um
+     arquivo pronto) e o que falta (mandar). */
   $('sucTxt').textContent = ENVIO.modo === 'arquivo'
-    ? 'O arquivo foi baixado para o seu computador. A indicação só chega ao RH quando você mandar esse ' +
-      'arquivo por e-mail para ' + EMAIL_DO_RH + '.'
+    ? 'A sua indicação virou um arquivo, e ele está pronto. Ela só chega ao RH quando você ' +
+      'mandar esse arquivo para ' + EMAIL_DO_RH + '. A partir daí, a análise pode levar até ' +
+      prazoRespostaTexto() + ', dependendo do volume de indicações na fila.'
     : 'O RH recebeu a sua indicação de parceria e vai entrar em contato com o ' +
-      'estabelecimento. Se faltar alguma informação, procuramos você pelo e-mail que você informou.';
+      'estabelecimento. A análise pode levar até ' + prazoRespostaTexto() + ', dependendo do volume ' +
+      'de indicações na fila. Se faltar alguma informação, procuramos você antes.';
 
   var linhas = [
     ['Estabelecimento', pacote.estabelecimento],
@@ -2945,7 +3277,11 @@ function montarTermo(){
     bloco[1].forEach(function(txt){
       if(txt === 'LISTA'){ ul = document.createElement('ul'); c.appendChild(ul); return; }
       if(txt === 'FIM'){ ul = null; return; }
-      var t = txt.replace('__CONTATO__', REGRAS.contatoRH);
+      /* 🔴 os dois marcadores saem de `REGRAS`, e não escritos no texto: o prazo
+         aparece também na abertura e na tela de sucesso, e escrevê-lo aqui à mão
+         criaria a quarta cópia do mesmo número. */
+      var t = txt.replace('__CONTATO__', REGRAS.contatoRH)
+                 .replace('__PRAZO__', prazoRespostaTexto());
       if(ul){ var li = document.createElement('li'); li.textContent = t; ul.appendChild(li); }
       else { var pp = document.createElement('p'); pp.textContent = t; c.appendChild(pp); }
     });
@@ -3124,6 +3460,10 @@ function aplicarIdioma(cod){
   document.documentElement.setAttribute('lang', ing ? 'en' : 'pt-BR');
   var at = document.getElementById('langAtual');
   if(at) at.textContent = ing ? 'EN' : 'PT';
+  /* 🔴 DEPOIS de trocar o idioma, e não antes: a troca reescreve o `innerHTML`
+     dos blocos, o que APAGA o número que estava dentro do `span` do prazo. Sem
+     esta linha, mudar para inglês e voltar deixava "leva em média ." na tela. */
+  pintarPrazoResposta();
   return cod;
 }
 function definirIdioma(cod, salvar){
@@ -3300,6 +3640,10 @@ function ligar(){
   $('arqDica').textContent = avisoEvidencia();
   $('ajudaEvidenciaLimite').textContent = avisoEvidencia();
   $('avisoEnvio').textContent = textoAviso();
+  /* 🔴 COLADA aqui, e não num "lembrar de chamar" mais adiante: o `span` do
+     prazo nasce VAZIO no HTML, então sem esta linha a frase do começo apareceria
+     como "leva em média ," e ninguém veria erro nenhum no console. */
+  pintarPrazoResposta();
 
   /* o `js` libera o botão de tema. Sem script a tela segue o aparelho e o
      botão nem aparece, em vez de aparecer e não fazer nada. */
@@ -3844,15 +4188,34 @@ function selftest(){
     }
   })();
 
-  out.push('== O atalho para a versão sem login (16/09) ==');
+  out.push('== O atalho para a versão sem e-mail corporativo (16/09, texto de 23/09) ==');
   (function(){
     var a = $('linkSemLogin');
     t('★ existe, leva ao formulário público em outra aba e diz o que é',
-      !!a && a.href === URL_FORMULARIO_PUBLICO && a.target === '_blank' && /versão sem login/i.test(a.textContent) &&
+      !!a && a.href === URL_FORMULARIO_PUBLICO && a.target === '_blank' &&
+      /sem e-mail corporativo/i.test(a.textContent) &&
       /brnickel\.github\.io\/clube-de-parcerias-app\/indicar\.html/.test(URL_FORMULARIO_PUBLICO));
+    /* 🔴 "login" saiu do vocabulário DA TELA em 23/09. A asserção cobra a ausência
+       porque tirar a palavra de um lugar e deixá-la em outro é exatamente o que
+       aconteceu com "evidência" antes desta rodada. */
+    t('★ e a palavra "login" não aparece no atalho, nem no rótulo nem na dica',
+      !/login/i.test(a.textContent + ' ' + (a.title || '') + ' ' + (a.getAttribute('aria-label') || '')),
+      a.textContent.trim() + ' · ' + a.title);
     t('★ fechado ele é só o ícone (34px) e o texto fica invisível até o mouse passar',
       getComputedStyle(a).maxWidth === '34px' && getComputedStyle(a.querySelector('.rot')).opacity === '0' &&
       Math.round(a.getBoundingClientRect().width) <= 36, Math.round(a.getBoundingClientRect().width) + 'px');
+    /* 🔴 ABERTO ELE PRECISA CABER. O chip tem `overflow:hidden`, então um rótulo
+       mais largo que o `max-width` é CORTADO sem erro nenhum: foi o risco criado
+       ao trocar "versão sem login" (16 letras) por "sem e-mail corporativo" (22).
+       Mede-se o conteúdo de verdade contra o teto, e não a aparência fechada. */
+    (function(){
+      var rot = a.querySelector('.rot');
+      var teto = 240;               // o mesmo número do `:hover` no CSS
+      var pad = 16, ico = 17, gap = 8;
+      var preciso = Math.ceil(rot.scrollWidth + pad + ico + gap);
+      t('★ aberto, o rótulo cabe no chip em vez de ser cortado em silêncio',
+        preciso <= teto, preciso + 'px de ' + teto + 'px');
+    })();
     t('e fica no canto da capa, à esquerda do botão de tema (quando o botão de tema aparece)',
       getComputedStyle($('temaBtn')).display === 'none' ||
       a.getBoundingClientRect().right <= $('temaBtn').getBoundingClientRect().left + 1);
@@ -4204,7 +4567,7 @@ function selftest(){
     t('tem carimbo de hora em ISO',         /^\d{4}-\d{2}-\d{2}T/.test(pc.enviadoEm));
   })();
 
-  out.push('== Arquivo de evidência ==');
+  out.push('== Arquivos de apoio (era "Evidência da conversa" até 23/09) ==');
   (function(){
     t('tamanho legível em KB', tamanhoLegivel(2048) === '2 KB');
     t('tamanho legível em MB', tamanhoLegivel(3*1024*1024) === '3.0 MB');
@@ -4247,6 +4610,121 @@ function selftest(){
     t('e nada vaza do quadro pontilhado',
       Math.round($('arqLista').getBoundingClientRect().right) <= Math.round($('arq').getBoundingClientRect().right));
     porArquivo(null);
+  })();
+
+  out.push('== O nome novo do campo, e o limite de 23/09 ==');
+  (function(){
+    /* 🔴 "Evidência" saiu da TELA (pedido dele, 23/09). Só da tela: as chaves do
+       pacote (`evidencias`, `temEvidencia`) e o `id` do campo continuam iguais,
+       porque são o CONTRATO com o painel e com o banco, e coluna de tabela na
+       plataforma é imutável. Renomear dado por causa de rótulo é como se perdeu
+       o `comoUsar` e o país da cidade: o painel lê uma chave que não existe mais
+       e devolve vazio sem erro nenhum.
+       Esta asserção guarda os DOIS lados: a palavra sai da tela E fica no dado. */
+    var rot = campoEl('evidencia').querySelector('label').textContent;
+    t('★ o rótulo do campo é "Arquivos de apoio"', /Arquivos de apoio/.test(rot), rot.trim());
+    var naTela = campoEl('evidencia').textContent;
+    t('★ e a palavra "evidência" não aparece mais em nenhum texto desse campo',
+      !/evid[êe]nci/i.test(naTela), naTela.replace(/\s+/g,' ').slice(0, 70));
+    porArquivo(null);
+    porArquivos([{ name:'print.png', size:1024, type:'image/png' }]);
+    t('★ mas o PACOTE continua falando "evidencias", que é o contrato com o painel',
+      Array.isArray(montarPacote().evidencias) && montarPacote().temEvidencia === true &&
+      montarPacote().contratoVersao === CONTRATO_VERSAO);
+    porArquivo(null);
+
+    /* 🔴 WORD, que era o exemplo dele e NÃO passava: a lista aceitava só
+       imagem, PDF e áudio, então um contrato .docx era recusado pelo campo. */
+    t('★ contrato em Word entra, pelo MIME e pela extensão',
+      tipoAceito({ name:'contrato.docx',
+                   type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document' }) &&
+      tipoAceito({ name:'contrato.docx', type:'' }) &&
+      tipoAceito({ name:'contrato.doc', type:'' }));
+    t('★ e o campo ANUNCIA isso ao sistema de arquivos, senão o celular nem mostra o .docx',
+      $('evidencia').getAttribute('accept').indexOf('wordprocessingml') >= 0);
+    t('e a legenda passa a dizer Word', /Word/.test(avisoEvidencia()), avisoEvidencia().slice(0, 70));
+    /* planilha continua fora: ela não é prova de conversa nem contrato */
+    t('planilha continua recusada', !tipoAceito({ name:'x.xlsx', type:'application/vnd.ms-excel' }));
+
+    /* 🔴 O TETO DO CONJUNTO. Três arquivos de 25 MB passam um a um e estouram
+       juntos, e sem esta trava o erro só apareceria no envio, com o formulário
+       todo preenchido. Prova-se pelos DOIS lados: um que cabe e um que não. */
+    out.push('       limite: ' + REGRAS.evidenciaMaxMB + ' MB cada, ' +
+             REGRAS.evidenciaTotalMB + ' MB somados, até ' + REGRAS.evidenciaMax);
+    t('★ o pedido dele entrou: 25 MB por arquivo', REGRAS.evidenciaMaxMB === 25);
+    porArquivo(null);
+    var MB = 1024*1024;
+    porArquivos([{ name:'c1.pdf', size: 20*MB, type:'application/pdf' }]);
+    t('★ um arquivo de 20 MB entra', arquivos.length === 1);
+    porArquivos([{ name:'c2.pdf', size: 10*MB, type:'application/pdf' }]);
+    t('★ o segundo, que sozinho caberia, é recusado porque a SOMA passa do teto',
+      arquivos.length === 1 && /juntos/.test($('e_evidencia').textContent),
+      $('e_evidencia').textContent.slice(0, 80));
+    porArquivos([{ name:'c3.pdf', size: 4*MB, type:'application/pdf' }]);
+    t('★ e um que cabe na soma entra normalmente', arquivos.length === 2);
+    porArquivo(null);
+    /* 🔴 a trava não pode existir só na regra: o que a pessoa vê tem de bater */
+    t('★ e a tela diz o teto do conjunto junto do teto de cada um',
+      /25 MB cada/.test(avisoEvidencia()) === false || /somados/.test(avisoEvidencia()),
+      avisoEvidencia().slice(0, 80));
+  })();
+
+  out.push('== O prazo de resposta do RH (pedido dele, 23/09) ==');
+  (function(){
+    /* 🔴 UM número, três lugares. A asserção mede QUANTOS lugares foram
+       preenchidos e reprova se forem zero: `querySelectorAll` de uma classe que
+       ninguém escreveu devolve lista vazia, e um `forEach` sobre lista vazia
+       termina bem. Sonda que não conta o que olhou aprova o vazio. */
+    var n = pintarPrazoResposta();
+    out.push('       lugares com o prazo escrito pelo JS: ' + n);
+    t('★ o prazo é escrito em pelo menos um lugar da tela, a partir de REGRAS', n >= 1, n + ' lugares');
+    t('★ e o número é o de REGRAS, não escrito à mão',
+      REGRAS.prazoRespostaDiasUteis === 14 &&
+      prazoRespostaTexto() === '14 dias úteis', prazoRespostaTexto());
+    var abertura = document.querySelector('.callout .prazo-linha');
+    /* 🔴 23/09, 2ª rodada: ele trocou "em média" por "pode levar ATÉ". São coisas
+       diferentes e vale registrar: "até" é um TETO, e o RH passa a dever esse
+       prazo; "em média" era descrição. O que a asserção guarda é que o prazo
+       nunca apareça SOZINHO: ele vem sempre com a condição ("volume na fila"),
+       que é o que impede a frase de virar promessa seca. */
+    t('★ antes de preencher, a pessoa lê o prazo COM a condição que o relativiza',
+      !!abertura && abertura.textContent.indexOf(prazoRespostaTexto()) >= 0 &&
+      /pode levar até/.test(abertura.textContent) && /volume|fila/.test(abertura.textContent),
+      abertura ? abertura.textContent.replace(/\s+/g,' ').slice(0, 80) : 'não existe');
+    /* e depois de enviar, de novo: é ali que a pergunta "e agora?" nasce */
+    (function(){
+      var gModo = ENVIO.modo; ENVIO.modo = 'funcao';
+      mostrarSucesso({ estabelecimento:'X', tipoNome:'Y', contatoNome:'Z', cidadesTexto:'W' });
+      var suc = $('sucTxt').textContent;
+      t('★ e a tela de sucesso repete o MESMO prazo',
+        suc.indexOf(prazoRespostaTexto()) >= 0 && /pode levar até/.test(suc) &&
+        /volume|fila/.test(suc), suc.slice(0, 80));
+      /* 🔴 no modo arquivo o prazo NÃO pode contar da tela: o RH ainda não
+         recebeu nada. A frase tem de dizer que ele começa quando a pessoa mandar. */
+      ENVIO.modo = 'arquivo';
+      mostrarSucesso({ estabelecimento:'X', tipoNome:'Y', contatoNome:'Z', cidadesTexto:'W' });
+      var sucOff = $('sucTxt').textContent;
+      t('★ e no formulário público o prazo só começa DEPOIS de a pessoa mandar o arquivo',
+        /A partir daí/.test(sucOff) && sucOff.indexOf(prazoRespostaTexto()) >= 0 &&
+        !/O RH recebeu/.test(sucOff), sucOff.slice(0, 90));
+      ENVIO.modo = gModo;
+      $('sucesso').classList.remove('on');
+      $('regras').style.display = ''; $('tela').style.display = '';
+    })();
+    /* 🔴 e o número atravessa a troca de idioma: `aplicarIdioma` reescreve o
+       `innerHTML` do bloco, o que APAGA o span. Sem a repintura, o inglês
+       mostrava "on average ." e ninguém veria erro. */
+    (function(){
+      var gI = idiomaAtual();
+      aplicarIdioma('en');
+      var en = document.querySelector('.callout .prazo-linha');
+      t('★ em inglês o prazo continua escrito, e em inglês',
+        !!en && /14 working days/.test(en.textContent), en ? en.textContent.replace(/\s+/g,' ').slice(0, 70) : '-');
+      aplicarIdioma(gI);
+      var pt = document.querySelector('.callout .prazo-linha');
+      t('★ e voltar para o português devolve o número, em vez de deixar a frase pela metade',
+        !!pt && pt.textContent.indexOf('14 dias úteis') >= 0);
+    })();
   })();
 
   out.push('== Tela: o que está escondido de verdade ==');
@@ -4423,7 +4901,8 @@ function selftest(){
        O arquivo é o FILTRO: formulário aberto na internet que ESCREVE no banco
        vira porta de spam; um que só baixa não tem para onde escrever. */
     var gModo = ENVIO.modo, gUrl = ENVIO.url, gId = IDENTIDADE.modo,
-        gMax = REGRAS.evidenciaMax, gMB = REGRAS.evidenciaMaxMB;
+        gMax = REGRAS.evidenciaMax, gMB = REGRAS.evidenciaMaxMB,
+        gTot = REGRAS.evidenciaTotalMB;
 
     t('★ fora dos hosts públicos o modo offline fica DESLIGADO',
       PUBLICO.hosts.indexOf('brnickel.github.io') >= 0 &&
@@ -4449,8 +4928,10 @@ function selftest(){
     t('★ e a TELA acompanha: nada de "modo de teste" nem legenda embaixo do botão (16/09)',
       !/MODO DE TESTE/.test($('avisoEnvio').textContent) && $('avisoEnvio').textContent === '',
       $('avisoEnvio').textContent.slice(0, 70));
-    t('★ e o limite de evidência escrito na tela é o do offline, não o de dentro',
-      /1 arquivo/.test($('arqDica').textContent) && /3 MB/.test($('arqDica').textContent),
+    t('★ e o limite escrito na tela é o do offline, não o de dentro',
+      /[Uu]m arquivo/.test($('arqDica').textContent) &&
+      $('arqDica').textContent.indexOf(OFFLINE_EVID_MB + ' MB') >= 0 &&
+      $('arqDica').textContent.indexOf(' 25 MB') < 0,
       $('arqDica').textContent.slice(0, 70));
     t('★ e o campo para de aceitar vários arquivos, em vez de prometer o que a regra recusa',
       !$('evidencia').hasAttribute('multiple'));
@@ -4459,10 +4940,11 @@ function selftest(){
     /* 🔴 18/09: o atalho INVERTE em vez de sumir. Ele sumia porque apontaria para
        esta mesma página, e com isso quem tem conta da empresa ficava sem caminho
        de volta para o formulário que envia na hora. */
-    t('★ o atalho do canto vira "versão com login" e leva ao formulário do portal',
+    t('★ o atalho do canto vira "com e-mail corporativo" e leva ao formulário do portal',
       $('linkSemLogin').hidden === false &&
       $('linkSemLogin').href === URL_FORMULARIO_PORTAL &&
-      /versão com login/i.test($('linkSemLogin').textContent),
+      /com e-mail corporativo/i.test($('linkSemLogin').textContent) &&
+      !/login/i.test($('linkSemLogin').textContent),
       $('linkSemLogin').href);
     t('o botão passa a dizer que BAIXA', $('btnTxt').textContent === 'Baixar formulário');
     t('★ e o nome fica destravado, porque não há login de onde tirá-lo',
@@ -4509,36 +4991,149 @@ function selftest(){
     /* 🔴 A LEGENDA SAIU DA TELA (16/09): virou dois popups */
     t('★ a legenda não fica mais no meio do formulário',
       !$('offAviso') && typeof montarInstrucoesOffline === 'undefined');
-    t('★ ao entrar, o convite para entrar com login aparece, com o caminho para o formulário do portal',
+    t('★ ao entrar, o convite pergunta pelo E-MAIL CORPORATIVO, com o caminho para o formulário do portal',
       !!$('ovConvite') && $('ovConvite').classList.contains('on') &&
       $('btnConviteEntrar').dataset.url === URL_FORMULARIO_PORTAL &&
       /brnapps\.brnickel\.com\/apps\/clube-de-parcerias\/formulario\.html/.test(URL_FORMULARIO_PORTAL) &&
       /enviada na hora/.test($('ovConvite').textContent));
+    /* 🔴 a pergunta do convite é sobre o que a pessoa TEM, não sobre login: quem
+       nunca abriu o portal não sabe responder "você tem login?" */
+    t('★ e o convite inteiro não fala em "login"',
+      !/login/i.test($('ovConvite').textContent) &&
+      /e-mail/i.test($('ovConvite').textContent),
+      $('ovConvite').querySelector('h3').textContent);
     $('btnConviteSeguir').click();
-    t('★ "Continuar sem login" fecha o convite e ele não volta nesta aba',
+    t('★ "Não tenho" fecha o convite e ele não volta nesta aba',
       !$('ovConvite').classList.contains('on') && sessionStorage.getItem(CHAVE_CONVITE) === '1' &&
       abrirConviteLogin() === false);
     sessionStorage.removeItem(CHAVE_CONVITE);
-    abrirInstrucoesOffline({ tipoCodigo:'alimentacao', colaborador:'Maria da Silva', enviadoEm:'2026-09-16T13:40:00.000Z' });
-    t('★ depois de baixar, o popup diz o e-mail do RH e o nome do arquivo, e NADA de limite ou explicação técnica',
+    /* =================================================================
+       🔴 O POPUP DO FIM, refeito em 23/09: ele PARou de contar e passou a AGIR.
+       São dois popups diferentes no mesmo código, e a bateria mede os DOIS.
+       Medir só o que o Edge sem tela faz (que é o caminho do computador)
+       deixaria o caminho do CELULAR, que é o que ele pediu, sem nenhuma
+       asserção: a sonda aprovaria sem nunca ter olhado para ele.
+       ================================================================= */
+    var PAC_TESTE = { tipoCodigo:'alimentacao', colaborador:'Maria da Silva',
+                      enviadoEm:'2026-09-16T13:40:00.000Z' };
+
+    /* ---- caminho 1: COMPUTADOR (sem folha de compartilhamento) ---- */
+    abrirInstrucoesOffline(PAC_TESTE);
+    out.push('       modo do popup neste aparelho: ' + $('ovInstrucoes').dataset.modo);
+    /* 🔴 ESTA É A ASSERÇÃO QUE GUARDA O PEDIDO DELE PARA O COMPUTADOR, e ela
+       nasceu VERMELHA: o Edge do Windows SABE compartilhar, então a primeira
+       versão do código punha o botão "Enviar arquivo" no desktop. Quem separa é
+       o ponteiro, e a asserção mede os dois fatos separados para o relatório
+       dizer QUAL dos dois mudou, se um dia mudar. */
+    out.push('       sabe compartilhar: ' + podeCompartilharArquivo(arquivoDoPacote(PAC_TESTE).arquivo) +
+             ' · ponteiro grosso: ' + ehAparelhoDeToque());
+    t('★ no computador o popup entra em modo "baixar", mesmo que o navegador saiba compartilhar',
+      $('ovInstrucoes').dataset.modo === 'baixar' && ehAparelhoDeToque() === false);
+    t('★ o popup diz o e-mail do RH e o nome do arquivo',
       !!$('ovInstrucoes') && $('ovInstrucoes').classList.contains('on') &&
       $('ovInstrucoes').textContent.indexOf(EMAIL_DO_RH) >= 0 &&
-      /alimentacao - Maria da Silva - 2026-09-16\.json/.test($('ovInstrucoes').textContent) &&
-      !/MB|não envia nada sozinho/.test($('ovInstrucoes').textContent) &&
-      $('ovInstrucoes').querySelectorAll('p').length === 2);
+      /alimentacao - Maria da Silva - 2026-09-16\.json/.test($('ovInstrucoes').textContent));
+    /* 🔴 O PEDIDO LITERAL DELE: "ao invés de baixar automático, trazer o botão
+       'baixar arquivo agora'". A asserção cobra o botão E o texto dele. */
+    t('★ o download deixou de ser automático: existe o botão "Baixar arquivo agora", em destaque',
+      !!$('btnBaixarAgora') && $('btnBaixarAgora').textContent === 'Baixar arquivo agora' &&
+      $('btnBaixarAgora').classList.contains('pri'),
+      $('btnBaixarAgora') ? $('btnBaixarAgora').textContent : 'não existe');
+    t('★ e NÃO existe botão de compartilhar num aparelho que não sabe compartilhar',
+      !$('btnCompartilhar'));
+    t('★ o e-mail do RH fica em caixa própria, selecionável, e não perdido no meio da frase',
+      !!$('offEmailRH') && $('offEmailRH').querySelector('b').textContent === EMAIL_DO_RH &&
+      getComputedStyle($('offEmailRH').querySelector('b')).userSelect === 'all');
     t('e o convite tem uma frase só', $('ovConvite') ? $('ovConvite').querySelectorAll('p').length === 1 : true);
     t('★ e manda quem tem e-mail da empresa para o formulário do portal, com o link',
       !!$('ovInstrucoes').querySelector('a[href="' + URL_FORMULARIO_PORTAL + '"]'));
+    /* 🔴 o popup fala com quem não é da área: nenhuma palavra de mecanismo */
+    t('★ nada de limite, base64 ou explicação técnica na tela do fim',
+      !/MB|base64|JSON|não envia nada sozinho/.test($('ovInstrucoes').textContent));
+    $('btnBaixarAgora').click();
+    t('★ e clicar em baixar deixa um recado dizendo o que fazer com o arquivo',
+      /anexe/i.test($('offEstado').textContent) &&
+      $('offEstado').textContent.indexOf(EMAIL_DO_RH) >= 0,
+      $('offEstado').textContent.slice(0, 70));
     $('btnInstrucoesOk').click();
-    t('"Entendi" fecha o popup', !$('ovInstrucoes').classList.contains('on'));
+    t('"Fechar" fecha o popup', !$('ovInstrucoes').classList.contains('on'));
 
-    /* 🔴 o limite de evidência encolhe, e é ARITMÉTICA: o arquivo viaja dentro
-       do JSON em base64, que infla um terço. Três de 10 MB virariam um e-mail
-       de 40 MB, que a maioria dos servidores recusa. */
-    t('★ a evidência fica menor, porque ela viaja dentro do arquivo',
-      REGRAS.evidenciaMax === 1 && REGRAS.evidenciaMaxMB === 3);
-    t('e a tela diz esse limite no campo de evidência, em vez de a pessoa descobrir no erro',
-      /1 arquivo/.test($('arqDica').textContent) && /3 MB/.test($('arqDica').textContent));
+    /* ---- caminho 2: CELULAR (com folha de compartilhamento) ----
+       🔴 O APARELHO É FINGIDO, e é a única forma de medir isto aqui: o Edge sem
+       tela não tem `navigator.share`. Finge-se o mínimo (`share` + `canShare`),
+       mede-se, e DESFAZ-SE. Sonda que deixa o navegador mentindo contamina as
+       asserções seguintes. */
+    (function(){
+      var gShare = navigator.share, gCan = navigator.canShare, gMM = window.matchMedia;
+      var pedido = null, deu = false;
+      try{
+        Object.defineProperty(navigator, 'share', { configurable:true, writable:true,
+          value: function(d){ pedido = d; return Promise.resolve(); } });
+        Object.defineProperty(navigator, 'canShare', { configurable:true, writable:true,
+          value: function(d){ return !!(d && d.files && d.files.length); } });
+        /* 🔴 o DEDO também é fingido, e não só a folha: desde 23/09 é o ponteiro
+           que decide, então fingir só `share` mediria o popup do computador
+           outra vez e a sonda aprovaria sem nunca ter visto o caminho do celular. */
+        window.matchMedia = function(q){
+          if(/pointer:\s*coarse/.test(q)) return { matches:true, media:q,
+            addListener:function(){}, removeListener:function(){},
+            addEventListener:function(){}, removeEventListener:function(){} };
+          return gMM.call(window, q);
+        };
+        deu = modoDeEntrega(arquivoDoPacote(PAC_TESTE).arquivo) === 'compartilhar';
+      }catch(e){ deu = false; }
+
+      /* 🔴 se o fingimento não pegou, a sonda REPROVA em vez de passar calada.
+         Um `if(deu){...}` silencioso é exatamente a sonda que mede o vazio. */
+      t('★ dá para fingir um celular neste navegador (senão nada abaixo foi medido)', deu);
+
+      if(deu){
+        abrirInstrucoesOffline(PAC_TESTE);
+        t('★ com compartilhamento, o popup entra em modo "compartilhar"',
+          $('ovInstrucoes').dataset.modo === 'compartilhar');
+        t('★ e o botão principal é "Enviar arquivo", que é o pedido dele: um toque e a folha abre',
+          !!$('btnCompartilhar') && $('btnCompartilhar').textContent === 'Enviar arquivo' &&
+          $('btnCompartilhar').classList.contains('pri'));
+        t('★ o "Baixar arquivo" continua existindo, como segunda opção e não como destaque',
+          !!$('btnBaixarAgora') && !$('btnBaixarAgora').classList.contains('pri'));
+        /* 🔴 e o e-mail do RH CONTINUA na tela: aplicativo que recuse o arquivo
+           deixaria a pessoa sem saída nenhuma se a instrução fosse só "compartilhe" */
+        t('★ e o e-mail do RH continua escrito, como saída para o aplicativo que recusar o arquivo',
+          !!$('offEmailRH') && $('offEmailRH').textContent.indexOf(EMAIL_DO_RH) >= 0 &&
+          /recusar/i.test($('offEmailRH').textContent));
+        $('btnCompartilhar').click();
+        t('★ o clique entrega um ARQUIVO de verdade à folha, com o nome certo e o texto para o RH',
+          !!pedido && !!pedido.files && pedido.files.length === 1 &&
+          pedido.files[0].name === 'alimentacao - Maria da Silva - 2026-09-16.json' &&
+          pedido.text.indexOf(EMAIL_DO_RH) >= 0,
+          pedido && pedido.files ? pedido.files[0].name : 'nada foi compartilhado');
+        $('btnInstrucoesOk').click();
+      }
+
+      /* devolve o navegador como estava */
+      try{
+        if(gShare === undefined) delete navigator.share; else navigator.share = gShare;
+        if(gCan === undefined) delete navigator.canShare; else navigator.canShare = gCan;
+        window.matchMedia = gMM;
+      }catch(e){}
+      t('★ e o navegador volta a ser o que era (senão as asserções seguintes medem um aparelho falso)',
+        modoDeEntrega(arquivoDoPacote(PAC_TESTE).arquivo) === 'baixar' &&
+        ehAparelhoDeToque() === false);
+    })();
+
+    /* 🔴 o arquivo de apoio encolhe aqui, e é ARITMÉTICA: ele viaja dentro do
+       JSON em base64, que infla um terço, e esse JSON é anexo de e-mail.
+       10 MB viram ~13,4 MB, que passa; os 25 MB do portal virariam ~33,4 MB. */
+    t('★ o arquivo de apoio fica menor, porque ele viaja dentro do arquivo baixado',
+      REGRAS.evidenciaMax === 1 && REGRAS.evidenciaMaxMB === OFFLINE_EVID_MB,
+      REGRAS.evidenciaMax + ' x ' + REGRAS.evidenciaMaxMB + ' MB');
+    t('★ e o e-mail que sai daqui cabe numa caixa comum: menos de 20 MB depois do base64',
+      REGRAS.evidenciaMax * REGRAS.evidenciaMaxMB * 4 / 3 < 20,
+      (REGRAS.evidenciaMax * REGRAS.evidenciaMaxMB * 4 / 3).toFixed(1) + ' MB');
+    t('e a tela diz esse limite no campo, em vez de a pessoa descobrir no erro',
+      /[Uu]m arquivo/.test($('arqDica').textContent) &&
+      $('arqDica').textContent.indexOf(OFFLINE_EVID_MB + ' MB') >= 0,
+      $('arqDica').textContent.slice(0, 70));
 
     /* --- o nome do arquivo, do jeito que ele pediu: categoria, nome, data --- */
     var nome = nomeDoArquivo({ tipoCodigo:'alimentacao', colaborador:'Maria da Silva',
@@ -4586,6 +5181,9 @@ function selftest(){
        as 300 asserções que vêm depois */
     ENVIO.modo = gModo; ENVIO.url = gUrl; IDENTIDADE.modo = gId;
     REGRAS.evidenciaMax = gMax; REGRAS.evidenciaMaxMB = gMB;
+    /* 🔴 o teto do CONJUNTO tambem volta: deixa-lo em 10 apos o teste de
+       offline faria toda assercao seguinte medir um formulario que nao existe. */
+    REGRAS.evidenciaTotalMB = gTot;
     document.body.classList.remove('offline');
     $('linkSemLogin').hidden = false;
     var oa = $('offArea'); if(oa && oa.parentNode && oa.parentNode.parentNode) oa.parentNode.parentNode.removeChild(oa.parentNode);
@@ -4601,7 +5199,8 @@ function selftest(){
     $('evidencia').setAttribute('multiple','');
     aplicarIdentidade();
     t('★ e o teste devolve a tela como encontrou', !$('offArea') && !$('ovConvite') && !$('ovInstrucoes') &&
-      ENVIO.modo === gModo && REGRAS.evidenciaMax === gMax);
+      ENVIO.modo === gModo && REGRAS.evidenciaMax === gMax &&
+      REGRAS.evidenciaMaxMB === gMB && REGRAS.evidenciaTotalMB === gTot);
   })();
 
   out.push('== Lote de 17/09: abrangências amplas, caixas de seleção e etapas ==');
@@ -4852,6 +5451,25 @@ function selftest(){
     t('★ e avisa, sem rodeio, que a parceria pode não sair: é o que evita promessa em nome da empresa',
       /pode não se confirmar/i.test(limpo($('regras'))) &&
       /não assuma compromissos em nome da Brazilian Nickel/i.test(limpo($('regras'))));
+
+    /* 🔴 "VANTAGEM" SAIU DE TODA A TELA (pedido dele, 23/09). A guarda varre o
+       formulário INTEIRO, e não os dois lugares que eu troquei: a palavra é
+       comum e volta sozinha na próxima frase que alguém escrever. Varre também o
+       termo, que é montado por JS e por isso não aparece numa busca no arquivo.
+       ⚠ A sonda IMPRIME quantos pedaços de texto olhou: varrer um elemento que
+       não existe devolve string vazia e aprova calada. */
+    (function(){
+      var fontes = [$('regras'), $('tela'), $('sucesso'), $('corpoTermo')].filter(Boolean);
+      var todo = fontes.map(limpo).join(' ');
+      out.push('       varridos ' + fontes.length + ' blocos, ' + todo.length + ' letras');
+      t('★ a varredura tem texto de verdade para olhar', fontes.length === 4 && todo.length > 3000,
+        fontes.length + ' blocos / ' + todo.length + ' letras');
+      var achou = todo.match(/vantage[nm]\w*/gi) || [];
+      t('★ a palavra "vantagem" não aparece em lugar nenhum da tela',
+        achou.length === 0, achou.length ? achou.join(', ') : 'nenhuma');
+      /* e no lugar dela ficou a palavra leve que ele pediu */
+      t('★ e a abertura fala em "benefício"', /qualquer outro benefício/i.test(limpo($('regras'))));
+    })();
     t('pede pelo menos um contato DESSA PESSOA',
       /Um contato dessa pessoa: e-mail ou telefone, pelo menos um dos dois/i.test(limpo($('regras'))));
     t('fala da pessoa com quem você CONVERSOU, e não de quem "firmou" a parceria',
@@ -5048,8 +5666,12 @@ function selftest(){
        porque dica que vira parágrafo ninguém lê: subiu para 160. */
     t('a dica da condição pede o detalhe, e ainda assim cabe em duas linhas',
       dicaCond.length > 60 && dicaCond.length <= 160, dicaCond.length + ' letras');
-    t('★ e a da evidência explica PARA QUE ela serve, em vez de só listar formatos',
-      /retomar a negociação de onde você parou/i.test(dicaEvi) && /restrita ao RH/i.test(dicaEvi),
+    /* 🔴 23/09: a legenda passou a começar por EXEMPLO (pedido dele), porque
+       "Arquivos de apoio" é um nome mais largo que "Evidência da conversa" e
+       sozinho não diz o que serve. O que ela NÃO pode perder é o para quê. */
+    t('★ e a dos arquivos de apoio dá EXEMPLO e explica PARA QUE eles servem',
+      /^exemplo:/i.test(dicaEvi.trim()) &&
+      /retomar a negociação de onde você parou/i.test(dicaEvi) && /restrito ao RH/i.test(dicaEvi),
       dicaEvi.slice(0, 70));
     var txt = $('aj_condicao').textContent.replace(/\s+/g,' ');
     t('a ajuda da condição cobra as 4 coisas',
@@ -5065,10 +5687,14 @@ function selftest(){
     var salvo = termoLido, salvoC = R.consent;
     var txt = $('corpoTermo').textContent.replace(/\s+/g,' ');
     t('o texto foi montado a partir do TERMO', txt.length > 400);
-    t('cobre o que é guardado',        /a Brazilian Nickel passa a guardar/.test(txt));
-    t('cobre para que serve',          /avaliar, negociar e publicar esta parceria/.test(txt));
-    t('cobre o prazo',                 /enquanto a parceria estiver sendo avaliada/.test(txt));
-    t('cobre o contato de terceiro',   /pessoa de fora da empresa/.test(txt) && /Avise a ela/.test(txt));
+    /* 🔴 reescritas na v2 (23/09). Elas cobrem o ASSUNTO, e não a frase exata,
+       justamente para uma revisão do jurídico poder mudar a redação sem derrubar
+       a bateria; o que não pode sumir é o assunto. */
+    t('cobre o que é guardado',        /passamos a tratar/.test(txt) && /condição combinada/.test(txt));
+    t('cobre para que serve',          /avaliar, negociar, publicar e acompanhar esta parceria/.test(txt));
+    t('cobre por quanto tempo guarda', /enquanto a indicação estiver em análise/.test(txt) &&
+                                       /enquanto ela estiver valendo/.test(txt));
+    t('cobre o contato de terceiro',   /pessoa de fora da Brazilian Nickel/.test(txt) && /Avise a ela/.test(txt));
     t('cita a LGPD pelo número da lei', /13\.709\/2018/.test(txt));
     t('o contato do RH sai da configuração, não está chumbado no texto',
       txt.indexOf(REGRAS.contatoRH) >= 0 && TERMO.join(' ').indexOf(REGRAS.contatoRH) < 0);
@@ -5143,8 +5769,54 @@ function selftest(){
       montarPacote().consentimento === true &&
       montarPacote().termoLidoAteOFim === true &&
       montarPacote().versaoTermo === TERMO_VERSAO);
-    t('a versão do texto diz que é rascunho sem jurídico',
-      /rascunho/i.test(TERMO_VERSAO) && /jur/i.test(TERMO_VERSAO));
+    /* 🔴 a versão continua dizendo em voz alta que o jurídico ainda não olhou.
+       "rascunho" saiu e entrou "aguardando revisão jurídica" na v2, então a
+       asserção passou a cobrar o FATO (não revisado) e não a palavra. */
+    t('a versão do texto diz que o jurídico ainda não revisou',
+      /jur/i.test(TERMO_VERSAO) && /(rascunho|aguardando|sem revis)/i.test(TERMO_VERSAO),
+      TERMO_VERSAO);
+
+    /* ---- TERMO v2 (23/09): o que o jurídico vai procurar ----
+       🔴 Estas asserções não julgam o texto, elas guardam os ELEMENTOS que uma
+       informação de tratamento precisa ter. Sem elas, uma reescrita bem
+       intencionada apaga a base legal ou os direitos do titular e nada acusa. */
+    (function(){
+      var todo = TERMO.map(function(b){ return b[0] + ' ' + b[1].join(' '); }).join(' ');
+      out.push('       termo: ' + TERMO.length + ' blocos, ' + todo.length + ' letras');
+      t('★ o termo diz QUEM responde pelos dados (controladora)', /controladora/i.test(todo));
+      t('★ e cita a LGPD pelo número da lei', /13\.709/.test(todo) && /LGPD/.test(todo));
+      /* 🔴 legítimo interesse, e NÃO consentimento: numa relação de emprego o
+         consentimento é frágil por causa da subordinação, e o formulário é
+         ferramenta de trabalho. É a escolha que mais precisa do aval deles. */
+      t('★ declara a base legal, e ela é legítimo interesse, não consentimento',
+        /leg[ií]timo interesse/i.test(todo) && /art\. 7º, IX/.test(todo));
+      t('★ lista os direitos do titular pelo artigo', /art\. 18/.test(todo) &&
+        /confirma/i.test(todo) && /elimina/i.test(todo) && /oposição/i.test(todo));
+      t('★ diz por quanto tempo guarda e o que acontece depois',
+        /anonimizad/i.test(todo) && /encerrada a parceria/i.test(todo));
+      t('★ diz o que vai para o site público e o que NUNCA sai do painel',
+        /nunca saem do painel/i.test(todo) && /cart[ãa]o da parceria/i.test(todo));
+      t('★ diz que não indicar não traz consequência (senão "legítimo interesse" lê como obrigação)',
+        /não indicar não traz nenhuma consequência/i.test(todo));
+      t('★ e avisa o que fazer com o contato de terceiro, que não está diante da tela',
+        /não está diante desta tela/i.test(todo) && /direitos dela/i.test(todo));
+      /* 🔴 as três frases sobre recompensa, guardadas desde 14/09 */
+      t('as três frases sobre a recompensa continuam de pé',
+        /pode ser diferente da que você combinou/i.test(todo) &&
+        /pode mudar ou acabar a qualquer momento/i.test(todo) &&
+        /não garante nenhuma recompensa/i.test(todo));
+      /* 🔴 O TOM: o bloco 3 é o que a pessoa lê para DECIDIR enviar, e ali o
+         texto tem de continuar leve. A medida é o vocabulário de lei: artigo,
+         inciso, "nos termos". Se ele aparecer no bloco 3, o tom escorregou. */
+      var bloco3 = TERMO[2][1].join(' ');
+      t('★ o bloco sobre a parceria continua em linguagem leve, sem artigo nem inciso',
+        !/art\.|inciso|nos termos|LGPD|13\.709/.test(bloco3), bloco3.slice(0, 60));
+      /* e o prazo de resposta entrou ali, no lugar em que a pessoa pergunta */
+      t('★ e o prazo de resposta está escrito no termo, com o número de REGRAS',
+        $('corpoTermo').textContent.indexOf(prazoRespostaTexto()) >= 0 &&
+        TERMO[2][1].join(' ').indexOf('__PRAZO__') >= 0,
+        prazoRespostaTexto());
+    })();
     fecharTermo();
     termoLido = salvo; R.consent = salvoC; pintarTrava();
   })();
