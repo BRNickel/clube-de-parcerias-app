@@ -1330,7 +1330,6 @@ var PLATAFORMA = {
   url: 'https://taicyccelmjjsiwzwltc.supabase.co',
   chaveAnon: '',
   funcaoEnviar: 'https://taicyccelmjjsiwzwltc.supabase.co/functions/v1/clube_de_parcerias_api_receber_indicacao',
-  funcaoAcesso: 'https://taicyccelmjjsiwzwltc.supabase.co/functions/v1/clube_de_parcerias_api_meu_acesso',
   /* 🔴 O LOGIN É AUTOMÁTICO (medido em 15/09): sem sessão, o próprio formulário
      manda a pessoa para a conta Microsoft e ela volta PARA CÁ, com a sessão. O
      Supabase aceita este endereço como destino (testado). A raiz do app (`./`)
@@ -2475,7 +2474,6 @@ function guardarLocal(pacote){
 /* ---------- a plataforma ---------- */
 var sb = null;             // cliente do Supabase, só quando a plataforma está ligada
 var sessaoAtual = null;    // a sessão do login (traz o token e o e-mail)
-var acessoAtual = null;    // resposta de meu_acesso: { email, nome, nivel, rh }
 
 function naPlataforma(){
   return PLATAFORMA.hosts.indexOf(location.hostname) >= 0 &&
@@ -2497,14 +2495,17 @@ function ligarPlataforma(){
       try{ history.replaceState(null, '', location.pathname + location.search); }catch(e){}
     }
     $('entrada').hidden = true; $('btnEnviar').disabled = false;
-    /* a função de acesso devolve as OPÇÕES (a lista de áreas do RM) e o nível
-       de quem entrou. Desde 16/09 o formulário não decide mais nada por "ser do
-       RH": o modo "preenchendo por outra pessoa" saiu. A resposta continua
-       sendo lida porque a lista de áreas do modo offline sai dela. */
-    return fetch(PLATAFORMA.funcaoAcesso, { headers: cabecalhosAuth() })
-      .then(function(resp){ return resp.ok ? resp.json() : null; })
-      .then(function(j){ acessoAtual = (j && j.ok) ? j : null; return true; })
-      .catch(function(){ acessoAtual = null; return true; });
+    /* 🔴 A CHAMADA A `meu_acesso` SAIU (23/09). Ela guardava a resposta em
+       `acessoAtual`, e NADA no formulário lia essa variável. O comentário que
+       estava aqui defendia a chamada dizendo que a lista de áreas do modo
+       offline saía dela, e essa lista tinha saído em 17/09 junto com o campo
+       que a usava (está escrito algumas dezenas de linhas abaixo).
+       Ela custava uma requisição em toda abertura e dava a impressão de existir
+       um controle de acesso nesta página. Quem decide quem entra é a
+       PLATAFORMA, antes de a página carregar: foi nela que o Carlos bateu.
+       ⚠ O nome e o e-mail no campo NÃO vinham daqui: vêm da sessão do login,
+       em `usuarioDoPortal()`. */
+    return true;
   }).catch(function(){ return false; });
 }
 /* 🔴 MEDIDO em 15/09: logo depois da volta do login, `getSession()` devolveu
@@ -4300,8 +4301,18 @@ function selftest(){
     t('★ e por isso o cliente do banco nem existe', sb === null);
     t('a chave configurada é a anon (papel "anon" no token), nunca a de serviço',
       /"role":"anon"/.test(atob(PLATAFORMA.chaveAnon.split('.')[1])));
-    t('as duas funções e a saída manual estão configuradas',
-      /receber_indicacao$/.test(PLATAFORMA.funcaoEnviar) && /meu_acesso$/.test(PLATAFORMA.funcaoAcesso) && PLATAFORMA.entrada === './');
+    t('a função de envio e a saída manual estão configuradas',
+      /receber_indicacao$/.test(PLATAFORMA.funcaoEnviar) && PLATAFORMA.entrada === './');
+    /* 🔴 e `meu_acesso` NÃO está mais aqui: era chamada em toda abertura e
+       ninguém lia a resposta. Esta asserção existe para ela não voltar por
+       distração, e para a próxima pessoa saber que a ausência é decisão.
+       ⚠ Ela mede o COMPORTAMENTO, não o texto do arquivo: a primeira versão
+       procurava a palavra "meu_acesso" no documento e ficava vermelha por causa
+       DESTE comentário, que precisa dizer o nome da coisa que saiu. */
+    t('★ e a chamada morta a meu_acesso não voltou',
+      !PLATAFORMA.funcaoAcesso && typeof window.acessoAtual === 'undefined',
+      'endereço: ' + String(PLATAFORMA.funcaoAcesso) +
+      ', variável: ' + typeof window.acessoAtual);
     /* a corrida medida em 15/09: sessão guardada e getSession() vazio → tenta de novo */
     var K2 = 'sb-teste2-auth-token';
     try{ localStorage.removeItem(K2); }catch(e){}
