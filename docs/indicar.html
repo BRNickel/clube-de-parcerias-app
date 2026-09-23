@@ -696,7 +696,7 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
          target="_blank" rel="noopener" aria-label="Versão para quem não tem e-mail corporativo"
          title="Versão para quem não tem e-mail corporativo da Brazilian Nickel">
         <svg id="icoAtalho" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8"/><path d="M8 12h8"/><path d="M8 16h5"/></svg>
-        <span class="rot">sem e-mail corporativo</span>
+        <span class="rot" data-en="without company e-mail">sem e-mail corporativo</span>
       </a>
       <!-- 🔴 IDIOMA (pedido dele, 17/09): ao lado do tema, porque são a mesma
            família de escolha (como a página se apresenta). -->
@@ -788,7 +788,7 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
     </div>
 
     <div class="entrada" id="entrada" hidden>
-      <span>Para indicar uma parceria, entre com a sua conta da Brazilian Nickel.</span>
+      <span data-en="To suggest a partnership, sign in with your Brazilian Nickel account.">Para indicar uma parceria, entre com a sua conta da Brazilian Nickel.</span>
       <button type="button" id="btnEntrar">Entrar</button>
     </div>
     <form class="card" id="form" novalidate autocomplete="on" onsubmit="return false">
@@ -822,7 +822,7 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
           </div>
           <div class="f wide" data-campo="tipoOutro" hidden>
             <label for="tipoOutro" data-en="What kind of partnership is it?">Que tipo de parceria é?<span class="req">*</span></label>
-            <div class="hint">Você marcou "Outros": escreva em poucas palavras do que se trata.</div>
+            <div class="hint" data-en="You ticked &quot;Other&quot;: describe in a few words what it is.">Você marcou "Outros": escreva em poucas palavras do que se trata.</div>
             <input id="tipoOutro" name="tipoOutro" type="text" placeholder="Exemplo: escola de idiomas" maxlength="80">
             <div class="err" id="e_tipoOutro"></div>
           </div>
@@ -853,7 +853,7 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
                diz para consultar na internet. -->
           <div class="f wide" data-campo="unidades">
             <label data-en="Where does the benefit apply?">Em que cidade o benefício vale?<span class="req">*</span></label>
-            <div class="hint">Pode marcar mais de uma. São as cidades que já existem no Clube de
+            <div class="hint" data-en="You can tick more than one. These are the cities the Partnership Club already has; if it is another one, tick the last option and write the name.">Pode marcar mais de uma. São as cidades que já existem no Clube de
             Parcerias; se for outra, marque a última opção e escreva o nome.</div>
             <div class="ops duas" id="opsUnidades" role="group" aria-label="Em que cidade o benefício vale"></div>
             <!-- 🔴 diz por que o resto apagou (18/09): opção desligada sem motivo
@@ -987,7 +987,7 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
                  balcão é o RH, que vai negociar, e depois o colaborador, no card. -->
             <div class="hint" data-en="Describe in as much detail as possible what the partnership is and also the conditions to use it.">Escreva com a maior quantidade de detalhes qual é a parceria e também
             as condições para usufruir dela.</div>
-            <div class="ajuda" id="aj_condicao" hidden>
+            <div class="ajuda" id="aj_condicao" hidden data-en="<h4>What to write here</h4><p>The more detail you put here, the less HR has to go back to the establishment to ask. Try to answer these four things:</p><ul><li><b>How much</b>: 20%, R$ 10 off, a free gift;</li><li><b>On what</b>: the whole menu, lunch only, services over R$ 100 only;</li><li><b>When it applies</b>: days of the week, times, whether public holidays are excluded;</li><li><b>What the person shows</b>: employee badge, company e-mail, nothing.</li></ul><p>If you know until when the terms are valid, write that too.</p><div class=&quot;ex bom&quot;><span class=&quot;lbl&quot;>Works</span>20% off lunch from Monday to Friday, 11am to 3pm, on showing the employee badge. Not valid on public holidays.</div><div class=&quot;ex ruim&quot;><span class=&quot;lbl&quot;>Does not work</span>They give us a good discount.</div>">
               <h4>O que escrever aqui</h4>
               <p>Quanto mais detalhe você puser aqui, menos o RH precisa voltar ao estabelecimento para
               perguntar. Tente responder a estas quatro coisas:</p>
@@ -1030,7 +1030,7 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
             <div class="hint" data-en="For example: a screenshot of the conversation, an audio message, a photo, an e-mail, a proposal or the contract. <b>It lets HR pick the negotiation up where you left it</b> instead of starting over. It is optional, stays with HR and never appears in the Partnership Club.">Exemplo: print da conversa, áudio, foto, e-mail, proposta ou contrato.
             <b>Serve para o RH retomar a negociação de onde você parou</b>, em vez de começar do
             zero. É opcional e fica restrito ao RH: não aparece no Clube de Parcerias.</div>
-            <div class="ajuda" id="aj_evidencia" hidden>
+            <div class="ajuda" id="aj_evidencia" hidden data-en="<h4>What counts as a supporting file</h4><p>Anything that shows the conversation happened and what was agreed:</p><ul><li>a screenshot of the WhatsApp conversation with the contact person;</li><li>an audio message the contact person sent;</li><li>an e-mail, proposal or contract the establishment sent;</li><li>a photo of the menu, the price list or the poster with the terms;</li><li>a photo of you at the place with whoever served you.</li></ul><p>It is optional, but it changes how long the answer takes: with a supporting file HR picks the conversation up where you left it, instead of starting from scratch.</p><p id=&quot;ajudaEvidenciaLimite&quot;></p>">
               <h4>O que serve como arquivo de apoio</h4>
               <p>Qualquer coisa que mostre que a conversa aconteceu e o que foi combinado:</p>
               <ul>
@@ -1119,7 +1119,7 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="tituloTermo">
     <div class="modal-h">
       <div>
-        <div class="eyebrow-modal">Leia até o final</div>
+        <div class="eyebrow-modal" data-en="Read to the end">Leia até o final</div>
         <h3 id="tituloTermo" data-en="About this suggestion">Informações sobre esta indicação</h3>
       </div>
       <button type="button" id="btnFechar" aria-label="Fechar">&times;</button>
@@ -1163,33 +1163,52 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
    REDE de unidades, e não dá para listar todos os endereços. Vazio, o card
    diz "Consultar endereço na internet". A marca `sempreEndereco` que vivia
    aqui (restaurante sempre exigia endereço) saiu junto com a regra. */
+/* 🔴 `nomeEn` é SÓ PARA A TELA. O que vai gravado é `nome`, sempre em português:
+   `pacote.tipoNome` é lido pelo painel e pelo app, e uma indicação preenchida em
+   inglês que gravasse "Restaurants and food" nasceria com uma categoria que o
+   resto do circuito não conhece. Ver `montarPacote`, que usa `t.nome` e não
+   `nomeDeExibicao(t)`, com asserção guardando. */
 var TIPOS = [
-  { cod:'alimentacao', nome:'Restaurante e alimentação' },
-  { cod:'beleza',      nome:'Beleza e estética' },
+  { cod:'alimentacao', nome:'Restaurante e alimentação', nomeEn:'Restaurants and food' },
+  { cod:'beleza',      nome:'Beleza e estética',         nomeEn:'Beauty and grooming' },
   /* 🔴 "Saúde e bem-estar" é separada de "Beleza e estética" (pedido dele,
      15/09): academia, nutricionista e dentista não são a mesma coisa que salão,
      e juntas viravam um balaio onde ninguém achava o que procurava.
      A lista aqui e a do PAINEL são a MESMA: divergir faz o filtro do RH perder
      indicação sem avisar. */
-  { cod:'saude',       nome:'Saúde e bem-estar' },
-  { cod:'automotivo',  nome:'Automotivo' },
-  { cod:'construcao',  nome:'Construção e reforma' },
-  { cod:'compras',     nome:'Compras' },
-  { cod:'servico',     nome:'Serviço' },
-  { cod:'outros',      nome:'Outros' }
+  { cod:'saude',       nome:'Saúde e bem-estar',         nomeEn:'Health and wellbeing' },
+  { cod:'automotivo',  nome:'Automotivo',               nomeEn:'Automotive' },
+  { cod:'construcao',  nome:'Construção e reforma',     nomeEn:'Building and renovation' },
+  { cod:'compras',     nome:'Compras',                  nomeEn:'Shopping' },
+  { cod:'servico',     nome:'Serviço',                  nomeEn:'Services' },
+  { cod:'outros',      nome:'Outros',                   nomeEn:'Other' }
 ];
+
+/* o nome que a TELA mostra. Cai no português quando não há tradução, em vez de
+   mostrar vazio: faltar tradução é feio, tela em branco é defeito. */
+function nomeDeExibicao(it){
+  if(!it) return '';
+  return (idiomaAtual() === 'en' && it.nomeEn) ? it.nomeEn : it.nome;
+}
+function descDeExibicao(it){
+  if(!it) return '';
+  return (idiomaAtual() === 'en' && it.descEn) ? it.descEn : (it.desc || '');
+}
 
 /* --- 1.2 COMO O COLABORADOR USA O BENEFÍCIO ----------------------
    A resposta vai escrita no card ("Indo até o lugar", "Online..."). Desde
    16/09 ela NÃO liga mais exigência de endereço: endereço é sempre opcional.
    `presencial` fica só como descrição da opção. */
 var ATENDIMENTOS = [
-  { cod:'presencial', nome:'Indo até o lugar',
-    desc:'Loja, restaurante, clínica, oficina: tem endereço físico.', presencial:true },
-  { cod:'remoto',     nome:'Online, por telefone ou entrega',
-    desc:'Não precisa ir a lugar nenhum.', presencial:false },
-  { cod:'ambos',      nome:'Dos dois jeitos',
-    desc:'Atende no local e também a distância.', presencial:true }
+  { cod:'presencial', nome:'Indo até o lugar', nomeEn:'By going there',
+    desc:'Loja, restaurante, clínica, oficina: tem endereço físico.',
+    descEn:'Shop, restaurant, clinic, garage: it has a physical address.', presencial:true },
+  { cod:'remoto',     nome:'Online, por telefone ou entrega', nomeEn:'Online, by phone or delivery',
+    desc:'Não precisa ir a lugar nenhum.',
+    descEn:'No need to go anywhere.', presencial:false },
+  { cod:'ambos',      nome:'Dos dois jeitos', nomeEn:'Both ways',
+    desc:'Atende no local e também a distância.',
+    descEn:'Serves you on site and remotely.', presencial:true }
 ];
 
 /* --- 1.3 EM QUE CIDADE O BENEFÍCIO VALE --------------------------
@@ -1214,8 +1233,12 @@ var UNIDADES = [
      colaborador precisa saber ali é como usar, não onde ir. */
   /* `rotulo` é como a opção aparece na escolha: "Vale para todo o Brasil" diz o
      que a marcação faz; "Brasil", solto no meio de cidades, parece mais uma. */
-  { cod:'BRASIL', nome:'Todo o Brasil', ampla:true, pais:'BR', rotulo:'Vale para todo o Brasil' },
-  { cod:'CANADA', nome:'Todo o Canadá', ampla:true, pais:'CA', rotulo:'Vale para todo o Canadá' },
+  /* 🔴 `rotulo` e' o que a ESCOLHA mostra e ganhou versao em ingles; `nome` e
+     `frase` NAO, porque sao o que vai GRAVADO e o que o app publica. */
+  { cod:'BRASIL', nome:'Todo o Brasil', ampla:true, pais:'BR', rotulo:'Vale para todo o Brasil',
+    rotuloEn:'Valid across Brazil' },
+  { cod:'CANADA', nome:'Todo o Canadá', ampla:true, pais:'CA', rotulo:'Vale para todo o Canadá',
+    rotuloEn:'Valid across Canada' },
   { cod:'GLOBAL', nome:'Qualquer lugar', ampla:true, rotulo:'Vale em qualquer lugar' },
   /* 🔴 "OUTRO LUGAR", e não "outra cidade" (pedido dele, 18/09): com Toronto e
      as três abrangências na lista, "cidade" ficou estreito demais para o que a
@@ -1593,7 +1616,7 @@ function enderecosDoPacote(){
    e é o país que decide quais benefícios alcançam aquela seção no app. */
 function rotuloDaUnidade(u){
   if(!u) return '';
-  if(u.rotulo) return u.rotulo;
+  if(u.rotulo) return (idiomaAtual() === 'en' && u.rotuloEn) ? u.rotuloEn : u.rotulo;
   return u.pais ? u.nome + ' - ' + u.pais : u.nome;
 }
 function nomeDaCidade(cod){
@@ -1667,6 +1690,11 @@ function dicaFone(){
   return T('Com DDD. Fora do Brasil, comece com + e o código do país.',
            'With area code. Outside Brazil, start with + and the country code.');
 }
+/* a mesma frase era escrita em dois lugares; uma funcao so' para nao divergirem */
+function erroDoTermo(){
+  return T('Abra e leia as informações até o final.',
+           'Open and read the information to the end.');
+}
 function erroDeFone(){
   return T('Telefone inválido. Use DDD e o número completo, ou + e o código do país se for de fora do Brasil.',
            'Invalid phone. Use the area code and the full number, or + and the country code if it is outside Brazil.');
@@ -1728,10 +1756,12 @@ function parResolvido(){
 }
 
 function textoPar(){
-  if(parResolvido()) return 'Contato informado. Pode preencher os dois, se tiver.';
+  if(parResolvido()) return T('Contato informado. Pode preencher os dois, se tiver.',
+                              'Contact details provided. You can fill in both, if you have them.');
   if(!temEmailContato() && !temFoneContato())
-    return 'Preencha pelo menos um dos dois: e-mail ou telefone.';
-  return 'Confira o que você preencheu abaixo.';
+    return T('Preencha pelo menos um dos dois: e-mail ou telefone.',
+             'Fill in at least one of the two: e-mail or phone.');
+  return T('Confira o que você preencheu abaixo.', 'Check what you filled in below.');
 }
 
 /* ---------- desenho das opções ---------- */
@@ -1746,10 +1776,10 @@ function montarOpcoes(box, itens, campo, aoEscolher){
     var marca = document.createElement('span'); marca.className = 'dot';
     marca.appendChild(document.createElement('i'));
     var txt = document.createElement('span'); txt.className = 'nm';
-    txt.textContent = it.nome;
+    txt.textContent = nomeDeExibicao(it);
     if(it.desc){
       var d = document.createElement('span'); d.className = 'sub';
-      d.textContent = it.desc; txt.appendChild(d);
+      d.textContent = descDeExibicao(it); txt.appendChild(d);
     }
     b.appendChild(marca); b.appendChild(txt);
     b.addEventListener('click', function(){
@@ -1882,6 +1912,7 @@ function pintarPar(){
    Ele é copiado por script (comum/paridade.py cobra que continue igual), então
    NÃO edite aqui: edite no painel e rode a cópia de novo.
    ================================================================== */
+/* ⚠ NAO se traduz: este texto vai GRAVADO no card e o app publica ele. */
 var HORARIO_PADRAO = 'Consultar horário de funcionamento';
 /* 🔴 CADA OPÇÃO DECLARA OS DIAS QUE COBRE (pedido dele, 17/09), num mapa de bits:
    domingo 1, segunda 2, terça 4, quarta 8, quinta 16, sexta 32, sábado 64. É isso
@@ -2075,7 +2106,7 @@ function montarSeletorDePais(){
      sem notar, e a cidade nascia com o país errado, que é pior que sem país
      nenhum: errado ninguém vai conferir. */
   var vazia = document.createElement('option');
-  vazia.value = ''; vazia.textContent = 'Selecione o país';
+  vazia.value = ''; vazia.textContent = T('Selecione o país', 'Select the country');
   vazia.disabled = true;
   if(!R.cidadeOutraPais) vazia.selected = true;
   sel.appendChild(vazia);
@@ -2196,7 +2227,7 @@ function montarCampoDeHorario(){
     var linha = novo('div','hr-linha');
     if(l.livre){
       var liv = novo('input','hr-txt'); liv.value = l.livre;
-      liv.setAttribute('aria-label','Horário escrito à mão');
+      liv.setAttribute('aria-label', T('Horário escrito à mão', 'Opening hours written by hand'));
       liv.addEventListener('input', guardar);
       linha.appendChild(liv);
     } else {
@@ -2207,9 +2238,9 @@ function montarCampoDeHorario(){
         sel.appendChild(o);
       });
       var de = novo('input','hr-h');  de.type = 'time';  de.value = l.de || '';
-      de.setAttribute('aria-label','Abre às');
+      de.setAttribute('aria-label', T('Abre às', 'Opens at'));
       var ate = novo('input','hr-h'); ate.type = 'time'; ate.value = l.ate || '';
-      ate.setAttribute('aria-label','Fecha às');
+      ate.setAttribute('aria-label', T('Fecha às', 'Closes at'));
       sel.addEventListener('change', guardar);
       de.addEventListener('change', guardar);
       ate.addEventListener('change', guardar);
@@ -2220,7 +2251,7 @@ function montarCampoDeHorario(){
       linha.appendChild(ate);
     }
     var x = novo('button','hr-x','×'); x.type = 'button';
-    x.setAttribute('aria-label','Tirar esta linha de horário');
+    x.setAttribute('aria-label', T('Tirar esta linha de horário', 'Remove this opening-hours line'));
     x.hidden = estado.length < 2;
     x.addEventListener('click', function(){
       estado = lerLinhas(); estado.splice(i, 1);
@@ -2236,17 +2267,19 @@ function montarCampoDeHorario(){
   }
   desenhar();
 
-  var mais = novo('button','hr-mais','+ Adicionar horário'); mais.type = 'button';
+  var mais = novo('button','hr-mais', T('+ Adicionar horário', '+ Add opening hours')); mais.type = 'button';
   mais.addEventListener('click', function(){
     estado = lerLinhas(); estado.push({ dias:'', de:'', ate:'', livre:'' });
     desenhar(); guardar();
   });
   w.appendChild(mais);
   var av = novo('div','hr-aviso'); av.id = 'horario_aviso'; av.hidden = true;
-  av.textContent = 'Fecha antes de abrir: vai para o card como "do dia seguinte". Se não era isso, corrija as horas.';
+  av.textContent = T('Fecha antes de abrir: vai para o card como "do dia seguinte". Se não era isso, corrija as horas.',
+                     'Closing time is before opening time: the card will read "next day". If that is not what you meant, fix the hours.');
   w.appendChild(av);
   var dica = novo('div','hr-dica');
-  dica.textContent = 'Opcional. Em branco, o card diz "' + HORARIO_PADRAO + '". Abre e fecha na mesma hora = 24 horas.';
+  dica.textContent = T('Opcional. Em branco, o card diz "' + HORARIO_PADRAO + '". Abre e fecha na mesma hora = 24 horas.',
+                       'Optional. Left blank, the card reads "' + HORARIO_PADRAO + '". Same opening and closing time = 24 hours.');
   w.appendChild(dica);
   return true;
 }
@@ -2342,7 +2375,7 @@ function montarCampoDeEnderecos(){
     t.addEventListener('input', guardar);
     linha.appendChild(t);
     var x = novo('button','hr-x','×'); x.type = 'button';
-    x.setAttribute('aria-label','Tirar este endereço');
+    x.setAttribute('aria-label', T('Tirar este endereço', 'Remove this address'));
     x.addEventListener('click', function(){
       /* tira ESTA linha: a posição dela dentro do grupo é a posição entre os
          endereços da mesma cidade no estado */
@@ -2362,13 +2395,14 @@ function montarCampoDeEnderecos(){
       var g = novo('div','en-grupo'); g.dataset.cidade = cid;
       var tit = novo('div','en-grupo-t');
       if(cid){
-        tit.appendChild(document.createTextNode('Endereços em '));
+        tit.appendChild(document.createTextNode(T('Endereços em ', 'Addresses in ')));
         tit.appendChild(novo('span','en-titulo-nome', nomeDaCidade(cid)));
       } else {
-        tit.appendChild(document.createTextNode('Pontos principais de atendimento'));
+        tit.appendChild(document.createTextNode(
+          T('Pontos principais de atendimento', 'Main service locations')));
       }
       tit.appendChild(document.createTextNode(' '));
-      tit.appendChild(novo('span','opt','(opcional)'));
+      tit.appendChild(novo('span','opt', T('(opcional)', '(optional)')));
       g.appendChild(tit);
       var corpo = novo('div','hr-linhas');
       var ls = linhasDe(cid);
@@ -2377,7 +2411,7 @@ function montarCampoDeEnderecos(){
       /* tirar só aparece com mais de uma linha no grupo: com uma, o campo é
          opcional por outro caminho (deixar em branco) */
       Array.prototype.forEach.call(corpo.querySelectorAll('.hr-x'), function(x){ x.hidden = ls.length < 2; });
-      var mais = novo('button','hr-mais','+ Adicionar endereço'); mais.type = 'button';
+      var mais = novo('button','hr-mais', T('+ Adicionar endereço', '+ Add address')); mais.type = 'button';
       mais.addEventListener('click', function(){
         estado = lerTudo(); estado.push({ endereco:'', rotulo:'', cidade:cid });
         desenhar(); guardar();
@@ -2469,85 +2503,102 @@ function validar(){
   var problemas = [];
   function p(campo, msg){ problemas.push({campo:campo, msg:msg}); marcar(campo, false, msg); }
 
-  if(!nomeValido(R.colaborador)) p('colaborador','Escreva o seu nome completo, sem abreviação.');
+  if(!nomeValido(R.colaborador)) p('colaborador', T('Escreva o seu nome completo, sem abreviação.',
+                     'Write your full name, without abbreviations.'));
   else marcar('colaborador', true, '');
 
   /* 🔴 o contato de retorno é do MESMO assunto que o nome (quem indicou e como
      falar com essa pessoa), e por isso é cobrado aqui, e não atrás do tipo. */
   if(R.semLogin){
     if(!contatoDoIndicadorResolvido())
-      p('retorno','Informe um e-mail ou um telefone válido para o RH dar retorno.');
+      p('retorno', T('Informe um e-mail ou um telefone válido para o RH dar retorno.',
+                   'Give a valid e-mail or phone number so HR can get back to you.'));
     else marcar('retorno', true, '');
   }
 
-  if(!nomeTipo(R.tipo)) p('tipo','Escolha o tipo de parceria.');
+  if(!nomeTipo(R.tipo)) p('tipo', T('Escolha o tipo de parceria.', 'Choose the type of partnership.'));
   else marcar('tipo', true, '');
 
   if(ehOutros()){
-    if(String(R.tipoOutro||'').trim().length < 3) p('tipoOutro','Escreva de que tipo de parceria se trata.');
+    if(String(R.tipoOutro||'').trim().length < 3) p('tipoOutro', T('Escreva de que tipo de parceria se trata.',
+                       'Write what type of partnership it is.'));
     else marcar('tipoOutro', true, '');
   }
 
   /* atendimento só é cobrado depois que o tipo existe: senão o resumo de
      erro aponta para um campo que ainda está escondido na tela */
   if(nomeTipo(R.tipo)){
-    if(!nomeAtendimento(R.atendimento)) p('atendimento','Escolha como o colaborador usa o benefício.');
+    if(!nomeAtendimento(R.atendimento)) p('atendimento', T('Escolha como o colaborador usa o benefício.',
+                         'Choose how the employee uses the benefit.'));
     else marcar('atendimento', true, '');
   }
 
-  if(String(R.estab||'').trim().length < 2) p('estab','Escreva o nome do estabelecimento.');
+  if(String(R.estab||'').trim().length < 2) p('estab', T('Escreva o nome do estabelecimento.', 'Write the name of the establishment.'));
   else marcar('estab', true, '');
 
   /* 🔴 endereço continua OPCIONAL (16/09): quem barra é a CAIXA, e só quando ela
      está marcada. A pessoa disse que existe endereço; o campo vazio é uma
      resposta pela metade, e desmarcar a caixa resolve em um clique. */
   if(caixaLigada('temEndereco') && !limparEnderecos(R.enderecos).length)
-    p('endereco','Escreva pelo menos um endereço, ou desmarque a caixa acima.');
+    p('endereco', T('Escreva pelo menos um endereço, ou desmarque a caixa acima.',
+                    'Write at least one address, or untick the box above.'));
   else marcar('endereco', limparEnderecos(R.enderecos).length > 0, '');
   if(caixaLigada('temSite') && !String(R.site||'').trim() && !String(R.social||'').trim()){
-    p('site','Informe o site ou a rede social, ou desmarque a caixa acima.');
-    p('social','Informe o site ou a rede social, ou desmarque a caixa acima.');
+    var msgSite = T('Informe o site ou a rede social, ou desmarque a caixa acima.',
+                    'Give the website or the social media handle, or untick the box above.');
+    p('site', msgSite);
+    p('social', msgSite);
   }
   if(caixaLigada('temHorario') && !String(R.horario||'').trim())
-    p('horario','Informe o horário de atendimento, ou desmarque a caixa acima.');
+    p('horario', T('Informe o horário de atendimento, ou desmarque a caixa acima.',
+                   'Give the opening hours, or untick the box above.'));
   else marcar('horario', !!String(R.horario||'').trim(), '');
 
-  if(!siteValido(R.site)) p('site','Endereço de site inválido. Exemplo: www.exemplo.com.br');
+  if(!siteValido(R.site)) p('site', T('Endereço de site inválido. Exemplo: www.exemplo.com.br',
+                'Invalid website address. Example: www.example.com'));
   else marcar('site', String(R.site||'').trim() ? true : false, '');
 
-  if(!nomeContatoValido(R.contatoNome)) p('contatoNome','Escreva o nome de quem você falou.');
+  if(!nomeContatoValido(R.contatoNome)) p('contatoNome', T('Escreva o nome de quem você falou.',
+                         'Write the name of the person you spoke to.'));
   else marcar('contatoNome', true, '');
 
   /* o par: uma única regra, dois campos. A mensagem cai nos dois quando
      os dois estão vazios, porque qualquer um dos dois resolve */
   if(!temEmailContato() && !temFoneContato()){
-    p('contatoEmail','Preencha o e-mail ou o telefone do contato.');
-    p('contatoFone','Preencha o e-mail ou o telefone do contato.');
+    var msgPar = T('Preencha o e-mail ou o telefone do contato.',
+                   'Fill in the contact\u2019s e-mail or phone number.');
+    p('contatoEmail', msgPar);
+    p('contatoFone', msgPar);
   } else {
     if(temEmailContato() && !emailValido(R.contatoEmail))
-      p('contatoEmail','E-mail inválido. Exemplo: contato@estabelecimento.com');
+      p('contatoEmail', T('E-mail inválido. Exemplo: contato@estabelecimento.com',
+                          'Invalid e-mail. Example: contact@establishment.com'));
     else marcar('contatoEmail', temEmailContato(), '');
     if(temFoneContato() && !foneValido(R.contatoFone))
       p('contatoFone', erroDeFone());
     else marcar('contatoFone', temFoneContato(), '');
   }
 
-  if(!R.unidades.length) p('unidades','Marque em que cidade o benefício vale.');
+  if(!R.unidades.length) p('unidades', T('Marque em que cidade o benefício vale.',
+                    'Tick the cities where the benefit applies.'));
   else marcar('unidades', true, '');
 
   if(pediuOutraCidade()){
-    if(String(R.cidadeOutra||'').trim().length < 3) p('cidadeOutra','Escreva o nome da cidade.');
+    if(String(R.cidadeOutra||'').trim().length < 3) p('cidadeOutra', T('Escreva o nome da cidade.', 'Write the name of the city.'));
     else if(!String(R.cidadeOutraPais||'').trim())
-      p('cidadeOutra','Escolha o país dessa cidade: é ele que diz onde o benefício vale.');
+      p('cidadeOutra', T('Escolha o país dessa cidade: é ele que diz onde o benefício vale.',
+                         'Choose that city\u2019s country: it is what says where the benefit applies.'));
     else marcar('cidadeOutra', true, '');
   }
 
   if(String(R.condicao||'').trim().length < REGRAS.condicaoMinima)
-    p('condicao','Descreva a condição combinada com mais detalhe.');
+    p('condicao', T('Descreva a condição combinada com mais detalhe.',
+                    'Describe the agreed terms in more detail.'));
   else marcar('condicao', true, '');
 
-  if(!termoLido) p('consent','Abra e leia as informações até o final.');
-  else if(R.consent !== true) p('consent','É preciso concordar para enviar a indicação.');
+  if(!termoLido) p('consent', erroDoTermo());
+  else if(R.consent !== true) p('consent', T('É preciso concordar para enviar a indicação.',
+                    'You must agree in order to submit the suggestion.'));
   else marcar('consent', true, '');
 
   return problemas;
@@ -3005,7 +3056,7 @@ function ligarModoOffline(){
     var ico = ls.querySelector('svg');
     if(ico) ico.innerHTML = '<path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/>';
   }
-  $('btnTxt').textContent = 'Baixar formulário';
+  $('btnTxt').textContent = T('Baixar formulário', 'Download the form');
   montarCampoDeContatoDoIndicador();
   /* 🔴 A LEGENDA SAIU DA TELA (pedido dele, 16/09): virou o popup que aparece
      DEPOIS de baixar, quando a instrução tem para o que servir. E ao entrar, um
@@ -3291,7 +3342,8 @@ function textoAviso(){
      depois de baixar diz o que fazer, na hora em que serve */
   if(ENVIO.modo === 'arquivo') return '';
   if(destinoReal()) return '';
-  return 'MODO DE TESTE: a indicação fica só neste navegador e não chega ao RH.';
+  return T('MODO DE TESTE: a indicação fica só neste navegador e não chega ao RH.',
+           'TEST MODE: the suggestion stays in this browser only and does not reach HR.');
 }
 
 /* aviso separado, porque o arquivo é a parte que nenhum modo local
@@ -3507,6 +3559,8 @@ function marcarTermoLido(){
 
 function pintarTrava(){
   var t = $('travaTexto'), e = $('estadoLeitura');
+  /* 🔴 os dois eram escritos so' em portugues: a pessoa em ingles lia o
+     formulario inteiro em ingles e travava numa instrucao que nao entendia. */
   var cadeado = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" ' +
     'stroke-linecap="round"><rect x="4" y="10" width="16" height="10" rx="2"/>' +
     '<path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>';
@@ -3514,12 +3568,15 @@ function pintarTrava(){
     'stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>';
   if(termoLido){
     t.className = 'trava ok';
-    t.innerHTML = visto + '<span>Texto lido até o final. Você já pode concordar.</span>';
-    e.className = 'estado ok'; e.textContent = 'Leitura concluída.';
+    t.innerHTML = visto + '<span>' + T('Texto lido até o final. Você já pode concordar.',
+                                       'You have read to the end. You can agree now.') + '</span>';
+    e.className = 'estado ok'; e.textContent = T('Leitura concluída.', 'Finished reading.');
   } else {
     t.className = 'trava';
-    t.innerHTML = cadeado + '<span>Para poder concordar, abra o texto e role até o final.</span>';
-    e.className = 'estado'; e.textContent = 'Role o texto até o final para liberar o botão.';
+    t.innerHTML = cadeado + '<span>' + T('Para poder concordar, abra o texto e role até o final.',
+                                         'To be able to agree, open the text and scroll to the end.') + '</span>';
+    e.className = 'estado'; e.textContent = T('Role o texto até o final para liberar o botão.',
+                                          'Scroll to the end of the text to unlock the button.');
   }
   $('consent').classList.toggle('liberado', termoLido && R.consent);
 }
@@ -3533,7 +3590,7 @@ function fecharTermo(){ $('ov').classList.remove('on'); }
 
 function setConsent(v){
   if(!termoLido){
-    marcar('consent', false, 'Abra e leia as informações até o final.');
+    marcar('consent', false, erroDoTermo());
     abrirTermo();
     return;
   }
@@ -3621,7 +3678,8 @@ function aplicarIdentidade(){
   /* 🔴 o título explica a trava no hover, e o `aria-readonly` conta a mesma
      coisa para quem usa leitor de tela: a indicação vai NO NOME da pessoa, e
      por isso o nome não se edita. */
-  campo.title = 'Vem do seu login e não pode ser alterado: a indicação vai no seu nome.';
+  campo.title = T('Vem do seu login e não pode ser alterado: a indicação vai no seu nome.',
+                  'It comes from your sign-in and cannot be changed: the suggestion goes in your name.');
   /* escrever no SPAN e não no bloco: `textContent` no bloco apagaria o ícone */
   aviso.querySelector('span').textContent = 'Identificado pelo seu login: ' + u.email;
   aviso.classList.add('on');
@@ -3653,6 +3711,132 @@ function idiomaAtual(){
    `T(pt, en)` é a forma mais curta de não deixar isso acontecer de novo, e toda
    frase nova do JS passa a nascer com as duas. */
 function T(pt, en){ return idiomaAtual() === 'en' ? en : pt; }
+
+/* 🔴 TUDO QUE O JS ESCREVE NA TELA, NUM LUGAR SÓ, e chamado de novo quando o
+   idioma muda. Era este o defeito que ele viu: o "Dúvida sobre como preencher?"
+   é escrito no arranque, e `aplicarIdioma` só troca o que tem `data-en` no HTML.
+   A frase nascia certa, em português, e ficava lá no inglês.
+   Enquanto cada bloco reescrevia o seu texto no meio do arranque, cada frase
+   nova era mais um lugar de que alguém tinha de lembrar. Aqui não tem de lembrar:
+   quem chama é `aplicarIdioma`, sempre.
+   ⚠ Devolve QUANTOS pedaços repintou, e a bateria cobra esse número: uma função
+   que não acha os elementos não erra, ela só não faz nada. */
+function repintarTextosDoJS(){
+  var n = 0;
+  /* 🔴 as categorias e as formas de atendimento tambem sao escritas por JS, a
+     partir de TIPOS/ATENDIMENTOS. Remontar as opcoes APAGARIA a escolha da
+     pessoa, entao aqui so' o RÓTULO de cada uma e' reescrito. */
+  Array.prototype.forEach.call(document.querySelectorAll('#opsTipo .op, #opsAtendimento .op'), function(b){
+    var lista = b.closest('#opsTipo') ? TIPOS : ATENDIMENTOS;
+    var it = lista.filter(function(x){ return x.cod === b.dataset.valor; })[0];
+    if(!it) return;
+    var nm = b.querySelector('.nm'); if(!nm) return;
+    var sub = nm.querySelector('.sub');
+    nm.firstChild.nodeValue = nomeDeExibicao(it);
+    if(sub) sub.textContent = descDeExibicao(it);
+    n++;
+  });
+  var tags = $('tiposTags');
+  if(tags && tags.children.length){
+    Array.prototype.forEach.call(tags.children, function(sp, k){
+      if(TIPOS[k]) sp.textContent = nomeDeExibicao(TIPOS[k]);
+    });
+    n++;
+  }
+  /* as cidades não se traduzem (nome próprio), mas "Vale para todo o Brasil" sim */
+  Array.prototype.forEach.call(document.querySelectorAll('#opsUnidades .op'), function(b){
+    var u = UNIDADES.filter(function(x){ return x.cod === b.dataset.valor; })[0];
+    var nm = b.querySelector('.nm');
+    if(u && nm){ nm.textContent = rotuloDaUnidade(u); n++; }
+  });
+  if($('parTxt')) { $('parTxt').textContent = textoPar(); n++; }
+  /* 🔴 OS RÓTULOS FIXOS DO BLOCO DE HORÁRIO. Ele é construído uma vez e fica: o
+     "+ Adicionar horário", o aviso de "fecha antes de abrir" e a dica nasciam no
+     idioma da hora em que foram criados e congelavam ali. */
+  (function(){
+    var mais = document.querySelector('#horario .hr-mais');
+    if(mais){ mais.textContent = T('+ Adicionar horário', '+ Add opening hours'); n++; }
+    var av = $('horario_aviso');
+    if(av){
+      av.textContent = T('Fecha antes de abrir: vai para o card como "do dia seguinte". Se não era isso, corrija as horas.',
+                         'Closing time is before opening time: the card will read "next day". If that is not what you meant, fix the hours.');
+      n++;
+    }
+    var hd = document.querySelector('#horario .hr-dica');
+    if(hd){
+      hd.textContent = T('Opcional. Em branco, o card diz "' + HORARIO_PADRAO + '". Abre e fecha na mesma hora = 24 horas.',
+                         'Optional. Left blank, the card reads "' + HORARIO_PADRAO + '". Same opening and closing time = 24 hours.');
+      n++;
+    }
+  })();
+  /* 🔴 O BLOCO DE ENDEREÇOS, que nasce por cidade marcada e fica. Mesmo caso do
+     horário: o título "Endereços em <cidade>" e o "+ Adicionar endereço" eram
+     escritos no idioma do momento em que a cidade foi marcada. */
+  Array.prototype.forEach.call(document.querySelectorAll('#enderecos .hr-mais'), function(b){
+    b.textContent = T('+ Adicionar endereço', '+ Add address'); n++;
+  });
+  /* 🔴 `.en-grupo-t`, e o `data-cidade` mora no PAI `.en-grupo`. Escrevi
+     `.end-grupo-tit` de primeira e o seletor achou ZERO elementos: repintador
+     que não acha nada não dá erro, ele só não repinta. */
+  Array.prototype.forEach.call(document.querySelectorAll('#enderecos .en-grupo'), function(g){
+    var tt = g.querySelector('.en-grupo-t');
+    if(!tt || !tt.firstChild) return;
+    tt.firstChild.nodeValue = g.dataset.cidade
+      ? T('Endereços em ', 'Addresses in ')
+      : T('Pontos principais de atendimento', 'Main service locations');
+    var opt = tt.querySelector('.opt');
+    if(opt) opt.textContent = T('(opcional)', '(optional)');
+    n++;
+  });
+
+  /* 🔴 AS MENSAGENS DE ERRO JÁ ESCRITAS. Elas são geradas por `validar()`, que
+     já fala os dois idiomas, mas o texto que está NA TELA foi escrito no idioma
+     de quando a pessoa errou. Trocar de idioma deixava o formulário inteiro em
+     inglês com os erros em português, que é o pior lugar para isso acontecer.
+     Revalidar repinta todas de uma vez e mantém exatamente os mesmos campos
+     marcados; limpar o texto esconderia um erro que ainda existe. */
+  var temErro = Array.prototype.some.call(document.querySelectorAll('.err'), function(e){
+    return (e.textContent || '').trim().length > 0;
+  });
+  if(temErro){
+    /* 🔴 LIMPA ANTES de revalidar. `validar()` só escreve nos campos que ele
+       AVALIA, e campo escondido (endereço, horário, cidade nova) não é avaliado:
+       a mensagem antiga ficava pendurada ali, em português, para sempre. */
+    Array.prototype.forEach.call(document.querySelectorAll('.err'), function(e){ e.textContent = ''; });
+    validar();
+    n++;
+  }
+  if($('duvida')){
+    $('duvida').innerHTML = '';
+    $('duvida').appendChild(document.createTextNode(
+      T('Dúvida sobre como preencher? Fale com o RH em ',
+        'Questions about filling this in? Talk to HR at ')));
+    var b = document.createElement('b'); b.textContent = REGRAS.contatoRH;
+    $('duvida').appendChild(b);
+    $('duvida').appendChild(document.createTextNode('.'));
+    n++;
+  }
+  if($('rodape')){
+    $('rodape').innerHTML = T('Brazilian Nickel · Clube de Parcerias',
+                              'Brazilian Nickel · Partnership Club');
+    n++;
+  }
+  if($('corpoTermo')){ montarTermo(); n++; }
+  if($('estadoLeitura')){ pintarTrava(); n++; }
+  if($('dicaContatoFone')){ $('dicaContatoFone').textContent = dicaFone(); n++; }
+  if($('arqDica')){ $('arqDica').textContent = avisoEvidencia(); n++; }
+  if($('ajudaEvidenciaLimite')){ $('ajudaEvidenciaLimite').textContent = avisoEvidencia(); n++; }
+  if($('avisoEnvio')){ $('avisoEnvio').textContent = textoAviso(); n++; }
+  /* o botão de enviar muda de texto conforme o modo, e o modo não muda aqui */
+  if($('btnTxt') && !$('btnEnviar').classList.contains('busy')){
+    $('btnTxt').textContent = ENVIO.modo === 'arquivo'
+      ? T('Baixar formulário', 'Download the form')
+      : T('Enviar indicação', 'Submit suggestion');
+    n++;
+  }
+  n += pintarPrazoResposta();
+  return n;
+}
 function aplicarIdioma(cod){
   var ing = cod === 'en';
   Array.prototype.forEach.call(document.querySelectorAll('[data-en]'), function(e){
@@ -3669,15 +3853,13 @@ function aplicarIdioma(cod){
   /* 🔴 DEPOIS de trocar o idioma, e não antes: a troca reescreve o `innerHTML`
      dos blocos, o que APAGA o número que estava dentro do `span` do prazo. Sem
      esta linha, mudar para inglês e voltar deixava "leva em média ." na tela. */
-  pintarPrazoResposta();
-  /* 🔴 o TERMO não tem `data-en`: ele é MONTADO, e por isso precisa ser montado
-     de novo. Era o maior bloco de português que sobrava no modo inglês.
-     O portão de leitura não é reaberto nem fechado aqui de propósito: quem já
-     leu não é obrigado a ler de novo por ter trocado de idioma, e quem não leu
-     continua travado. */
-  if($('corpoTermo')) montarTermo();
-  /* a dica do telefone também é escrita por JS, então também troca de idioma */
-  if($('dicaContatoFone')) $('dicaContatoFone').textContent = dicaFone();
+  /* 🔴 DEPOIS de trocar o idioma, e não antes: a troca reescreve o `innerHTML`
+     dos blocos com `data-en`, o que APAGA o que o JS tinha escrito dentro deles.
+     E é a MESMA função do arranque: um lugar só decide o que a tela diz.
+     O portão de leitura do termo não é reaberto nem fechado aqui de propósito:
+     quem já leu não é obrigado a ler de novo por ter trocado de idioma, e quem
+     não leu continua travado. */
+  repintarTextosDoJS();
   return cod;
 }
 function definirIdioma(cod, salvar){
@@ -3833,32 +4015,21 @@ function ligar(){
   var tags = $('tiposTags');
   TIPOS.forEach(function(t){
     var s = document.createElement('span');
-    s.className = 'tag-pill'; s.textContent = t.nome; tags.appendChild(s);
+    s.className = 'tag-pill'; s.textContent = nomeDeExibicao(t); tags.appendChild(s);
   });
 
   montarOpcoes($('opsTipo'), TIPOS, 'tipo', function(){ revelar(); });
   montarOpcoes($('opsAtendimento'), ATENDIMENTOS, 'atendimento', function(){});
   montarUnidades();
 
-  $('duvida').innerHTML = '';
-  $('duvida').appendChild(document.createTextNode('Dúvida sobre como preencher? Fale com o RH em '));
-  var b = document.createElement('b'); b.textContent = REGRAS.contatoRH;
-  $('duvida').appendChild(b);
-  $('duvida').appendChild(document.createTextNode('.'));
-
-  montarTermo();
-  pintarTrava();
-  $('rodape').innerHTML = 'Brazilian Nickel · Clube de Parcerias';
-
   $('evidencia').setAttribute('accept', REGRAS.evidenciaTipos);
-  $('arqDica').textContent = avisoEvidencia();
-  $('ajudaEvidenciaLimite').textContent = avisoEvidencia();
-  $('avisoEnvio').textContent = textoAviso();
-  /* 🔴 COLADA aqui, e não num "lembrar de chamar" mais adiante: o `span` do
-     prazo nasce VAZIO no HTML, então sem esta linha a frase do começo apareceria
-     como "leva em média ," e ninguém veria erro nenhum no console. */
-  pintarPrazoResposta();
-  if($('dicaContatoFone')) $('dicaContatoFone').textContent = dicaFone();
+  /* 🔴 UMA chamada, COLADA aqui, e não frases soltas espalhadas pelo arranque.
+     Ela escreve tudo que o JS põe na tela (a dúvida, o rodapé, o termo, o prazo,
+     os limites de arquivo) e é a MESMA que roda quando o idioma muda. Enquanto
+     eram linhas soltas, cada frase nova era mais um lugar de que alguém tinha
+     de lembrar, e foi assim que o inglês ficou pela metade. */
+  repintarTextosDoJS();
+  pintarTrava();
 
   /* o `js` libera o botão de tema. Sem script a tela segue o aparelho e o
      botão nem aparece, em vez de aparecer e não fazer nada. */
@@ -3975,8 +4146,10 @@ function ligar(){
     if(problemas.length){
       var r = $('resumoErro');
       r.textContent = problemas.length === 1
-        ? 'Falta 1 item para enviar. Ele está marcado em vermelho acima.'
-        : 'Faltam ' + problemas.length + ' itens para enviar. Eles estão marcados em vermelho acima.';
+        ? T('Falta 1 item para enviar. Ele está marcado em vermelho acima.',
+            'One item is missing. It is marked in red above.')
+        : T('Faltam ' + problemas.length + ' itens para enviar. Eles estão marcados em vermelho acima.',
+            problemas.length + ' items are missing. They are marked in red above.');
       r.classList.add('on');
       var alvo = campoEl(problemas[0].campo);
       if(alvo && alvo.scrollIntoView) alvo.scrollIntoView({block:'center'});
@@ -3997,11 +4170,14 @@ function ligar(){
       tocarSucesso();
     }).catch(function(err){
       btn.classList.remove('busy');
-      $('btnTxt').textContent = 'Enviar indicação';
+      $('btnTxt').textContent = T('Enviar indicação', 'Submit suggestion');
       var r = $('resumoErro');
       /* a função devolve frase legível; erro de rede não */
       var msg = (err && err.message && !/^HTTP [0-9]+$/.test(err.message) && !/fetch|network/i.test(err.message)) ? err.message : '';
-      r.textContent = msg ? 'Não deu para enviar: ' + msg : 'Não deu para enviar agora. Confira a internet e tente de novo.';
+      r.textContent = msg
+        ? T('Não deu para enviar: ', 'Could not send: ') + msg
+        : T('Não deu para enviar agora. Confira a internet e tente de novo.',
+            'Could not send right now. Check your internet connection and try again.');
       r.classList.add('on');
     });
   });
@@ -4975,6 +5151,65 @@ function selftest(){
     ENVIO.modo = 'arquivo';
     mostrarSucesso({ estabelecimento:'X', tipoNome:'Y', contatoNome:'Z', cidadesTexto:'W' });
     junta($('sucesso'), 'sucesso');
+
+    /* 🔴 A VARREDURA DE VERDADE, refeita em 23/09 depois de ELE achar o que a
+       minha errou duas vezes:
+       1. ela só olhava elementos SEM FILHOS, e "Dúvida sobre… <b>ldias@</b>" tem
+          um filho, então o pai inteiro era pulado;
+       2. o detector era uma lista de palavras do domínio (arquivo, parceria…), e
+          "Dúvida sobre como preencher?" não tem nenhuma delas.
+       Agora anda em NÓS DE TEXTO e detecta português por acento que o inglês não
+       usa, mais palavras funcionais que não colidem com o inglês.
+       ⚠ E mede ANTES de abrir a tela de sucesso, porque ela ESCONDE `#regras`:
+       foi assim que a varredura anterior aprovou uma tela que tinha português. */
+    (function(){
+      /* 🔴 DESFAZ o que as linhas acima esconderam, ANTES de medir. `mostrarSucesso`
+         põe `#regras` e `#tela` em `display:none`, e foi exatamente assim que a
+         varredura anterior deu verde sobre uma tela cheia de português: ela mediu
+         o que sobrou na tela, não a tela. */
+      $('sucesso').classList.remove('on');
+      $('regras').style.display = ''; $('tela').style.display = '';
+      /* e abre os balões de ajuda, que são alcançáveis por qualquer pessoa no "?" */
+      var ajudas = document.querySelectorAll('.ajuda');
+      Array.prototype.forEach.call(ajudas, function(a){ a.hidden = false; });
+      out.push('       balões de ajuda abertos para a medição: ' + ajudas.length);
+      var ACENTO = /[ãõçáéíóúâêôà]/i;
+      var FUNC = /\b(não|você|para|com|que|uma|pelo|pela|seu|sua|isso|aqui|mais|como|sobre|quando|onde|quem|este|esta|esse|essa|já|ainda|sem|pode|vai|está|estão|fale|leia|preencher|escreva|marque|arquivo)\b/i;
+      var olhados = 0, sujeira = [];
+      var it = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null);
+      var nó;
+      while((nó = it.nextNode())){
+        var txt = (nó.nodeValue || '').replace(/\s+/g,' ').trim();
+        if(txt.length < 4) continue;
+        var el = nó.parentElement; if(!el) continue;
+        /* 🔴 o seletor de idioma é bilíngue de propósito: cada idioma se escreve
+           no PRÓPRIO nome, senão quem não lê inglês não acha "Portuguese". */
+        if(el.closest('#selftest') || el.closest('#ovLang') || el.closest('#langMenu')) continue;
+        if(el.tagName === 'SCRIPT' || el.tagName === 'STYLE' || el.tagName === 'OPTION') continue;
+        if(/@/.test(txt)) continue;                                     /* e-mail não é idioma */
+        /* 🔴 `HORARIO_PADRAO` é o texto que vai GRAVADO no card e o app publica:
+           a dica em inglês cita ele entre aspas, e citar é o certo. Trocar a
+           citação faria a tela prometer um texto de card que não existe. */
+        if(txt.indexOf(HORARIO_PADRAO) >= 0) continue;
+        if(UNIDADES.some(function(u){ return !u.ampla && txt.indexOf(u.nome) >= 0; })) continue;  /* cidade é nome próprio */
+        olhados++;
+        if(ACENTO.test(txt) || FUNC.test(txt)){
+          var onde = el; var id = '';
+          for(var k=0;k<6 && onde;k++){ if(onde.id){ id = '#' + onde.id; break; } onde = onde.parentElement; }
+          sujeira.push((id || el.tagName) + ': ' + txt.slice(0,60));
+        }
+      }
+      out.push('       nós de texto olhados em inglês: ' + olhados + ' · com português: ' + sujeira.length);
+      /* 🔴 a LISTA no relatório, e não só o número: reprovar dizendo "4" obriga
+         quem lê a sair caçando quais são os 4. */
+      sujeira.forEach(function(x){ out.push('         ↳ ' + x); });
+      t('★ a varredura de idioma olhou a tela inteira (senão ela aprova o vazio)',
+        olhados >= 80, olhados + ' nós');
+      t('★ e NÃO sobra português em lugar nenhum da tela, com os balões de ajuda abertos',
+        sujeira.length === 0, sujeira.slice(0,4).join(' | ') || 'nenhum');
+      /* fecha as ajudas de novo: teste que deixa sujeira contamina o que vem depois */
+      Array.prototype.forEach.call(ajudas, function(a){ a.hidden = true; });
+    })();
 
     var sujos = pedacos.filter(function(x){ return PT.test(x[1]); });
     out.push('       pedaços de texto olhados em inglês: ' + pedacos.length +
