@@ -765,9 +765,13 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
            perdeu, e para o RH não receber cobrança no terceiro dia. O número está
            num `span` vazio de propósito: quem escreve o número é o JS, a partir de
            `REGRAS.prazoRespostaDiasUteis`, nos dois idiomas. -->
-      <p class="prazo-linha" data-en="<b>Response time:</b> the HR review may take up to <span class=&quot;prazo-resp&quot;></span> from the moment the suggestion arrives, depending on how many are in the queue. If anything is missing, HR will get in touch before that."><b>Tempo de resposta:</b> a análise do RH pode levar até <span class="prazo-resp"></span>
-      a partir da chegada da indicação, dependendo do volume de indicações na fila. Se faltar alguma
-      informação, o RH procura você antes.</p>
+      <!-- 🔴 "Se faltar alguma informação, o RH procura você antes" SAIU (pedido
+           dele, 23/09), aqui e nos outros dois lugares onde a mesma promessa
+           aparecia (tela de sucesso e termo). Era compromisso de contato ativo que
+           ninguém garantiu, e no formulário público o RH pode nem ter um canal de
+           volta. Tirar de um lugar só deixaria a promessa viva nos outros dois. -->
+      <p class="prazo-linha" data-en="<b>Response time:</b> the HR review may take up to <span class=&quot;prazo-resp&quot;></span> from the moment the suggestion arrives, depending on how many are in the queue."><b>Tempo de resposta:</b> a análise do RH pode levar até <span class="prazo-resp"></span>
+      a partir da chegada da indicação, dependendo do volume de indicações na fila.</p>
     </div>
 
     <div class="duvida" id="duvida"></div>
@@ -954,7 +958,12 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
               </div>
               <div class="f" data-campo="contatoFone">
                 <label for="contatoFone" data-en="Contact phone or WhatsApp">Telefone ou WhatsApp do contato</label>
-                <input id="contatoFone" name="contatoFone" type="tel" inputmode="numeric" placeholder="(00) 00000-0000" maxlength="16">
+                <!-- 🔴 inputmode="tel" e nao "numeric" (23/09): o teclado numerico do celular
+                     NAO TEM a tecla +, entao o numero internacional era impossivel de digitar,
+                     e nada na tela dizia isso. E o maxlength subiu de 16 para 24, porque
+                     "+44 20 7946 0958" ja encostava no teto antigo. -->
+                <input id="contatoFone" name="contatoFone" type="tel" inputmode="tel" placeholder="(00) 00000-0000" maxlength="24">
+                <div class="hint" id="dicaContatoFone"></div>
                 <div class="err" id="e_contatoFone"></div>
               </div>
             </div>
@@ -1060,11 +1069,11 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
                 <svg viewBox="0 0 24 24"><path d="M4 12.5l5.5 5.5L20 7"/></svg>
               </div>
               <div>
-                <p id="txtConsent">Li as informações sobre esta indicação e estou de acordo.</p>
+                <p id="txtConsent" data-en="I have read the information about this suggestion and I agree.">Li as informações sobre esta indicação e estou de acordo.</p>
                 <div class="trava" id="travaTexto"></div>
               </div>
             </div>
-            <button type="button" id="btnLerTermo">Ler as informações</button>
+            <button type="button" id="btnLerTermo" data-en="Read the information">Ler as informações</button>
           </div>
           <div class="err" id="e_consent"></div>
         </div>
@@ -1081,7 +1090,11 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
   <!-- ===================== SUCESSO ===================== -->
   <div id="sucesso" class="card">
     <svg class="check" viewBox="0 0 60 60"><circle cx="30" cy="30" r="27"/><path d="M18 31l8.5 8.5L43 22"/></svg>
-    <h2 data-en="Suggestion submitted">Indicação enviada</h2>
+    <!-- 🔴 O TÍTULO É ESCRITO PELO JS no modo offline (pedido dele, 23/09):
+         "Indicação enviada" é mentira ali, porque nada foi enviado a ninguém.
+         O texto do arquivo continua sendo o do formulário de dentro, e
+         `definirTituloSucesso` troca quando o modo é 'arquivo'. -->
+    <h2 id="sucTit" data-en="Suggestion submitted">Indicação enviada</h2>
     <p class="txt" id="sucTxt"></p>
     <div class="resumo" id="sucResumo"></div>
     <p class="sair" id="podeSair" data-en="Thank you for the suggestion. HR will assess the contact and follow up on its progress. You can close this page now.">Obrigado pela indicação. O RH avaliará o contato e dará retorno
@@ -1107,7 +1120,7 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
     <div class="modal-h">
       <div>
         <div class="eyebrow-modal">Leia até o final</div>
-        <h3 id="tituloTermo">Informações sobre esta indicação</h3>
+        <h3 id="tituloTermo" data-en="About this suggestion">Informações sobre esta indicação</h3>
       </div>
       <button type="button" id="btnFechar" aria-label="Fechar">&times;</button>
     </div>
@@ -1115,8 +1128,8 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
     <div class="modal-b" id="corpoTermo"></div>
     <div class="modal-f">
       <div class="estado" id="estadoLeitura"></div>
-      <button type="button" id="btnSoFechar">Fechar</button>
-      <button type="button" class="pri" id="btnAceitar" disabled>Li e concordo</button>
+      <button type="button" id="btnSoFechar" data-en="Close">Fechar</button>
+      <button type="button" class="pri" id="btnAceitar" disabled data-en="I have read and agree">Li e concordo</button>
     </div>
   </div>
 </div>
@@ -1375,9 +1388,54 @@ var TERMO = [
        mesma palavra para o que quem indicou NÃO ganha embaralharia as duas coisas
        na frase mais delicada do termo. As duas que sobraram já dizem tudo. */
     'Enviar esta indicação não garante nenhuma recompensa ou bonificação para você.',
-    'A análise do RH pode levar até __PRAZO__, contados da chegada da indicação, dependendo do volume de indicações na fila. Se faltar alguma informação, procuramos você antes.',
+    'A análise do RH pode levar até __PRAZO__, contados da chegada da indicação, dependendo do volume de indicações na fila.',
     'Até a decisão do RH, não assuma compromissos em nome da Brazilian Nickel.']]
 ];
+
+/* 🔴 O TERMO EM INGLÊS (achado dele, 23/09): no modo inglês, o texto mais
+   importante da tela continuava INTEIRO em português, e a frase do prazo saía
+   misturada ("pode levar até 14 working days"). Medido antes de consertar: 45 de
+   71 pedaços de texto visível estavam em português.
+   🔴 Array PARALELO, e não um `[pt, en]` por parágrafo, de propósito: as
+   asserções de 23/09 leem `TERMO` para cobrar base legal, art. 18 e o tom leve do
+   bloco 3, e trocar a forma quebraria todas elas de uma vez. O preço é que os
+   dois podem divergir, e é exatamente isso que a asserção de FORMA guarda: mesmo
+   número de blocos, mesmo número de parágrafos, LISTA e FIM nas mesmas posições.
+   ⚠ Tradução minha, e o jurídico precisa olhar as DUAS. */
+var TERMO_EN = [
+  ['What Brazilian Nickel does with what you wrote',
+   ['Brazilian Nickel is the controller of the data in this form: it decides what the data is for and is accountable for it, under Brazilian Law No. 13,709/2018 (LGPD).',
+    'When you submit this suggestion, we process:',
+    'LISTA',
+    'your name and, when you are not signed in with a company e-mail, the contact details you provide so we can get back to you;',
+    'the details of the establishment: name, address, website and social media;',
+    'the name and contact details of the person you spoke to;',
+    'the terms agreed and the supporting files you attach.',
+    'FIM',
+    'There is a single purpose: to assess, negotiate, publish and follow up on this partnership in the Partnership Club. None of it is used in performance reviews, disciplinary proceedings or any other purpose.',
+    'The legal basis is Brazilian Nickel’s legitimate interest in running the partnership programme (art. 7, IX of the LGPD). We do not ask for your consent for this, and not submitting a suggestion has no consequences for you.',
+    'Access is limited to the HR team responsible for the Partnership Club, through a restricted panel. The data is not sold, shared or used for advertising.',
+    'If the partnership is published, what appears on the Club website is only the partnership card: establishment, category, city, terms and the establishment’s business contact. Your name, your contact details and the supporting files never leave the HR panel.',
+    'We keep the data while the suggestion is under review and, if the partnership goes ahead, for as long as it is valid. Once the partnership ends, the data is deleted or anonymised, except where the law requires us to keep it.',
+    'At any time and free of charge, you may request confirmation that we process your data, access to it, correction, anonymisation, blocking, deletion and objection to the processing (art. 18 of the LGPD). To do so, write to HR at __CONTATO__.']],
+
+  ['About the establishment’s contact person',
+   ['The name, e-mail and phone number you provide belong to someone outside Brazilian Nickel, who did not fill in this form and is not in front of this screen.',
+    'We will process those contact details solely to discuss this partnership, on the basis of our legitimate interest in assessing the proposal (art. 7, IX of the LGPD). They are not used for any other purpose, not shared with third parties and not added to any mailing list.',
+    'The first time we contact that person, we tell them where their details came from and what their rights are, including the right to request deletion.',
+    'Let them know you passed their details on. Beyond being the basic courtesy towards whoever helped you, it is what stops our call arriving as a surprise.',
+    'Provide only the establishment’s business contact details, not personal data that is unnecessary for this conversation.']],
+
+  ['About the terms you negotiated',
+   ['Suggesting is not closing a deal. You are letting HR know the opportunity exists. HR is the one who talks to the establishment again and settles the details.',
+    'So the final terms may differ from what you agreed, and may not happen at all. The negotiation is between Brazilian Nickel and the establishment.',
+    'Even after being published, the terms may change or end at any time, at the establishment’s discretion, without notice.',
+    'Submitting this suggestion does not entitle you to any reward or bonus.',
+    'The HR review may take up to __PRAZO__ from the moment the suggestion arrives, depending on how many are in the queue.',
+    'Until HR decides, do not make commitments on behalf of Brazilian Nickel.']]
+];
+/* qual dos dois a tela monta. Um lugar só decide. */
+function termoDoIdioma(){ return idiomaAtual() === 'en' ? TERMO_EN : TERMO; }
 
 /* --- 1.5 PARA ONDE VAI A INDICAÇÃO ------------------------------
    'local' = fica só no navegador de quem preencheu (para TESTAR).
@@ -1568,16 +1626,50 @@ function emailValido(v){
   return /^[^@]+@[^@.]+(\.[^@.]+)+$/.test(s);
 }
 
-/* aceita fixo (10 dígitos) e celular (11, com 9 na frente): o
-   estabelecimento pode muito bem dar o telefone da recepção */
+/* 🔴 TELEFONE DE FORA DO BRASIL (achado dele, 23/09). A régua era brasileira na
+   marra (10 ou 11 dígitos, DDD de 11 a 99, o 9 na frente do celular), então um
+   número de Toronto, de Londres ou de Lima era RECUSADO, e a pessoa não tinha
+   como saber por quê. O Clube já tem cidade fora do país (Toronto está no app) e
+   o formulário público é aberto na internet.
+   Quem decide qual régua vale é o `+`: com ele, o número é internacional e a
+   régua é a E.164 (de 8 a 15 dígitos, contando o código do país). Sem ele,
+   continua sendo a régua brasileira, inteira, porque é ela que pega o 9 faltando
+   e o DDD que não existe, que são os erros de quem digita daqui.
+   ⚠ De propósito NÃO se valida o código do país: manter lista de DDI é manter
+   uma lista que envelhece, e o custo de errar aqui é o RH ligar e não completar,
+   não um dado corrompido. */
 function foneValido(v){
-  var n = soDigitos(v);
+  var s = String(v || '').trim();
+  var n = soDigitos(s);
+  if(/^(\d)\1+$/.test(n)) return false;       // 99999999999 não é telefone de ninguém
+  if(s.charAt(0) === '+'){
+    /* E.164: no máximo 15 dígitos com o país junto. O piso de 8 barra o que é
+       claramente pedaço de número, sem barrar país de numeração curta. */
+    return n.length >= 8 && n.length <= 15;
+  }
   if(n.length !== 10 && n.length !== 11) return false;
   var ddd = +n.slice(0,2);
   if(ddd < 11 || ddd > 99) return false;
   if(n.length === 11 && n[2] !== '9') return false;
-  if(/^(\d)\1+$/.test(n)) return false;
   return true;
+}
+/* como o telefone é GRAVADO: só dígitos, como sempre foi, mas o `+` do número
+   internacional fica. Sem ele o código do país se confunde com DDD. */
+function foneParaGravar(v){
+  var s = String(v || '').trim();
+  return s.charAt(0) === '+' ? '+' + soDigitos(s) : soDigitos(s);
+}
+
+/* a frase que o campo mostra quando recusa: ela precisa DIZER a saída, senão
+   quem tem número de fora tenta de novo o mesmo número e conclui que o
+   formulário está quebrado */
+function dicaFone(){
+  return T('Com DDD. Fora do Brasil, comece com + e o código do país.',
+           'With area code. Outside Brazil, start with + and the country code.');
+}
+function erroDeFone(){
+  return T('Telefone inválido. Use DDD e o número completo, ou + e o código do país se for de fora do Brasil.',
+           'Invalid phone. Use the area code and the full number, or + and the country code if it is outside Brazil.');
 }
 
 /* site: aceita com ou sem http, exige um ponto e nenhum espaço */
@@ -1598,7 +1690,14 @@ function siteNormalizado(v){
 /* ---------- máscara de telefone ---------- */
 
 function mascaraFone(v){
-  var n = soDigitos(v).slice(0,11);
+  var s = String(v || '');
+  /* 🔴 COM `+`, A MÁSCARA SAI DE CENA (23/09). Ela formatava no molde brasileiro
+     e CORTAVA em 11 dígitos: um número internacional era mutilado enquanto a
+     pessoa digitava, e ela via o próprio número sumir. Formato de telefone muda
+     de país para país e não há molde único; o que se faz aqui é não atrapalhar,
+     deixando passar o que se usa para escrever telefone em qualquer lugar. */
+  if(s.charAt(0) === '+') return '+' + s.slice(1).replace(/[^\d ().\-]/g, '').slice(0, 24);
+  var n = soDigitos(s).slice(0,11);
   if(!n) return '';
   if(n.length <= 2) return '(' + n;
   if(n.length <= 6) return '(' + n.slice(0,2) + ') ' + n.slice(2);
@@ -2429,7 +2528,7 @@ function validar(){
       p('contatoEmail','E-mail inválido. Exemplo: contato@estabelecimento.com');
     else marcar('contatoEmail', temEmailContato(), '');
     if(temFoneContato() && !foneValido(R.contatoFone))
-      p('contatoFone','Telefone inválido. Use DDD e o número completo.');
+      p('contatoFone', erroDeFone());
     else marcar('contatoFone', temFoneContato(), '');
   }
 
@@ -2564,7 +2663,13 @@ function montarPacote(){
     redeSocial: String(R.social||'').trim() || null,
     contatoNome: String(R.contatoNome).replace(/\s+/g,' ').trim(),
     contatoEmail: String(R.contatoEmail||'').trim().toLowerCase() || null,
-    contatoTelefone: temFoneContato() ? soDigitos(R.contatoFone) : null,
+    /* 🔴 O `+` SOBREVIVE (defeito achado pela bateria, 23/09). Aqui era
+       `soDigitos(R.contatoFone)`, que apagava o sinal: `+1 416 555 0199` chegava
+       ao painel como `14165550199`, que se lê como DDD 14 e um número brasileiro
+       malformado. O RH discaria errado e concluiria que o contato não existe, sem
+       nada na tela indicando perda de informação. Dígito continua sendo só
+       dígito; o que muda é o `+` deixar de ser descartado. */
+    contatoTelefone: temFoneContato() ? foneParaGravar(R.contatoFone) : null,
     /* `cidades` traz os códigos; `cidadesTexto` traz os nomes EXATAMENTE
        como o app Clube de Parceiros escreve em `data-cidade`, que é o que
        permite publicar o parceiro na seção certa sem traduzir na mão. */
@@ -2767,16 +2872,28 @@ var ULTIMO_CORPO = null;
 /* 🔴 UM arquivo só, montado num lugar só, e usado pelos DOIS caminhos (baixar e
    compartilhar). Se cada caminho montasse o seu, o que a pessoa compartilha
    poderia divergir do que ela baixa, e ninguém descobriria até o RH abrir. */
+/* 🔴 DOIS TIPOS PARA O MESMO CONTEÚDO, e é de propósito (23/09).
+   O download vai como `application/json`, que é o que ele é.
+   O COMPARTILHAMENTO vai como `text/plain`, porque a Web Share Level 2 tem uma
+   LISTA FECHADA de tipos que podem ser compartilhados, e `application/json`
+   NÃO está nela: é a causa mais provável do "este aparelho não conseguiu
+   compartilhar o arquivo" que ele viu no celular.
+   ⚠ Não deu para confirmar no desktop: medido em 23/09, o `canShare` do Edge do
+   Windows responde `true` para TODOS os tipos (json, zip, octet-stream, tipo
+   vazio), ou seja, ele não aplica a lista e não serve para prever o celular.
+   O NOME continua terminando em `.json`, que é o que o painel filtra na hora de
+   importar; quem muda é só o rótulo de tipo que viaja junto. */
+var TIPO_ARQUIVO = 'application/json';
+var TIPO_COMPARTILHAR = 'text/plain';
 function arquivoDoPacote(corpo){
   var txt = JSON.stringify(corpo, null, 2);
   var nome = nomeDoArquivo(corpo);
-  var tipo = 'application/json';
   /* `File` não existe como construtor em navegador muito velho; o Blob sim.
      Quem não tem File também não tem compartilhamento, então só o baixar usa. */
   var arq = null;
-  try { arq = new File([txt], nome, { type: tipo }); } catch(e){ arq = null; }
-  return { texto:txt, nome:nome, tipo:tipo, arquivo:arq,
-           blob: arq || new Blob([txt], { type: tipo }) };
+  try { arq = new File([txt], nome, { type: TIPO_COMPARTILHAR }); } catch(e){ arq = null; }
+  return { texto:txt, nome:nome, tipo:TIPO_ARQUIVO, arquivo:arq,
+           blob: new Blob([txt], { type: TIPO_ARQUIVO }) };
 }
 
 /* 🔴 DÁ PARA COMPARTILHAR ESTE ARQUIVO? Pergunta-se ao navegador, com o arquivo
@@ -3013,17 +3130,19 @@ function abrirConviteLogin(){
   /* 🔴 a pergunta deixou de ser sobre LOGIN e passou a ser sobre o que a pessoa
      tem (23/09). Quem nunca entrou no portal não sabe responder "você tem
      login?", mas sabe muito bem se tem ou não um e-mail @brnickel.com. */
-  var p = popupSimples('ovConvite', 'Antes de começar', 'Você tem e-mail da Brazilian Nickel?');
-  paragrafo(p.corpo, 'off-p', 'Com o e-mail corporativo, a indicação é enviada na hora para o RH, ' +
-    'sem baixar nem mandar arquivo nenhum.');
+  var p = popupSimples('ovConvite', T('Antes de começar', 'Before you start'),
+    T('Você tem e-mail da Brazilian Nickel?', 'Do you have a Brazilian Nickel e-mail?'));
+  paragrafo(p.corpo, 'off-p', T(
+    'Com o e-mail corporativo, a indicação é enviada na hora para o RH, sem baixar nem mandar arquivo nenhum.',
+    'With a company e-mail, the suggestion goes straight to HR, with no file to download or send.'));
   var seguir = document.createElement('button'); seguir.type = 'button'; seguir.id = 'btnConviteSeguir';
-  seguir.textContent = 'Não tenho';
+  seguir.textContent = T('Não tenho', 'I do not have one');
   seguir.addEventListener('click', function(){
     try { sessionStorage.setItem(CHAVE_CONVITE, '1'); } catch(e){}
     p.ov.classList.remove('on');
   });
   var entrar = document.createElement('button'); entrar.type = 'button'; entrar.className = 'pri'; entrar.id = 'btnConviteEntrar';
-  entrar.textContent = 'Tenho e-mail corporativo';
+  entrar.textContent = T('Tenho e-mail corporativo', 'I have a company e-mail');
   entrar.dataset.url = URL_FORMULARIO_PORTAL;
   entrar.addEventListener('click', function(){ location.href = URL_FORMULARIO_PORTAL; });
   p.rodape.appendChild(seguir); p.rodape.appendChild(entrar);
@@ -3053,14 +3172,19 @@ function abrirInstrucoesOffline(pacote, corpo){
   var f = arquivoDoPacote(corpo);
   var compartilha = modoDeEntrega(f.arquivo) === 'compartilhar';
 
-  var p = popupSimples('ovInstrucoes', 'Falta um passo', 'Mande o arquivo para o RH');
+  var p = popupSimples('ovInstrucoes', T('Falta um passo', 'One step to go'),
+    T('Mande o arquivo para o RH', 'Send the file to HR'));
   p.ov.dataset.modo = compartilha ? 'compartilhar' : 'baixar';
 
   paragrafo(p.corpo, 'off-p', compartilha
-    ? 'A sua indicação virou um arquivo. Toque em "Enviar arquivo" e escolha o WhatsApp, ' +
-      'o e-mail ou outro aplicativo para mandar para o RH. A indicação só chega quando você mandar.'
-    : 'A sua indicação virou um arquivo. Baixe abaixo e mande esse arquivo por e-mail para ' +
-      EMAIL_DO_RH + '. A indicação só chega quando você mandar.');
+    ? T('A sua indicação virou um arquivo. Toque em "Baixar e enviar" e escolha o WhatsApp, ' +
+        'o e-mail ou outro aplicativo para mandar para o RH. A indicação só chega quando você mandar.',
+        'Your suggestion has become a file. Tap "Download and send" and pick WhatsApp, e-mail or ' +
+        'another app to send it to HR. The suggestion only reaches HR once you send it.')
+    : T('A sua indicação virou um arquivo. Baixe abaixo e mande esse arquivo por e-mail para ' +
+        EMAIL_DO_RH + '. A indicação só chega quando você mandar.',
+        'Your suggestion has become a file. Download it below and e-mail it to ' +
+        EMAIL_DO_RH + '. The suggestion only reaches HR once you send it.'));
   if(!compartilha){
     var forte = p.corpo.lastChild;
     forte.innerHTML = forte.innerHTML.replace(EMAIL_DO_RH, '<b>' + EMAIL_DO_RH + '</b>');
@@ -3072,18 +3196,26 @@ function abrirInstrucoesOffline(pacote, corpo){
      instrução que termina em ninguém mandando nada. */
   var cx = document.createElement('div'); cx.className = 'off-email'; cx.id = 'offEmailRH';
   var rot = document.createElement('span'); rot.className = 'off-email-rot';
-  rot.textContent = compartilha ? 'Se o aplicativo recusar o arquivo, mande por e-mail para' : 'E-mail do RH';
+  rot.textContent = compartilha
+    ? T('Se o aplicativo recusar o arquivo, mande por e-mail para',
+        'If the app refuses the file, e-mail it to')
+    : T('E-mail do RH', 'HR e-mail');
   var val = document.createElement('b'); val.textContent = EMAIL_DO_RH;
   cx.appendChild(rot); cx.appendChild(val);
   p.corpo.appendChild(cx);
 
-  paragrafo(p.corpo, 'off-p off-arq', 'Arquivo: ' + f.nome);
+  paragrafo(p.corpo, 'off-p off-arq', T('Arquivo: ', 'File: ') + f.nome);
 
-  var t3 = paragrafo(p.corpo, 'off-p off-sub', 'Tem e-mail da Brazilian Nickel? Na próxima vez, prefira o ');
-  var a = document.createElement('a'); a.href = URL_FORMULARIO_PORTAL; a.textContent = 'formulário do portal';
+  var t3 = paragrafo(p.corpo, 'off-p off-sub',
+    T('Tem e-mail da Brazilian Nickel? Na próxima vez, prefira o ',
+      'Do you have a Brazilian Nickel e-mail? Next time, use the '));
+  var a = document.createElement('a'); a.href = URL_FORMULARIO_PORTAL;
+  a.textContent = T('formulário do portal', 'portal form');
   a.target = '_blank'; a.rel = 'noopener';
   t3.appendChild(a);
-  t3.appendChild(document.createTextNode(': ele envia direto para o RH, sem arquivo nem e-mail.'));
+  t3.appendChild(document.createTextNode(T(
+    ': ele envia direto para o RH, sem arquivo nem e-mail.',
+    ': it goes straight to HR, with no file and no e-mail.')));
 
   /* o estado fica numa linha do rodapé, e não num alerta: o popup é a tela
      inteira da pessoa neste momento, e alerta some sem deixar rastro */
@@ -3091,39 +3223,57 @@ function abrirInstrucoesOffline(pacote, corpo){
   p.rodape.appendChild(estado);
 
   var fechar = document.createElement('button'); fechar.type = 'button'; fechar.id = 'btnInstrucoesOk';
-  fechar.textContent = 'Fechar';
+  fechar.textContent = T('Fechar', 'Close');
   fechar.addEventListener('click', function(){ p.ov.classList.remove('on'); });
 
-  var baixar = document.createElement('button'); baixar.type = 'button'; baixar.id = 'btnBaixarAgora';
-  baixar.textContent = compartilha ? 'Baixar arquivo' : 'Baixar arquivo agora';
-  if(!compartilha) baixar.className = 'pri';
+  /* 🔴 UM BOTÃO SÓ NO CELULAR (pedido dele, 23/09). Eram dois, "Enviar arquivo" e
+     "Baixar arquivo", e dois botões para um passo só fazem a pessoa escolher
+     entre coisas que ela não sabe distinguir.
+     🔴 E A ORDEM IMPORTA: ele BAIXA PRIMEIRO e só depois abre a folha de
+     compartilhamento. No teste dele a folha falhou ("este aparelho não conseguiu
+     compartilhar"), e com a ordem invertida a pessoa ficaria sem nada nas mãos.
+     Baixando antes, o pior caso é ter o arquivo salvo e um recado dizendo para
+     anexar no e-mail, que é exatamente o caminho do computador. */
+  var baixar = document.createElement('button'); baixar.type = 'button';
+  baixar.id = 'btnBaixarAgora'; baixar.className = 'pri';
+  baixar.textContent = compartilha
+    ? T('Baixar e enviar', 'Download and send')
+    : T('Baixar arquivo agora', 'Download the file now');
   baixar.addEventListener('click', function(){
+    estado.textContent = '';
+    /* o download é o que SEMPRE acontece, e por isso vem primeiro */
     baixarPacote(corpo);
-    estado.textContent = 'Arquivo baixado. Agora anexe num e-mail para ' + EMAIL_DO_RH + '.';
+    definirTituloSucesso('baixado');
+    var recadoBaixou = T('Arquivo baixado. Agora anexe num e-mail para ' + EMAIL_DO_RH + '.',
+                         'File downloaded. Now attach it to an e-mail to ' + EMAIL_DO_RH + '.');
+    if(!compartilha){ estado.textContent = recadoBaixou; return; }
+    /* 🔴 a chamada nasce DENTRO do clique. `navigator.share` só vale com gesto
+       da pessoa: montar o arquivo num `then` e compartilhar depois faz o
+       navegador recusar com NotAllowedError, e o botão não faz nada. */
+    compartilharPacote(corpo).then(function(mandou){
+      if(mandou){
+        definirTituloSucesso('enviado');
+        estado.textContent = T('Pronto. Confira no aplicativo se a mensagem saiu.',
+                               'Done. Check in the app that the message went out.');
+      } else {
+        /* desistir da folha não é erro, e o arquivo já está salvo */
+        estado.textContent = recadoBaixou;
+      }
+    }).catch(function(e){
+      /* 🔴 O MOTIVO VAI PARA A TELA (23/09). A versão anterior dizia só "este
+         aparelho não conseguiu compartilhar o arquivo", e quando ele testou no
+         celular não sobrou nada para diagnosticar: nem o nome do erro, nem se
+         foi o tipo do arquivo, nem se foi o gesto. O nome do erro é curto e não
+         atrapalha quem só quer resolver, porque a instrução vem primeiro. */
+      var nome = (e && (e.name || e.message)) ? String(e.name || e.message).slice(0, 40) : '?';
+      estado.textContent = recadoBaixou + ' ' +
+        T('O compartilhamento não abriu neste aparelho (' + nome + ').',
+          'Sharing did not open on this device (' + nome + ').');
+    });
   });
 
   p.rodape.appendChild(fechar);
   p.rodape.appendChild(baixar);
-
-  if(compartilha){
-    var env = document.createElement('button'); env.type = 'button'; env.className = 'pri'; env.id = 'btnCompartilhar';
-    env.textContent = 'Enviar arquivo';
-    env.addEventListener('click', function(){
-      estado.textContent = '';
-      /* 🔴 a chamada nasce DENTRO do clique. `navigator.share` só vale com gesto
-         da pessoa: montar o arquivo antes num `then` e compartilhar depois faz
-         o navegador recusar com NotAllowedError, e o botão não faria nada. */
-      compartilharPacote(corpo).then(function(mandou){
-        estado.textContent = mandou
-          ? 'Pronto. Confira no aplicativo se a mensagem saiu.'
-          : 'Envio cancelado. Dá para tentar de novo ou baixar o arquivo.';
-      }).catch(function(){
-        estado.textContent = 'Este aparelho não conseguiu compartilhar o arquivo. ' +
-                             'Baixe e mande por e-mail para ' + EMAIL_DO_RH + '.';
-      });
-    });
-    p.rodape.appendChild(env);
-  }
 
   p.ov.classList.add('on');
   return true;
@@ -3170,25 +3320,63 @@ function avisoEvidencia(){
      que o limite do portal apareceu embaixo do campo da página pública, que
      aceita bem menos. Um lugar só decide, e a tela repete. */
   var um = REGRAS.evidenciaMax === 1;
-  var base = um
-    ? 'Um arquivo, de até ' + REGRAS.evidenciaMaxMB + ' MB. Imagem, PDF, Word ou áudio.'
-    : 'Até ' + REGRAS.evidenciaMax + ' arquivos, de até ' + REGRAS.evidenciaMaxMB + ' MB cada' +
-      /* o teto do conjunto só é dito quando ele de fato aperta: repetir "25 MB
-         cada, 25 MB no total" quando um arquivo já ocupa tudo não informa nada */
-      (REGRAS.evidenciaTotalMB && REGRAS.evidenciaTotalMB < REGRAS.evidenciaMaxMB * REGRAS.evidenciaMax
-        ? ' e ' + REGRAS.evidenciaTotalMB + ' MB somados'
-        : '') +
-      '. Imagem, PDF, Word ou áudio.';
+  /* o teto do conjunto só é dito quando ele de fato aperta: repetir "25 MB cada,
+     25 MB no total" quando um arquivo já ocupa tudo não informa nada */
+  var aperta = !um && REGRAS.evidenciaTotalMB &&
+               REGRAS.evidenciaTotalMB < REGRAS.evidenciaMaxMB * REGRAS.evidenciaMax;
+  var base;
+  if(um){
+    base = T('Um arquivo, de até ' + REGRAS.evidenciaMaxMB + ' MB. Imagem, PDF, Word ou áudio.',
+             'One file, up to ' + REGRAS.evidenciaMaxMB + ' MB. Image, PDF, Word or audio.');
+  } else {
+    base = T('Até ' + REGRAS.evidenciaMax + ' arquivos, de até ' + REGRAS.evidenciaMaxMB + ' MB cada' +
+             (aperta ? ' e ' + REGRAS.evidenciaTotalMB + ' MB somados' : '') +
+             '. Imagem, PDF, Word ou áudio.',
+             'Up to ' + REGRAS.evidenciaMax + ' files, ' + REGRAS.evidenciaMaxMB + ' MB each' +
+             (aperta ? ' and ' + REGRAS.evidenciaTotalMB + ' MB in total' : '') +
+             '. Image, PDF, Word or audio.');
+  }
   if(destinoReal()) return base;
-  return base + '\nEm modo de teste o arquivo não é enviado: fica registrado só o nome dele.';
+  return base + '\n' + T('Em modo de teste o arquivo não é enviado: fica registrado só o nome dele.',
+                         'In test mode the file is not sent: only its name is recorded.');
 }
 
 /* ---------- tela de sucesso ---------- */
+
+/* 🔴 O TÍTULO DA TELA DE SUCESSO, e por que ele não é fixo (pedido dele, 23/09).
+   "Indicação enviada" está certo no formulário do portal, onde ela FOI enviada.
+   No formulário público é mentira: ninguém recebeu nada.
+   ⚠ E "Arquivo baixado" também não serve como texto fixo, porque desde 23/09 o
+   arquivo NÃO baixa sozinho: quem baixa é a pessoa, no popup, e no celular ela
+   COMPARTILHA em vez de baixar. Escrito fixo, o título estaria errado no instante
+   em que a tela aparece, e continuaria errado para sempre em quem compartilhou.
+   Então o título acompanha o que de fato aconteceu, e "Arquivo baixado" é
+   exatamente o que ele pediu, no momento em que passa a ser verdade.
+   🔴 Mexe em `data-pt`/`data-en` junto com o texto: `aplicarIdioma` repõe o
+   título a partir desses atributos, e sem isso trocar de idioma na tela de
+   sucesso ressuscitaria "Indicação enviada" por cima do título novo. */
+var TITULOS_SUCESSO = {
+  enviada: ['Indicação enviada',  'Suggestion submitted'],
+  pronto:  ['Arquivo pronto',     'File ready'],
+  baixado: ['Arquivo baixado',    'File downloaded'],
+  enviado: ['Arquivo enviado',    'File shared']
+};
+function definirTituloSucesso(estado){
+  var h = $('sucTit'); if(!h) return '';
+  var par = TITULOS_SUCESSO[estado] || TITULOS_SUCESSO.enviada;
+  var ing = idiomaAtual() === 'en';
+  h.dataset.pt = par[0];
+  h.dataset.en = par[1];
+  h.textContent = ing ? par[1] : par[0];
+  return h.textContent;
+}
 
 function mostrarSucesso(pacote){
   $('regras').style.display = 'none';
   $('tela').style.display = 'none';
   $('sucesso').classList.add('on');
+
+  definirTituloSucesso(ENVIO.modo === 'arquivo' ? 'pronto' : 'enviada');
 
   /* 🔴 no modo offline o RH ainda NÃO recebeu nada: recebe quando o arquivo
      chegar. Dizer "recebeu" aqui seria mentir na tela mais lida.
@@ -3196,25 +3384,30 @@ function mostrarSucesso(pacote){
      baixa é a pessoa, no popup. A frase passa a descrever o que ela TEM (um
      arquivo pronto) e o que falta (mandar). */
   $('sucTxt').textContent = ENVIO.modo === 'arquivo'
-    ? 'A sua indicação virou um arquivo, e ele está pronto. Ela só chega ao RH quando você ' +
-      'mandar esse arquivo para ' + EMAIL_DO_RH + '. A partir daí, a análise pode levar até ' +
-      prazoRespostaTexto() + ', dependendo do volume de indicações na fila.'
-    : 'O RH recebeu a sua indicação de parceria e vai entrar em contato com o ' +
-      'estabelecimento. A análise pode levar até ' + prazoRespostaTexto() + ', dependendo do volume ' +
-      'de indicações na fila. Se faltar alguma informação, procuramos você antes.';
+    ? T('A sua indicação virou um arquivo, e ele está pronto. Ela só chega ao RH quando você ' +
+        'mandar esse arquivo para ' + EMAIL_DO_RH + '. A partir daí, a análise pode levar até ' +
+        prazoRespostaTexto() + ', dependendo do volume de indicações na fila.',
+        'Your suggestion has become a file, and it is ready. It only reaches HR once you send ' +
+        'that file to ' + EMAIL_DO_RH + '. From then on, the review may take up to ' +
+        prazoRespostaTexto() + ', depending on how many are in the queue.')
+    : T('O RH recebeu a sua indicação de parceria e vai entrar em contato com o ' +
+        'estabelecimento. A análise pode levar até ' + prazoRespostaTexto() + ', dependendo do volume ' +
+        'de indicações na fila.',
+        'HR has received your partnership suggestion and will contact the establishment. ' +
+        'The review may take up to ' + prazoRespostaTexto() + ', depending on how many are in the queue.');
 
   var linhas = [
-    ['Estabelecimento', pacote.estabelecimento],
-    ['Tipo', pacote.tipoNome],
-    ['Contato no estabelecimento', pacote.contatoNome],
-    ['Cidades', pacote.cidadesTexto]
+    [T('Estabelecimento', 'Establishment'), pacote.estabelecimento],
+    [T('Tipo', 'Type'), pacote.tipoNome],
+    [T('Contato no estabelecimento', 'Contact at the establishment'), pacote.contatoNome],
+    [T('Cidades', 'Cities'), pacote.cidadesTexto]
   ];
   /* 🔴 no arquivo do modo público, quem indicou e como falar com essa pessoa
      aparecem no resumo: é o que ela confere antes de mandar o e-mail ao RH. */
   if(ENVIO.modo === 'arquivo'){
-    linhas.unshift(['Indicado por', pacote.colaborador]);
+    linhas.unshift([T('Indicado por', 'Suggested by'), pacote.colaborador]);
     var canal = [pacote.indicadorEmail, pacote.indicadorTelefone].filter(Boolean).join(' · ');
-    if(canal) linhas.push(['Seu contato', canal]);
+    if(canal) linhas.push([T('Seu contato', 'Your contact details'), canal]);
   }
   $('sucResumo').innerHTML = linhas.map(function(l){
     var d = document.createElement('div');
@@ -3269,6 +3462,7 @@ function recomecar(){
 
 function montarTermo(){
   var c = $('corpoTermo'); c.innerHTML = '';
+  var TERMO = termoDoIdioma();   /* sombreia de propósito: o resto da função não muda */
   TERMO.forEach(function(bloco){
     if(TERMO.length > 1){
       var h = document.createElement('h4'); h.textContent = bloco[0]; c.appendChild(h);
@@ -3288,8 +3482,10 @@ function montarTermo(){
   });
   var fim = document.createElement('div');
   fim.className = 'fim-termo';
-  fim.textContent = 'Você chegou ao final. Agora pode concordar e enviar a indicação.';
+  fim.textContent = T('Você chegou ao final. Agora pode concordar e enviar a indicação.',
+                      'You have reached the end. You can now agree and submit the suggestion.');
   c.appendChild(fim);
+  return c.querySelectorAll('p,li').length;
 }
 
 function medirLeitura(){
@@ -3447,6 +3643,16 @@ function idiomaAtual(){
   var l = document.documentElement.getAttribute('lang') || '';
   return l.indexOf('en') === 0 ? 'en' : 'pt';
 }
+
+/* 🔴 O TEXTO ESCRITO PELO JS TAMBÉM PRECISA DE INGLÊS (achado dele, 23/09).
+   `aplicarIdioma` só troca o que tem `data-en` no HTML. Tudo que o script MONTA
+   (o campo de contato do formulário público, os dois popups, a tela de sucesso,
+   o aviso de limite, as mensagens de erro) nasceu em português e ficava em
+   português no modo inglês, sem nada acusar: a tela não estava "errada", ela
+   estava pela metade.
+   `T(pt, en)` é a forma mais curta de não deixar isso acontecer de novo, e toda
+   frase nova do JS passa a nascer com as duas. */
+function T(pt, en){ return idiomaAtual() === 'en' ? en : pt; }
 function aplicarIdioma(cod){
   var ing = cod === 'en';
   Array.prototype.forEach.call(document.querySelectorAll('[data-en]'), function(e){
@@ -3464,6 +3670,14 @@ function aplicarIdioma(cod){
      dos blocos, o que APAGA o número que estava dentro do `span` do prazo. Sem
      esta linha, mudar para inglês e voltar deixava "leva em média ." na tela. */
   pintarPrazoResposta();
+  /* 🔴 o TERMO não tem `data-en`: ele é MONTADO, e por isso precisa ser montado
+     de novo. Era o maior bloco de português que sobrava no modo inglês.
+     O portão de leitura não é reaberto nem fechado aqui de propósito: quem já
+     leu não é obrigado a ler de novo por ter trocado de idioma, e quem não leu
+     continua travado. */
+  if($('corpoTermo')) montarTermo();
+  /* a dica do telefone também é escrita por JS, então também troca de idioma */
+  if($('dicaContatoFone')) $('dicaContatoFone').textContent = dicaFone();
   return cod;
 }
 function definirIdioma(cod, salvar){
@@ -3644,6 +3858,7 @@ function ligar(){
      prazo nasce VAZIO no HTML, então sem esta linha a frase do começo apareceria
      como "leva em média ," e ninguém veria erro nenhum no console. */
   pintarPrazoResposta();
+  if($('dicaContatoFone')) $('dicaContatoFone').textContent = dicaFone();
 
   /* o `js` libera o botão de tema. Sem script a tela segue o aparelho e o
      botão nem aparece, em vez de aparecer e não fazer nada. */
@@ -3722,7 +3937,7 @@ function ligar(){
   $('contatoFone').addEventListener('blur', function(){
     if(!this.value){ marcar('contatoFone', false, ''); pintarPar(); return; }
     var ok = foneValido(this.value);
-    marcar('contatoFone', ok, ok ? '' : 'Telefone inválido. Use DDD e o número completo.');
+    marcar('contatoFone', ok, ok ? '' : erroDeFone());
   });
   $('site').addEventListener('blur', function(){
     if(!this.value){ marcar('site', false, ''); return; }
@@ -3807,6 +4022,15 @@ window.FP = {
   REGRAS: REGRAS, TIPOS: TIPOS, ATENDIMENTOS: ATENDIMENTOS, UNIDADES: UNIDADES, ENVIO: ENVIO,
   parResolvido: parResolvido,
   abrirConviteLogin: abrirConviteLogin, abrirInstrucoesOffline: abrirInstrucoesOffline,
+  /* 🔴 expostos em 23/09 para as SONDAS poderem medir de fora. Tudo aqui vive
+     dentro do IIFE, e uma sonda que chama `aplicarIdioma('en')` de fora recebia
+     `ReferenceError` e parava, o que faz parecer que o arquivo está quebrado.
+     Nenhum destes muda comportamento: são os mesmos que a tela já usa. */
+  aplicarIdioma: aplicarIdioma, idiomaAtual: idiomaAtual, T: T,
+  montarTermo: montarTermo, mostrarSucesso: mostrarSucesso,
+  definirTituloSucesso: definirTituloSucesso,
+  foneValido: foneValido, mascaraFone: mascaraFone,
+  modoDeEntrega: modoDeEntrega, ehAparelhoDeToque: ehAparelhoDeToque,
   PLATAFORMA: PLATAFORMA, naPlataforma: naPlataforma, destinoReal: destinoReal,
   corpoDoEnvio: corpoDoEnvio, cabecalhosAuth: cabecalhosAuth,
   arquivos: function(){ return arquivos; }, porArquivos: porArquivos, tipoAceito: tipoAceito,
@@ -4669,6 +4893,124 @@ function selftest(){
       avisoEvidencia().slice(0, 80));
   })();
 
+  out.push('== Telefone de fora do Brasil (achado dele, 23/09) ==');
+  (function(){
+    /* 🔴 A régua era brasileira na marra e RECUSAVA número estrangeiro. O Clube
+       já tem cidade fora do país (Toronto está no app) e o formulário público é
+       aberto na internet. Quem decide a régua é o `+`. */
+    var bons = ['+1 416 555 0199', '+44 20 7946 0958', '+351 912 345 678', '+5491123456789',
+                '(31) 99988-1234', '31999881234', '(31) 3333-1234'];
+    /* 🔴 `31988881234` estava nesta lista e a bateria me corrigiu: ele e'
+       (31) 9 8888-1234, um celular VALIDO. O invalido de verdade e' o 11 digitos
+       SEM o 9 na frente, que e' o erro de quem digita o fixo com um digito a mais. */
+    var ruins = ['123', '+123', '+12345678901234567', '(01) 99988-1234', '31888881234',
+                 '99999999999', '', 'telefone'];
+    out.push('       testados ' + bons.length + ' válidos e ' + ruins.length + ' inválidos');
+    bons.forEach(function(v){ t('★ aceita ' + v, foneValido(v) === true); });
+    ruins.forEach(function(v){ t('recusa ' + (v || '(vazio)'), foneValido(v) === false); });
+    /* 🔴 e a MÁSCARA sai de cena com `+`: ela formatava no molde brasileiro e
+       cortava em 11 dígitos, mutilando o número enquanto a pessoa digitava. */
+    t('★ com +, a máscara não corta nem reformata o número',
+      mascaraFone('+1 416 555 0199') === '+1 416 555 0199' &&
+      mascaraFone('+442079460958') === '+442079460958',
+      mascaraFone('+1 416 555 0199'));
+    t('e sem +, a máscara brasileira continua igual',
+      mascaraFone('31999881234') === '(31) 99988-1234', mascaraFone('31999881234'));
+    /* o número estrangeiro tem de ATRAVESSAR até o pacote, e não só passar na régua */
+    (function(){
+      var g = R.contatoFone; R.contatoFone = '+1 416 555 0199';
+      /* 🔴 grava so' digitos, COM o `+`: sem ele `+1 416 555 0199` virava
+         `14165550199`, que o painel le como DDD 14. Perda de dado silenciosa. */
+      t('★ e o número estrangeiro chega ao pacote com o + preservado',
+        montarPacote().contatoTelefone === '+14165550199' && parResolvido() === true,
+        String(montarPacote().contatoTelefone));
+      R.contatoFone = '(31) 3333-1234';
+      t('e o brasileiro continua indo só com dígitos, como sempre foi',
+        montarPacote().contatoTelefone === '3133331234', String(montarPacote().contatoTelefone));
+      /* 🔴 O TECLADO. `inputmode="numeric"` NÃO TEM a tecla `+` no celular: a
+         régua podia aceitar número internacional que a pessoa não conseguiria
+         digitar. Regra que existe e tecla que não existe é regra que não vale. */
+      t('★ o campo abre o teclado de TELEFONE, que tem o +, e não o numérico',
+        $('contatoFone').getAttribute('inputmode') === 'tel',
+        $('contatoFone').getAttribute('inputmode'));
+      t('★ e cabe um número internacional inteiro (o teto antigo, 16, cortava)',
+        +$('contatoFone').getAttribute('maxlength') >= 20,
+        $('contatoFone').getAttribute('maxlength'));
+      t('★ a dica embaixo do campo ENSINA o +, senão ninguém descobre',
+        !!$('dicaContatoFone') && /\+/.test($('dicaContatoFone').textContent) &&
+        /c[óo]digo do pa[íi]s/i.test($('dicaContatoFone').textContent),
+        $('dicaContatoFone') ? $('dicaContatoFone').textContent : 'não existe');
+      t('★ e a mensagem de erro também, senão quem errou tenta o mesmo número de novo',
+        /\+/.test(erroDeFone()) && /c[óo]digo do pa[íi]s/i.test(erroDeFone()));
+      R.contatoFone = g;
+    })();
+  })();
+
+  out.push('== Inglês de verdade: nada de português sobrando (achado dele, 23/09) ==');
+  (function(){
+    /* 🔴 `aplicarIdioma` só troca o que tem `data-en` no HTML. Tudo que o script
+       MONTA (os dois popups do público, a tela de sucesso, o termo, o aviso de
+       limite) nascia em português e FICAVA em português no modo inglês.
+       Medido antes de consertar: 45 de 71 pedaços de texto visível.
+       Esta sonda varre a TELA, abre o que só existe no modo público, e IMPRIME
+       quantos pedaços olhou: varredura que não conta o que viu aprova o vazio. */
+    var gI = idiomaAtual(), gModo = ENVIO.modo;
+    aplicarIdioma('en');
+    var PT = /\b(você|indicação|parceria|arquivo|enviar|baixar|colaborador|empresa|formulário|obrigatório|endereço|condição|análise|prazo|dias úteis|estabelecimento|não|até|escolher|adicionar|fechar|entendi|pronto)\b/i;
+    var pedacos = [];
+    function junta(el, rotulo){
+      if(!el) return;
+      Array.prototype.forEach.call(el.querySelectorAll('h2,h3,h4,p,li,label,button,span,div'), function(e){
+        if(e.children.length) return;                 /* só folha, senão conta o pai e o filho */
+        var s = (e.textContent || '').replace(/\s+/g,' ').trim();
+        if(s.length >= 4) pedacos.push([rotulo, s]);
+      });
+    }
+    montarTermo();
+    junta($('corpoTermo'), 'termo');
+    junta($('regras'), 'abertura');
+    abrirInstrucoesOffline({ tipoCodigo:'alimentacao', colaborador:'Maria da Silva',
+                             enviadoEm:'2026-09-16T13:40:00.000Z' });
+    junta($('ovInstrucoes'), 'popup do fim');
+    ENVIO.modo = 'arquivo';
+    mostrarSucesso({ estabelecimento:'X', tipoNome:'Y', contatoNome:'Z', cidadesTexto:'W' });
+    junta($('sucesso'), 'sucesso');
+
+    var sujos = pedacos.filter(function(x){ return PT.test(x[1]); });
+    out.push('       pedaços de texto olhados em inglês: ' + pedacos.length +
+             ' · com português: ' + sujos.length);
+    t('★ a varredura tem texto de verdade para olhar (senão ela aprova o vazio)',
+      pedacos.length >= 30, pedacos.length + ' pedaços');
+    t('★ no modo inglês não sobra português em: termo, abertura, popup do fim e sucesso',
+      sujos.length === 0,
+      sujos.length ? sujos.slice(0,3).map(function(x){ return '[' + x[0] + '] ' + x[1].slice(0,50); }).join(' | ') : 'nenhum');
+    /* 🔴 e o termo tem de estar de fato em inglês, e não só "sem português":
+       um termo VAZIO passaria na asserção de cima sem dizer nada. */
+    t('★ e o termo em inglês tem o mesmo tamanho de conteúdo do português',
+      TERMO_EN.length === TERMO.length &&
+      TERMO_EN.every(function(b, k){ return b[1].length === TERMO[k][1].length; }),
+      TERMO.map(function(b){ return b[1].length; }).join(',') + ' x ' +
+      TERMO_EN.map(function(b){ return b[1].length; }).join(','));
+    t('★ e LISTA/FIM caem nas MESMAS posições nos dois, senão a lista nasce torta',
+      TERMO.every(function(b, k){
+        return b[1].every(function(p, j){
+          var a = (p === 'LISTA' || p === 'FIM'), e = TERMO_EN[k][1][j];
+          return a === (e === 'LISTA' || e === 'FIM') && (!a || p === e);
+        });
+      }));
+    t('★ o termo em inglês cita a LGPD e o legítimo interesse, como o português',
+      /13,709|13\.709/.test(TERMO_EN.join(' ')) && /legitimate interest/i.test(TERMO_EN.join(' ')) &&
+      /art\. 18/.test(TERMO_EN.join(' ')));
+
+    ENVIO.modo = gModo;
+    $('sucesso').classList.remove('on');
+    $('regras').style.display = ''; $('tela').style.display = '';
+    var ov = $('ovInstrucoes'); if(ov) ov.remove();
+    aplicarIdioma(gI);
+    definirTituloSucesso('enviada');
+    t('e a bateria devolve a tela ao português', idiomaAtual() === gI);
+  })();
+
   out.push('== O prazo de resposta do RH (pedido dele, 23/09) ==');
   (function(){
     /* 🔴 UM número, três lugares. A asserção mede QUANTOS lugares foram
@@ -4707,6 +5049,72 @@ function selftest(){
       t('★ e no formulário público o prazo só começa DEPOIS de a pessoa mandar o arquivo',
         /A partir daí/.test(sucOff) && sucOff.indexOf(prazoRespostaTexto()) >= 0 &&
         !/O RH recebeu/.test(sucOff), sucOff.slice(0, 90));
+      ENVIO.modo = gModo;
+      $('sucesso').classList.remove('on');
+      $('regras').style.display = ''; $('tela').style.display = '';
+    })();
+
+    /* 🔴 "SE FALTAR ALGUMA INFORMAÇÃO, O RH PROCURA VOCÊ ANTES" SAIU (pedido dele,
+       23/09). Ela aparecia em TRÊS lugares com duas redações ("o RH procura você"
+       e "procuramos você"), e tirar de um só deixaria a promessa viva nos outros
+       dois. A guarda procura a IDEIA, nas duas redações e nos três lugares, e por
+       isso não adianta reescrever a frase com outras palavras. */
+    (function(){
+      var gModo = ENVIO.modo;
+      ENVIO.modo = 'funcao';
+      mostrarSucesso({ estabelecimento:'X', tipoNome:'Y', contatoNome:'Z', cidadesTexto:'W' });
+      var pedacos = [
+        ['abertura', document.querySelector('.callout').textContent],
+        ['sucesso',  $('sucTxt').textContent],
+        ['termo',    $('corpoTermo').textContent]
+      ];
+      out.push('       varridos ' + pedacos.length + ' textos atrás da promessa de contato ativo');
+      pedacos.forEach(function(p){
+        t('★ "se faltar alguma informação…" saiu de: ' + p[0],
+          p[1].length > 40 && !/se faltar alguma informa/i.test(p[1]),
+          p[1].length + ' letras');
+      });
+      ENVIO.modo = gModo;
+      $('sucesso').classList.remove('on');
+      $('regras').style.display = ''; $('tela').style.display = '';
+    })();
+
+    /* 🔴 O TÍTULO DA TELA DE SUCESSO no modo offline (pedido dele, 23/09).
+       "Indicação enviada" é mentira ali. E "Arquivo baixado" fixo também seria:
+       o arquivo não baixa sozinho desde 23/09, e no celular a pessoa compartilha.
+       A bateria mede os TRÊS momentos, porque medir só o final aprovaria um
+       título que nasce errado. */
+    (function(){
+      var gModo = ENVIO.modo;
+      ENVIO.modo = 'funcao';
+      mostrarSucesso({ estabelecimento:'X', tipoNome:'Y', contatoNome:'Z', cidadesTexto:'W' });
+      t('★ no formulário do PORTAL o título continua "Indicação enviada": lá ela foi mesmo enviada',
+        $('sucTit').textContent === 'Indicação enviada', $('sucTit').textContent);
+
+      ENVIO.modo = 'arquivo';
+      mostrarSucesso({ estabelecimento:'X', tipoNome:'Y', contatoNome:'Z', cidadesTexto:'W' });
+      t('★ no formulário público ele NÃO diz "enviada", porque nada foi enviado',
+        !/enviada/i.test($('sucTit').textContent), $('sucTit').textContent);
+      t('e antes de a pessoa agir ele diz que o arquivo está pronto',
+        $('sucTit').textContent === 'Arquivo pronto', $('sucTit').textContent);
+
+      t('★ depois de BAIXAR, o título vira "Arquivo baixado"',
+        definirTituloSucesso('baixado') === 'Arquivo baixado' &&
+        $('sucTit').textContent === 'Arquivo baixado');
+      t('★ e depois de COMPARTILHAR, "Arquivo enviado"',
+        definirTituloSucesso('enviado') === 'Arquivo enviado');
+      /* 🔴 trocar de idioma repõe o título pelos `data-*`: sem escrevê-los junto,
+         a troca ressuscitaria "Indicação enviada" por cima do título novo. */
+      definirTituloSucesso('baixado');
+      var gI = idiomaAtual();
+      aplicarIdioma('en');
+      t('★ trocar para inglês NÃO ressuscita o título antigo',
+        $('sucTit').textContent === 'File downloaded', $('sucTit').textContent);
+      aplicarIdioma(gI);
+      t('★ e voltar ao português mantém "Arquivo baixado"',
+        $('sucTit').textContent === 'Arquivo baixado', $('sucTit').textContent);
+
+      definirTituloSucesso('enviada');
       ENVIO.modo = gModo;
       $('sucesso').classList.remove('on');
       $('regras').style.display = ''; $('tela').style.display = '';
@@ -5041,6 +5449,8 @@ function selftest(){
       $('btnBaixarAgora') ? $('btnBaixarAgora').textContent : 'não existe');
     t('★ e NÃO existe botão de compartilhar num aparelho que não sabe compartilhar',
       !$('btnCompartilhar'));
+    t('★ no computador o botão NÃO promete enviar: ele só baixa, e o texto diz isso',
+      $('btnBaixarAgora').textContent.indexOf('enviar') < 0);
     t('★ o e-mail do RH fica em caixa própria, selecionável, e não perdido no meio da frase',
       !!$('offEmailRH') && $('offEmailRH').querySelector('b').textContent === EMAIL_DO_RH &&
       getComputedStyle($('offEmailRH').querySelector('b')).userSelect === 'all');
@@ -5091,22 +5501,38 @@ function selftest(){
         abrirInstrucoesOffline(PAC_TESTE);
         t('★ com compartilhamento, o popup entra em modo "compartilhar"',
           $('ovInstrucoes').dataset.modo === 'compartilhar');
-        t('★ e o botão principal é "Enviar arquivo", que é o pedido dele: um toque e a folha abre',
-          !!$('btnCompartilhar') && $('btnCompartilhar').textContent === 'Enviar arquivo' &&
-          $('btnCompartilhar').classList.contains('pri'));
-        t('★ o "Baixar arquivo" continua existindo, como segunda opção e não como destaque',
-          !!$('btnBaixarAgora') && !$('btnBaixarAgora').classList.contains('pri'));
+        /* 🔴 UM BOTÃO SÓ (pedido dele, 23/09). Eram dois, "Enviar arquivo" e
+           "Baixar arquivo", e a asserção cobra que o segundo tenha SUMIDO: é a
+           única forma de a bateria acusar se alguém reintroduzir a escolha. */
+        t('★ o botão é UM só, e se chama "Baixar e enviar"',
+          !!$('btnBaixarAgora') && $('btnBaixarAgora').textContent === 'Baixar e enviar' &&
+          $('btnBaixarAgora').classList.contains('pri') && !$('btnCompartilhar'),
+          $('btnBaixarAgora') ? $('btnBaixarAgora').textContent : 'não existe');
         /* 🔴 e o e-mail do RH CONTINUA na tela: aplicativo que recuse o arquivo
            deixaria a pessoa sem saída nenhuma se a instrução fosse só "compartilhe" */
         t('★ e o e-mail do RH continua escrito, como saída para o aplicativo que recusar o arquivo',
           !!$('offEmailRH') && $('offEmailRH').textContent.indexOf(EMAIL_DO_RH) >= 0 &&
           /recusar/i.test($('offEmailRH').textContent));
-        $('btnCompartilhar').click();
+        $('btnBaixarAgora').click();
         t('★ o clique entrega um ARQUIVO de verdade à folha, com o nome certo e o texto para o RH',
           !!pedido && !!pedido.files && pedido.files.length === 1 &&
           pedido.files[0].name === 'alimentacao - Maria da Silva - 2026-09-16.json' &&
           pedido.text.indexOf(EMAIL_DO_RH) >= 0,
           pedido && pedido.files ? pedido.files[0].name : 'nada foi compartilhado');
+        /* 🔴 O TIPO DO ARQUIVO COMPARTILHADO. A Web Share tem lista fechada de
+           MIME, e `application/json` não está nela: é a causa mais provável do
+           "este aparelho não conseguiu compartilhar" que ele viu no celular.
+           O que viaja é `text/plain`; o NOME continua `.json`, que é o que o
+           painel filtra ao importar. */
+        t('★ o arquivo vai como text/plain (json não é compartilhável), mas o nome continua .json',
+          pedido.files[0].type === 'text/plain' && /\.json$/.test(pedido.files[0].name),
+          pedido.files[0].type + ' · ' + pedido.files[0].name);
+        /* 🔴 e BAIXA ANTES de compartilhar: no teste dele a folha falhou, e com a
+           ordem invertida a pessoa ficaria sem nada nas mãos. O título atrás do
+           popup é a prova de que o download aconteceu. */
+        t('★ e o arquivo foi BAIXADO antes de a folha abrir, para a falha dela não custar nada',
+          $('sucTit').textContent === 'Arquivo baixado' ||
+          $('sucTit').textContent === 'Arquivo enviado', $('sucTit').textContent);
         $('btnInstrucoesOk').click();
       }
 
