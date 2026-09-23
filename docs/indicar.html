@@ -390,6 +390,13 @@ select{background-image:url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http:
    toque longo, e sem a quebra ele estoura a largura do popup em tela estreita */
 .off-email b{font-size:14px;font-weight:700;color:var(--txt);user-select:all;word-break:break-all}
 .off-p.off-arq{font-size:12px;color:var(--muted);word-break:break-all;margin-bottom:12px}
+/* a tela de medicao do compartilhamento (?diag=1): densa de proposito, e' para
+   ser lida num print de celular */
+.diag{display:flex;flex-direction:column;gap:6px}
+.diag-l{display:flex;gap:10px;align-items:baseline;font-size:12px;line-height:1.4;
+  border-bottom:1px solid var(--line);padding-bottom:5px}
+.diag-r{flex:0 0 46%;color:var(--muted)}
+.diag-l b{flex:1;word-break:break-word;color:var(--txt);font-weight:700}
 
 .hr-campo{display:flex;flex-direction:column;gap:8px}
 .hr-linhas{display:flex;flex-direction:column;gap:7px}
@@ -1376,11 +1383,11 @@ var IDENTIDADE = {
    só faz a pessoa clicar sem ler.
    ⚠ Continua sendo texto NOSSO, sem revisão do jurídico: a versão diz isso em
    voz alta e viaja dentro de cada pacote. */
-var TERMO_VERSAO = 'v2 (23/09/2026, aguardando revisão jurídica)';
+var TERMO_VERSAO = 'v3 (23/09/2026, aguardando revisão jurídica)';
 
 var TERMO = [
   ['O que a Brazilian Nickel faz com o que você escreveu',
-   ['A Brazilian Nickel é a controladora dos dados deste formulário: é ela quem decide para que eles servem e responde por eles, nos termos da Lei nº 13.709/2018 (LGPD).',
+   ['A Brazilian Nickel é a **controladora** dos dados deste formulário: é ela quem decide para que eles servem e responde por eles, nos termos da **Lei nº 13.709/2018 (LGPD)**.',
     'Ao enviar esta indicação, passamos a tratar:',
     'LISTA',
     'o seu nome e, quando você não entra pelo e-mail corporativo, o contato que você informar para retorno;',
@@ -1388,31 +1395,31 @@ var TERMO = [
     'o nome e o contato do responsável com quem você conversou;',
     'a condição combinada e os arquivos de apoio que você anexar.',
     'FIM',
-    'A finalidade é uma só: avaliar, negociar, publicar e acompanhar esta parceria no Clube de Parcerias. Nada disso é usado em avaliação de desempenho, processo disciplinar ou qualquer outra finalidade.',
-    'A base legal é o legítimo interesse da Brazilian Nickel em manter o programa de parcerias (art. 7º, IX da LGPD). Não pedimos consentimento para isso, e não indicar não traz nenhuma consequência para você.',
-    'Quem acessa é a equipe de RH responsável pelo Clube de Parcerias, num painel restrito. Os dados não são vendidos, cedidos nem usados para publicidade.',
-    'Se a parceria for publicada, o que aparece no site do Clube é apenas o cartão da parceria: estabelecimento, categoria, cidade, condição e contato comercial do estabelecimento. O seu nome, o seu contato e os arquivos de apoio nunca saem do painel do RH.',
-    'Guardamos enquanto a indicação estiver em análise e, se a parceria for fechada, enquanto ela estiver valendo. Encerrada a parceria, os dados são eliminados ou anonimizados, salvo o que a lei exigir manter.',
-    'Você pode pedir, a qualquer momento e sem custo, confirmação de que tratamos os seus dados, acesso a eles, correção, anonimização, bloqueio, eliminação e oposição ao tratamento (art. 18 da LGPD). Para isso, escreva ao RH em __CONTATO__.']],
+    'A **finalidade** é uma só: avaliar, negociar, publicar e acompanhar esta parceria no Clube de Parcerias. **Nada disso é usado em avaliação de desempenho**, processo disciplinar ou qualquer outra finalidade.',
+    'A **base legal** é o **legítimo interesse** da Brazilian Nickel em manter o programa de parcerias (**art. 7º, IX da LGPD**). Não pedimos consentimento para isso, e **não indicar não traz nenhuma consequência para você**.',
+    'Quem acessa é a **equipe de RH** responsável pelo Clube de Parcerias, numa **base de dados restrita**. Os dados **não são vendidos, cedidos nem usados para publicidade**.',
+    'Se a parceria for publicada, o que aparece no site do Clube é **apenas o cartão da parceria**: estabelecimento, categoria, cidade, condição e contato comercial do estabelecimento. **O seu nome, o seu contato e os arquivos de apoio nunca saem da base de dados do RH.**',
+    'Guardamos enquanto a indicação estiver em análise e, se a parceria for fechada, enquanto ela estiver valendo. Encerrada a parceria, os dados são **eliminados ou anonimizados**, salvo o que a lei exigir manter.',
+    'Você pode pedir, a qualquer momento e sem custo, **confirmação** de que tratamos os seus dados, **acesso**, **correção**, **anonimização**, **bloqueio**, **eliminação** e **oposição** ao tratamento (**art. 18 da LGPD**). Para isso, escreva ao RH em __CONTATO__.']],
 
   ['Sobre o contato do estabelecimento',
-   ['O nome, o e-mail e o telefone que você informar são de uma pessoa de fora da Brazilian Nickel, que não preencheu este formulário e não está diante desta tela.',
-    'Trataremos esse contato exclusivamente para falar desta parceria, com base no legítimo interesse de avaliar a proposta (art. 7º, IX da LGPD). Ele não é usado para nenhuma outra finalidade, não é repassado a terceiros e não entra em nenhuma lista de divulgação.',
+   ['O nome, o e-mail e o telefone que você informar são de **uma pessoa de fora da Brazilian Nickel**, que não preencheu este formulário e não está diante desta tela.',
+    'Trataremos esse contato **exclusivamente para falar desta parceria**, com base no **legítimo interesse** de avaliar a proposta (**art. 7º, IX da LGPD**). Ele não é usado para nenhuma outra finalidade, **não é repassado a terceiros** e não entra em nenhuma lista de divulgação.',
     'Na primeira vez que procurarmos essa pessoa, informamos de onde veio o contato e quais são os direitos dela, incluindo o de pedir a exclusão.',
-    'Avise a ela que você passou o contato. Além de ser o combinado mais básico com quem te atendeu, é o que evita que a nossa ligação chegue como surpresa.',
+    '**Avise a ela que você passou o contato.** Além de ser o combinado mais básico com quem te atendeu, é o que evita que a nossa ligação chegue como surpresa.',
     'Informe apenas o contato comercial do estabelecimento, e não dados pessoais que não sejam necessários para esta conversa.']],
 
   ['Sobre a condição que você negociou',
-   ['Indicar não é fechar. Você está avisando o RH de que a oportunidade existe. Quem conversa de novo com o estabelecimento e acerta os detalhes é o RH.',
+   ['**Indicar não é fechar.** Você está avisando o RH de que a oportunidade existe. Quem conversa de novo com o estabelecimento e acerta os detalhes é o RH.',
     'Por isso, a condição final pode ser diferente da que você combinou, e pode não sair. A negociação é entre a Brazilian Nickel e o estabelecimento.',
     'Mesmo depois de publicada, a condição pode mudar ou acabar a qualquer momento, por decisão do estabelecimento, sem aviso.',
     /* 🔴 "vantagem" SAIU de toda a tela (pedido dele, 23/09). Aqui ela não virou
        "benefício": no Clube, "benefício" é o desconto que o parceiro dá, e usar a
        mesma palavra para o que quem indicou NÃO ganha embaralharia as duas coisas
        na frase mais delicada do termo. As duas que sobraram já dizem tudo. */
-    'Enviar esta indicação não garante nenhuma recompensa ou bonificação para você.',
+    'Enviar esta indicação **não garante nenhuma recompensa ou bonificação para você**.',
     'A análise do RH pode levar até __PRAZO__, contados da chegada da indicação, dependendo do volume de indicações na fila.',
-    'Até a decisão do RH, não assuma compromissos em nome da Brazilian Nickel.']]
+    'Até a decisão do RH, **não assuma compromissos em nome da Brazilian Nickel**.']]
 ];
 
 /* 🔴 O TERMO EM INGLÊS (achado dele, 23/09): no modo inglês, o texto mais
@@ -1427,7 +1434,7 @@ var TERMO = [
    ⚠ Tradução minha, e o jurídico precisa olhar as DUAS. */
 var TERMO_EN = [
   ['What Brazilian Nickel does with what you wrote',
-   ['Brazilian Nickel is the controller of the data in this form: it decides what the data is for and is accountable for it, under Brazilian Law No. 13,709/2018 (LGPD).',
+   ['Brazilian Nickel is the **controller** of the data in this form: it decides what the data is for and is accountable for it, under **Brazilian Law No. 13,709/2018 (LGPD)**.',
     'When you submit this suggestion, we process:',
     'LISTA',
     'your name and, when you are not signed in with a company e-mail, the contact details you provide so we can get back to you;',
@@ -1435,27 +1442,27 @@ var TERMO_EN = [
     'the name and contact details of the person you spoke to;',
     'the terms agreed and the supporting files you attach.',
     'FIM',
-    'There is a single purpose: to assess, negotiate, publish and follow up on this partnership in the Partnership Club. None of it is used in performance reviews, disciplinary proceedings or any other purpose.',
-    'The legal basis is Brazilian Nickel’s legitimate interest in running the partnership programme (art. 7, IX of the LGPD). We do not ask for your consent for this, and not submitting a suggestion has no consequences for you.',
-    'Access is limited to the HR team responsible for the Partnership Club, through a restricted panel. The data is not sold, shared or used for advertising.',
-    'If the partnership is published, what appears on the Club website is only the partnership card: establishment, category, city, terms and the establishment’s business contact. Your name, your contact details and the supporting files never leave the HR panel.',
-    'We keep the data while the suggestion is under review and, if the partnership goes ahead, for as long as it is valid. Once the partnership ends, the data is deleted or anonymised, except where the law requires us to keep it.',
-    'At any time and free of charge, you may request confirmation that we process your data, access to it, correction, anonymisation, blocking, deletion and objection to the processing (art. 18 of the LGPD). To do so, write to HR at __CONTATO__.']],
+    'There is a **single purpose**: to assess, negotiate, publish and follow up on this partnership in the Partnership Club. **None of it is used in performance reviews**, disciplinary proceedings or any other purpose.',
+    'The **legal basis** is Brazilian Nickel’s **legitimate interest** in running the partnership programme (**art. 7, IX of the LGPD**). We do not ask for your consent for this, and **not submitting a suggestion has no consequences for you**.',
+    'Access is limited to the **HR team** responsible for the Partnership Club, through a **restricted database**. The data is **not sold, shared or used for advertising**.',
+    'If the partnership is published, what appears on the Club website is **only the partnership card**: establishment, category, city, terms and the establishment’s business contact. **Your name, your contact details and the supporting files never leave the HR database.**',
+    'We keep the data while the suggestion is under review and, if the partnership goes ahead, for as long as it is valid. Once the partnership ends, the data is **deleted or anonymised**, except where the law requires us to keep it.',
+    'At any time and free of charge, you may request **confirmation** that we process your data, **access**, **correction**, **anonymisation**, **blocking**, **deletion** and **objection** to the processing (**art. 18 of the LGPD**). To do so, write to HR at __CONTATO__.']],
 
   ['About the establishment’s contact person',
-   ['The name, e-mail and phone number you provide belong to someone outside Brazilian Nickel, who did not fill in this form and is not in front of this screen.',
-    'We will process those contact details solely to discuss this partnership, on the basis of our legitimate interest in assessing the proposal (art. 7, IX of the LGPD). They are not used for any other purpose, not shared with third parties and not added to any mailing list.',
+   ['The name, e-mail and phone number you provide belong to **someone outside Brazilian Nickel**, who did not fill in this form and is not in front of this screen.',
+    'We will process those contact details **solely to discuss this partnership**, on the basis of our **legitimate interest** in assessing the proposal (**art. 7, IX of the LGPD**). They are not used for any other purpose, **not shared with third parties** and not added to any mailing list.',
     'The first time we contact that person, we tell them where their details came from and what their rights are, including the right to request deletion.',
-    'Let them know you passed their details on. Beyond being the basic courtesy towards whoever helped you, it is what stops our call arriving as a surprise.',
+    '**Let them know you passed their details on.** Beyond being the basic courtesy towards whoever helped you, it is what stops our call arriving as a surprise.',
     'Provide only the establishment’s business contact details, not personal data that is unnecessary for this conversation.']],
 
   ['About the terms you negotiated',
-   ['Suggesting is not closing a deal. You are letting HR know the opportunity exists. HR is the one who talks to the establishment again and settles the details.',
+   ['**Suggesting is not closing a deal.** You are letting HR know the opportunity exists. HR is the one who talks to the establishment again and settles the details.',
     'So the final terms may differ from what you agreed, and may not happen at all. The negotiation is between Brazilian Nickel and the establishment.',
     'Even after being published, the terms may change or end at any time, at the establishment’s discretion, without notice.',
-    'Submitting this suggestion does not entitle you to any reward or bonus.',
+    'Submitting this suggestion **does not entitle you to any reward or bonus**.',
     'The HR review may take up to __PRAZO__ from the moment the suggestion arrives, depending on how many are in the queue.',
-    'Until HR decides, do not make commitments on behalf of Brazilian Nickel.']]
+    'Until HR decides, **do not make commitments on behalf of Brazilian Nickel**.']]
 ];
 /* qual dos dois a tela monta. Um lugar só decide. */
 function termoDoIdioma(){ return idiomaAtual() === 'en' ? TERMO_EN : TERMO; }
@@ -2981,6 +2988,66 @@ function modoDeEntrega(arq){
   return ehAparelhoDeToque() ? 'compartilhar' : 'baixar';
 }
 
+/* 🔴 O DIAGNÓSTICO DO COMPARTILHAMENTO (`?diag=1`), criado em 23/09 porque a
+   folha não abriu no celular dele e NÃO DEU PARA REPRODUZIR AQUI: medido, o
+   `canShare` do Edge do Windows responde `true` para todo tipo de arquivo, ou
+   seja o desktop não aplica a lista da Web Share e não serve de espelho.
+   Em vez de trocar hipóteses por mensagem, o aparelho dele responde: esta tela
+   mostra o que cada peça diz e deixa ele DISPARAR o compartilhamento de
+   verdade, mostrando o nome do erro se houver.
+   ⚠ É uma tela de medição, não um recurso: só existe com `?diag=1` no endereço,
+   e não muda nada do formulário. */
+function telaDeDiagnostico(){
+  /* UM corpo, usado pela medição E pelo botão: se cada um montasse o seu, o
+     que a tela mede não seria o que o botão tenta compartilhar. */
+  var corpoDiag = { tipoCodigo:'teste', colaborador:'Diagnostico',
+                    enviadoEm: new Date().toISOString() };
+  var f = arquivoDoPacote(corpoDiag);
+  function linha(rot, val){
+    return { rot:rot, val: (val === true ? 'SIM' : val === false ? 'NÃO' : String(val)) };
+  }
+  var medidas = [
+    linha('navigator.share existe', !!navigator.share),
+    linha('navigator.canShare existe', !!navigator.canShare),
+    linha('canShare com ESTE arquivo', podeCompartilharArquivo(f.arquivo)),
+    linha('tipo do arquivo compartilhado', f.arquivo ? f.arquivo.type : '(sem File)'),
+    linha('tipo do arquivo baixado', f.tipo),
+    linha('nome do arquivo', f.nome),
+    linha('tamanho', f.texto.length + ' caracteres'),
+    linha('ponteiro grosso (dedo)', ehAparelhoDeToque()),
+    linha('maxTouchPoints', navigator.maxTouchPoints),
+    linha('modo que o popup usaria', modoDeEntrega(f.arquivo)),
+    linha('endereço seguro (https)', window.isSecureContext === true),
+    linha('navegador', navigator.userAgent)
+  ];
+  var p = popupSimples('ovDiag', 'Diagnóstico', 'Por que o compartilhamento não abriu');
+  var tb = document.createElement('div'); tb.className = 'diag'; tb.id = 'diagTab';
+  medidas.forEach(function(m){
+    var l = document.createElement('div'); l.className = 'diag-l';
+    var a = document.createElement('span'); a.className = 'diag-r'; a.textContent = m.rot;
+    var b = document.createElement('b'); b.textContent = m.val;
+    l.appendChild(a); l.appendChild(b); tb.appendChild(l);
+  });
+  p.corpo.appendChild(tb);
+  var res = document.createElement('div'); res.className = 'estado'; res.id = 'diagRes';
+  p.rodape.appendChild(res);
+  var bt = document.createElement('button'); bt.type = 'button'; bt.className = 'pri'; bt.id = 'btnDiagShare';
+  bt.textContent = 'Tentar compartilhar agora';
+  bt.addEventListener('click', function(){
+    res.textContent = 'chamando navigator.share…';
+    /* nada entre o clique e a chamada: é o gesto que o navegador exige */
+    compartilharPacote(corpoDiag)
+      .then(function(mandou){ res.textContent = mandou ? 'ABRIU e compartilhou.' : 'ABRIU e você cancelou.'; })
+      .catch(function(e){
+        res.textContent = 'NÃO ABRIU · ' + ((e && e.name) || '?') + ' · ' +
+                          ((e && e.message) || '').slice(0, 90);
+      });
+  });
+  p.rodape.appendChild(bt);
+  p.ov.classList.add('on');
+  return medidas.length;
+}
+
 function baixarPacote(corpo){
   var f = arquivoDoPacote(corpo);
   /* blob, e não `data:`: endereço `data:` é bloqueado em aba nova e em
@@ -3292,34 +3359,44 @@ function abrirInstrucoesOffline(pacote, corpo){
     : T('Baixar arquivo agora', 'Download the file now');
   baixar.addEventListener('click', function(){
     estado.textContent = '';
-    /* o download é o que SEMPRE acontece, e por isso vem primeiro */
-    baixarPacote(corpo);
-    definirTituloSucesso('baixado');
     var recadoBaixou = T('Arquivo baixado. Agora anexe num e-mail para ' + EMAIL_DO_RH + '.',
                          'File downloaded. Now attach it to an e-mail to ' + EMAIL_DO_RH + '.');
-    if(!compartilha){ estado.textContent = recadoBaixou; return; }
-    /* 🔴 a chamada nasce DENTRO do clique. `navigator.share` só vale com gesto
-       da pessoa: montar o arquivo num `then` e compartilhar depois faz o
-       navegador recusar com NotAllowedError, e o botão não faz nada. */
+    function baixarEDizer(extra){
+      baixarPacote(corpo);
+      definirTituloSucesso('baixado');
+      estado.textContent = recadoBaixou + (extra ? ' ' + extra : '');
+    }
+    if(!compartilha){ baixarEDizer(''); return; }
+
+    /* 🔴 A FOLHA PRIMEIRO, O DOWNLOAD DEPOIS. Isto foi INVERTIDO em 23/09,
+       depois de a folha não abrir no celular dele.
+       A versão anterior baixava antes "para a falha não custar nada", e o
+       raciocínio estava certo mas o efeito era o contrário: `navigator.share`
+       exige ATIVAÇÃO TRANSITÓRIA do gesto, e disparar um download antes
+       (um `<a download>` clicado, que no celular abre aviso de download) é
+       justamente o tipo de coisa que consome ou invalida essa ativação. O
+       botão baixava e a folha não abria.
+       Agora a folha é a PRIMEIRA coisa depois do clique, sem nada no meio, e o
+       download acontece em todo caminho que não termine em compartilhamento:
+       recusa, desistência ou erro. A pessoa continua sem poder ficar sem nada. */
     compartilharPacote(corpo).then(function(mandou){
       if(mandou){
         definirTituloSucesso('enviado');
         estado.textContent = T('Pronto. Confira no aplicativo se a mensagem saiu.',
                                'Done. Check in the app that the message went out.');
       } else {
-        /* desistir da folha não é erro, e o arquivo já está salvo */
-        estado.textContent = recadoBaixou;
+        /* desistir da folha não é erro, mas também não deixa arquivo nenhum */
+        baixarEDizer('');
       }
     }).catch(function(e){
-      /* 🔴 O MOTIVO VAI PARA A TELA (23/09). A versão anterior dizia só "este
-         aparelho não conseguiu compartilhar o arquivo", e quando ele testou no
-         celular não sobrou nada para diagnosticar: nem o nome do erro, nem se
-         foi o tipo do arquivo, nem se foi o gesto. O nome do erro é curto e não
-         atrapalha quem só quer resolver, porque a instrução vem primeiro. */
+      /* 🔴 O MOTIVO VAI PARA A TELA. A versão anterior dizia só "este aparelho
+         não conseguiu compartilhar o arquivo", e quando ele testou no celular
+         não sobrou nada para diagnosticar: nem o nome do erro, nem se foi o
+         tipo do arquivo, nem se foi o gesto. A instrução vem primeiro e o nome
+         do erro depois, entre parênteses. */
       var nome = (e && (e.name || e.message)) ? String(e.name || e.message).slice(0, 40) : '?';
-      estado.textContent = recadoBaixou + ' ' +
-        T('O compartilhamento não abriu neste aparelho (' + nome + ').',
-          'Sharing did not open on this device (' + nome + ').');
+      baixarEDizer(T('O compartilhamento não abriu neste aparelho (' + nome + ').',
+                     'Sharing did not open on this device (' + nome + ').'));
     });
   });
 
@@ -3512,6 +3589,30 @@ function recomecar(){
    texto CABER na tela sem rolagem, `scrollHeight == clientHeight` e o
    portão nunca abriria. `medirLeitura` trata isso como lido. */
 
+/* 🔴 O NEGRITO DO TERMO (pedido dele, 23/09), e por que ele NÃO é HTML no array.
+   O termo era montado com `textContent` de propósito: texto nunca vira marcação.
+   Trocar para `innerHTML` para poder negritar abriria essa porta no único bloco
+   da tela que mistura texto nosso com `REGRAS.contatoRH` e com o prazo.
+   Então entra uma marcação MÍNIMA, `**assim**`, e este montador constrói os nós:
+   o que está entre `**` vira `<strong>`, e TODO o resto continua sendo texto,
+   criado por `createTextNode`. Não existe caminho de string para HTML aqui.
+   ⚠ `**` solto (ímpar) fica como texto, em vez de engolir o resto do parágrafo. */
+function comDestaque(el, txt){
+  var partes = String(txt == null ? '' : txt).split('**');
+  /* número PAR de pedaços = número ÍMPAR de `**`: sobrou um sem par, e aí o texto
+     vai inteiro, sem negrito nenhum, em vez de sair formatado pela metade. */
+  if(partes.length % 2 === 0){ el.textContent = txt; return el; }
+  partes.forEach(function(p, i){
+    if(p === '') return;
+    if(i % 2 === 1){
+      var b = document.createElement('strong'); b.textContent = p; el.appendChild(b);
+    } else {
+      el.appendChild(document.createTextNode(p));
+    }
+  });
+  return el;
+}
+
 function montarTermo(){
   var c = $('corpoTermo'); c.innerHTML = '';
   var TERMO = termoDoIdioma();   /* sombreia de propósito: o resto da função não muda */
@@ -3528,8 +3629,8 @@ function montarTermo(){
          criaria a quarta cópia do mesmo número. */
       var t = txt.replace('__CONTATO__', REGRAS.contatoRH)
                  .replace('__PRAZO__', prazoRespostaTexto());
-      if(ul){ var li = document.createElement('li'); li.textContent = t; ul.appendChild(li); }
-      else { var pp = document.createElement('p'); pp.textContent = t; c.appendChild(pp); }
+      if(ul){ var li = document.createElement('li'); comDestaque(li, t); ul.appendChild(li); }
+      else { var pp = document.createElement('p'); comDestaque(pp, t); c.appendChild(pp); }
     });
   });
   var fim = document.createElement('div');
@@ -4043,6 +4144,10 @@ function ligar(){
     if($('temaMenu') && !$('temaMenu').hidden && !$('temaMenu').contains(ev.target)) fecharMenuDeTema();
   });
   document.addEventListener('keydown', function(ev){ if(ev.key === 'Escape') fecharMenuDeTema(); });
+  /* 🔴 `?diag=1` abre a tela de medição do compartilhamento e não muda mais
+     nada: ela existe porque a folha não abriu no celular dele e o desktop não
+     serve de espelho (o `canShare` do Edge do Windows diz sim para tudo). */
+  if(/[?&]diag=1/.test(location.search)) setTimeout(telaDeDiagnostico, 300);
   /* 🔴 o modo offline é decidido ANTES da identidade: é ele que diz que não vai
      haver login nenhum, e a identidade depende disso para saber se destrava o
      nome. Ver `modoOffline()` e o bloco 1.4.1b. */
@@ -5233,6 +5338,44 @@ function selftest(){
           return a === (e === 'LISTA' || e === 'FIM') && (!a || p === e);
         });
       }));
+      /* 🔴 O NEGRITO (pedido dele, 23/09). A asserção mede os nós `<strong>` NA
+       TELA, e não os `**` no array: o que interessa é a pessoa ver destacado.
+       E cobra que o destaque caia nas LEIS, que foi o que ele pediu. */
+    (function(){
+      var fortes = $('corpoTermo').querySelectorAll('strong');
+      var textos = Array.prototype.map.call(fortes, function(b){ return b.textContent; });
+      out.push('       trechos em negrito no termo: ' + fortes.length +
+               ' (termo em ' + idiomaAtual() + ')');
+      t('★ o termo tem negrito, e não pouco', fortes.length >= 12, fortes.length + ' trechos');
+      /* 🔴 A GUARDA VALE NOS DOIS IDIOMAS, e isso não é capricho: quando ela
+         reprovou, o termo na tela estava em INGLÊS (uma seção anterior da bateria
+         troca o idioma e não devolve), e o número da lei ali é "13,709" com
+         VÍRGULA. A primeira versão exigia a grafia portuguesa e reprovou um termo
+         que estava certo. Guarda que só vale num idioma não guarda o outro. */
+      t('★ e as LEIS estão entre os destacados, em português e em inglês',
+        textos.some(function(x){ return /13[.,]709/.test(x); }) &&
+        textos.some(function(x){ return /art\.\s*18/.test(x); }) &&
+        /* 🔴 sem o `º`: em inglês a citação é "art. 7, IX of the LGPD", e a
+             asserção de primeira exigia a forma portuguesa. Ela reprovou o termo
+             em inglês por uma diferença de ORTOGRAFIA, não de conteúdo. */
+          /* `\D{0,4}` cobre "7º, IX" e "7, IX" sem escrever o `º`: existem dois
+             caracteres parecidos (indicador ordinal e grau) e escrever um deles
+             à mão foi o que fez a primeira versão desta linha falhar. */
+          textos.some(function(x){ return /art\.\s*7\D{0,4}IX/.test(x); }),
+        textos.filter(function(x){ return /art\.|13\./.test(x); }).join(' · ').slice(0, 90));
+      t('★ e nenhum `**` vazou para a tela como texto',
+        $('corpoTermo').textContent.indexOf('**') < 0);
+      /* 🔴 `**` ÍMPAR não pode comer o parágrafo: sobra um sem par, e aí o texto
+         vai INTEIRO, sem negrito, em vez de sair formatado pela metade. */
+      var teste = comDestaque(document.createElement('p'), 'a **b** c ** d');
+      t('★ `**` solto vira TEXTO, em vez de engolir o resto do parágrafo',
+        teste.textContent === 'a **b** c ** d' && teste.querySelectorAll('strong').length === 0,
+        teste.textContent);
+      var ok2 = comDestaque(document.createElement('p'), 'a **b** c');
+      t('e o caso normal negrita só o miolo',
+        ok2.querySelectorAll('strong').length === 1 &&
+        ok2.querySelector('strong').textContent === 'b' && ok2.textContent === 'a b c');
+    })();
     t('★ o termo em inglês cita a LGPD e o legítimo interesse, como o português',
       /13,709|13\.709/.test(TERMO_EN.join(' ')) && /legitimate interest/i.test(TERMO_EN.join(' ')) &&
       /art\. 18/.test(TERMO_EN.join(' ')));
@@ -5765,9 +5908,26 @@ function selftest(){
         /* 🔴 e BAIXA ANTES de compartilhar: no teste dele a folha falhou, e com a
            ordem invertida a pessoa ficaria sem nada nas mãos. O título atrás do
            popup é a prova de que o download aconteceu. */
-        t('★ e o arquivo foi BAIXADO antes de a folha abrir, para a falha dela não custar nada',
-          $('sucTit').textContent === 'Arquivo baixado' ||
-          $('sucTit').textContent === 'Arquivo enviado', $('sucTit').textContent);
+        /* 🔴 A ORDEM FOI INVERTIDA em 23/09: a FOLHA vem primeiro, e o download
+           só acontece quando ela não resolve. `navigator.share` exige ativação
+           transitória do gesto, e disparar um download antes (um `<a download>`
+           clicado, que no celular abre aviso de download) é o tipo de coisa que
+           a consome: o botão baixava e a folha não abria, que foi o que ele viu.
+           ⚠ O TÍTULO não serve de prova aqui, porque ele muda dentro do `.then`
+           e a bateria é síncrona: mediria o estado de antes e passaria sempre.
+           O que É síncrono é o download, e é ele que se mede: `baixarPacote`
+           chama `URL.createObjectURL`, então espionar essa chamada diz, no
+           instante do clique, se alguém baixou antes de compartilhar. */
+        (function(){
+          var gCriar = URL.createObjectURL, baixou = 0;
+          URL.createObjectURL = function(b){ baixou++; return gCriar.call(URL, b); };
+          pedido = null;
+          $('btnBaixarAgora').click();
+          var pediuFolha = !!pedido;
+          URL.createObjectURL = gCriar;
+          t('★ a FOLHA vem antes: no instante do clique ela foi chamada e NADA foi baixado',
+            pediuFolha && baixou === 0, 'folha=' + pediuFolha + ' · downloads=' + baixou);
+        })();
         $('btnInstrucoesOk').click();
       }
 
@@ -6455,8 +6615,14 @@ function selftest(){
         /confirma/i.test(todo) && /elimina/i.test(todo) && /oposição/i.test(todo));
       t('★ diz por quanto tempo guarda e o que acontece depois',
         /anonimizad/i.test(todo) && /encerrada a parceria/i.test(todo));
-      t('★ diz o que vai para o site público e o que NUNCA sai do painel',
-        /nunca saem do painel/i.test(todo) && /cart[ãa]o da parceria/i.test(todo));
+      /* 🔴 "painel do RH" SAIU do texto (pedido dele, 23/09): é jargão nosso, e
+         quem lê não sabe o que é "o painel". Virou "base de dados", que diz a
+         mesma coisa em palavra de todo mundo. A asserção cobra a IDEIA (o que
+         nunca sai) e PROÍBE a palavra de voltar. */
+      t('★ diz o que vai para o site público e o que NUNCA sai da base de dados',
+        /nunca saem da base de dados/i.test(todo) && /cart[ãa]o da parceria/i.test(todo));
+      t('★ e a palavra "painel" não aparece no termo: é jargão de quem construiu',
+        !/painel/i.test(todo) && !/\bpanel\b/i.test(TERMO_EN.join(' ')));
       t('★ diz que não indicar não traz consequência (senão "legítimo interesse" lê como obrigação)',
         /não indicar não traz nenhuma consequência/i.test(todo));
       t('★ e avisa o que fazer com o contato de terceiro, que não está diante da tela',
