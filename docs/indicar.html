@@ -1140,7 +1140,6 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
     </div>
   </div>
 </div>
-
 <script>
 (function(){
 'use strict';
@@ -2520,8 +2519,11 @@ function validar(){
      falar com essa pessoa), e por isso é cobrado aqui, e não atrás do tipo. */
   if(R.semLogin){
     if(!contatoDoIndicadorResolvido())
-      p('retorno', T('Informe um e-mail ou um telefone válido para o RH dar retorno.',
-                   'Give a valid e-mail or phone number so HR can get back to you.'));
+      /* 🔴 a mensagem diz OS DOIS, e não "um ou outro" (25/09): mensagem que
+         descreve a regra antiga faz a pessoa preencher um e não entender por
+         que o formulário continua reclamando. */
+      p('retorno', T('Informe o e-mail E o telefone, os dois, para o RH dar retorno.',
+                   'Give BOTH your e-mail and your phone number so HR can get back to you.'));
     else marcar('retorno', true, '');
   }
 
@@ -3168,9 +3170,12 @@ function ligarModoOffline(){
 /* 🔴 O CONTATO DE QUEM INDICA (pedido dele, 17/09) toma o lugar de "Sua área ou
    empresa". O arquivo chegava ao RH com o nome da pessoa e nenhum jeito de falar
    com ela: não dava para avisar do andamento nem reconhecer quem trouxe a
-   parceria. Pede-se e-mail OU telefone, e não os dois, porque exigir os dois
-   barra quem só tem um. Qualquer um serve, inclusive pessoal: aqui não existe
-   conta da empresa para consultar.
+   parceria. 🔴 Desde 25/09 pede-se e-mail E telefone, os DOIS (decisão dele).
+   A regra anterior era "um ou outro", e o motivo dela continua verdadeiro:
+   exigir os dois barra quem só tem um, e este formulário existe para quem tem
+   menos. Ele decidiu assim mesmo, porque o RH precisa dos dois para dar
+   retorno. Qualquer um dos dois pode ser pessoal: aqui não existe conta da
+   empresa para consultar.
    ⚠ A área digitada SAIU junto. Ela alimentava o gráfico "Por área" do painel
    para as indicações públicas, e essas passam a entrar sem área. */
 function montarCampoDeContatoDoIndicador(){
@@ -3183,9 +3188,9 @@ function montarCampoDeContatoDoIndicador(){
   lb.innerHTML = 'Seu contato, para o RH dar retorno<span class="req">*</span>';
   lb.setAttribute('data-en', 'Your contact details, so HR can get back to you<span class="req">*</span>');
   var dica = document.createElement('div'); dica.className = 'hint';
-  dica.textContent = 'E-mail ou telefone, um dos dois. Pode ser pessoal: é por aqui que o RH avisa se a ' +
+  dica.textContent = 'E-mail e telefone, os dois. Podem ser pessoais: é por aqui que o RH avisa se a ' +
     'parceria avançou e reconhece quem a trouxe. Não vai para o Clube de Parcerias.';
-  dica.setAttribute('data-en', 'An e-mail or a phone number, either one. It can be a personal one: this is how HR ' +
+  dica.setAttribute('data-en', 'Both your e-mail and your phone number. They can be personal: this is how HR ' +
     'tells you whether the partnership moved forward and credits whoever brought it. It never goes to the Partnership Club.');
   var dupla = document.createElement('div'); dupla.className = 'dupla';
   function campo(id, rot, rotEn, ph, tipo){
@@ -3208,13 +3213,16 @@ function montarCampoDeContatoDoIndicador(){
   alvo.parentNode.insertBefore(f, alvo.nextSibling);
   return true;
 }
-/* 🔴 pelo menos um canal: é o que faz a indicação pública deixar de ser anônima
-   para efeito de retorno. Vazio nos dois, o formulário não envia. */
+/* 🔴 OS DOIS CANAIS, e não "pelo menos um" (decisão dele, 25/09). Isto REVERTE a
+   regra anterior, e a razão da anterior continua verdadeira: exigir os dois
+   barra quem só tem um, e o formulário offline existe justamente para quem tem
+   menos. Ele sabe disso e decidiu assim, porque o RH precisa dos dois para dar
+   retorno: e-mail some em caixa cheia e telefone resolve na hora.
+   ⚠ O telefone aceita fixo E celular (10 ou 11 dígitos): forçar só celular
+   barraria mais gente ainda, e é uma linha em `foneValido` se ele quiser. */
 function contatoDoIndicadorResolvido(){
   var em = String(R.indicadorEmail||'').trim(), fo = String(R.indicadorFone||'').trim();
-  if(em && emailValido(em)) return true;
-  if(fo && foneValido(fo)) return true;
-  return false;
+  return !!(em && emailValido(em) && fo && foneValido(fo));
 }
 
 /* 🔴 QUEM CHEGA AQUI NÃO TEM CONTA DA EMPRESA: não sabe o que é o brnapps, não
@@ -5775,31 +5783,44 @@ function selftest(){
       !!$('offEmail').closest('.f.wide'));
     t('★ a dica diz para que serve: retorno do andamento, e que pode ser pessoal',
       /RH avisa se a parceria avançou/.test(campoEl('retorno').textContent) &&
-      /pessoal/.test(campoEl('retorno').textContent));
-    /* 🔴 pelo menos UM canal é obrigatório: é o que liga a indicação pública à
-       pessoa, para dar notícia e para reconhecer quem trouxe a parceria. */
+      /pessoa(l|is)/.test(campoEl('retorno').textContent),
+      campoEl('retorno').textContent.replace(/\s+/g,' ').slice(0, 90));
+    /* 🔴 e a dica diz OS DOIS, desde 25/09: ela descrevia "um dos dois", e dica
+       que descreve a regra antiga faz a pessoa preencher um só e não entender a
+       reclamação que vem depois. */
+    t('★ e a dica pede os DOIS, não "um dos dois"',
+      /os dois/i.test(campoEl('retorno').textContent) &&
+      !/um dos dois/i.test(campoEl('retorno').textContent));
+    /* 🔴 OS DOIS canais são obrigatórios (decisão dele, 25/09): é o que liga a
+       indicação pública à pessoa, para dar notícia e reconhecer quem trouxe. */
     (function(){
       var gE = R.indicadorEmail, gF = R.indicadorFone;
       R.indicadorEmail = ''; R.indicadorFone = '';
-      out.push('       semLogin: ' + R.semLogin + ' · problemas: ' +
-        validar().map(function(x){ return x.campo; }).join(',').slice(0, 80));
-      t('★ sem nenhum contato, o formulário barra o envio',
+      t('★ sem contato nenhum, o formulário barra',
         validar().some(function(x){ return x.campo === 'retorno'; }) && contatoDoIndicadorResolvido() === false);
-      R.indicadorEmail = 'nao-e-email';
+      R.indicadorEmail = 'nao-e-email'; R.indicadorFone = '(31) 99999-8888';
       t('e contato inválido também barra', contatoDoIndicadorResolvido() === false);
-      R.indicadorEmail = 'maria@exemplo.com';
-      t('★ com o e-mail, libera', contatoDoIndicadorResolvido() === true &&
-        validar().every(function(x){ return x.campo !== 'retorno'; }));
+      /* 🔴 25/09: OS DOIS, e não "um ou outro". A regra virou o contrário da de
+         antes, e estas duas asserções são as que provam a virada: com um só,
+         BARRA. Antes elas cobravam exatamente o oposto. */
+      R.indicadorEmail = 'maria@exemplo.com'; R.indicadorFone = '';
+      t('★ só com o e-mail, BARRA', contatoDoIndicadorResolvido() === false);
       R.indicadorEmail = ''; R.indicadorFone = '(31) 99999-8888';
-      t('★ e só com o telefone também', contatoDoIndicadorResolvido() === true);
+      t('★ só com o telefone, BARRA', contatoDoIndicadorResolvido() === false);
       R.indicadorEmail = 'maria@exemplo.com';
-      var pac = montarPacote();
-      t('★ os dois viajam no arquivo, junto do nome completo de quem indicou',
-        pac.indicadorEmail === 'maria@exemplo.com' && pac.indicadorTelefone === '(31) 99999-8888' &&
-        typeof pac.colaborador === 'string' && pac.colaborador.length > 2,
-        pac.colaborador + ' · ' + pac.indicadorEmail + ' · ' + pac.indicadorTelefone);
-      t('★ e NÃO entram na coluna de e-mail identificado por login, que continua nula',
-        pac.colaboradorEmail === null && pac.identificadoPor === 'digitado');
+      t('★ com os DOIS, libera', contatoDoIndicadorResolvido() === true);
+      /* 🔴 e a MENSAGEM tem de falar dos dois: mensagem que descreve a regra
+         antiga faz a pessoa preencher um e não entender a reclamação. */
+      R.indicadorFone = '';
+      var msgRet = (validar().filter(function(x){ return x.campo === 'retorno'; })[0] || {}).msg || '';
+      t('★ e a mensagem de erro fala dos DOIS', /E o telefone|os dois/i.test(msgRet), msgRet);
+      R.indicadorFone = '(31) 99999-8888';
+      (function(){
+        var pac = montarPacote();
+        t('★ e os dois viajam no pacote',
+          pac.indicadorEmail === 'maria@exemplo.com' && pac.indicadorTelefone === '(31) 99999-8888',
+          pac.indicadorEmail + ' · ' + pac.indicadorTelefone);
+      })();
       R.indicadorEmail = gE; R.indicadorFone = gF;
     })();
     /* 🔴 A LEGENDA SAIU DA TELA (16/09): virou dois popups */
