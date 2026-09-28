@@ -829,7 +829,7 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
           <div class="f wide" data-campo="colaborador">
             <label for="colaborador" data-en="Your full name">Seu nome completo<span class="req">*</span></label>
             <div class="hint" data-en="Write it as it appears on your badge, so HR knows who submitted it.">Escreva como está no crachá, para o RH saber quem indicou.</div>
-            <input id="colaborador" name="colaborador" type="text" autocomplete="name" placeholder="Nome e sobrenome" maxlength="120">
+            <input id="colaborador" name="colaborador" type="text" autocomplete="name" placeholder="Nome e sobrenome" data-en-ph="First and last name" maxlength="120">
             <div class="nota" id="avisoLogin">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
               <span></span>
@@ -852,7 +852,7 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
           <div class="f wide" data-campo="tipoOutro" hidden>
             <label for="tipoOutro" data-en="What kind of partnership is it?">Que tipo de parceria é?<span class="req">*</span></label>
             <div class="hint" data-en="You ticked &quot;Other&quot;: describe in a few words what it is.">Você marcou "Outros": escreva em poucas palavras do que se trata.</div>
-            <input id="tipoOutro" name="tipoOutro" type="text" placeholder="Exemplo: escola de idiomas" maxlength="80">
+            <input id="tipoOutro" name="tipoOutro" type="text" placeholder="Exemplo: escola de idiomas" data-en-ph="Example: language school" maxlength="80">
             <div class="err" id="e_tipoOutro"></div>
           </div>
           <div class="f wide" data-campo="atendimento" hidden>
@@ -871,7 +871,7 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
           <div class="f wide" data-campo="estab">
             <label for="estab" data-en="Name of the establishment">Nome do estabelecimento<span class="req">*</span></label>
             <div class="hint" data-en="The name people know the place by.">O nome pelo qual as pessoas conhecem o lugar.</div>
-            <input id="estab" name="estab" type="text" placeholder="Exemplo: Madame Underground Club" maxlength="140">
+            <input id="estab" name="estab" type="text" placeholder="Exemplo: Madame Underground Club" data-en-ph="Example: Madame Underground Club" maxlength="140">
             <div class="err" id="e_estab"></div>
           </div>
           <!-- 🔴 ONDE VALE + ENDEREÇOS, JUNTOS (pedido dele, 16/09): a pessoa marca as
@@ -902,7 +902,7 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
             de Parcerias, então o RH vai precisar criar a seção.</div>
             <div class="dupla">
               <div>
-                <input id="cidadeOutra" name="cidadeOutra" type="text" placeholder="Exemplo: Petrolina - PE" maxlength="80"
+                <input id="cidadeOutra" name="cidadeOutra" type="text" placeholder="Exemplo: Petrolina - PE" data-en-ph="Example: Petrolina - PE" maxlength="80"
                        aria-label="Cidade e estado">
               </div>
               <div>
@@ -934,13 +934,13 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
               <div class="dupla">
                 <div>
                   <div class="hint" data-en="Website">Site</div>
-                  <input id="site" name="site" type="text" inputmode="url" placeholder="www.exemplo.com.br" maxlength="180"
+                  <input id="site" name="site" type="text" inputmode="url" placeholder="www.exemplo.com.br" data-en-ph="www.example.com" maxlength="180"
                          aria-label="Endereço do site">
                   <div class="err" id="e_site"></div>
                 </div>
                 <div>
                   <div class="hint" data-en="Social media">Rede social</div>
-                  <input id="social" name="social" type="text" placeholder="@estabelecimento" maxlength="180"
+                  <input id="social" name="social" type="text" placeholder="@estabelecimento" data-en-ph="@establishment" maxlength="180"
                          aria-label="Perfil em rede social">
                   <div class="err" id="e_social"></div>
                 </div>
@@ -970,7 +970,7 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
             <div class="hint aviso-forte" data-en="<b>This is the person HR will contact</b> to discuss the partnership: the owner, manager or person in charge. Give someone with authority to negotiate, and let them know HR will be in touch."><b>É esta a pessoa que o RH vai procurar</b> para tratar da parceria:
             proprietário, gerente ou responsável pelo estabelecimento. Informe alguém que tenha
             autonomia para negociar e avise essa pessoa de que o RH entrará em contato.</div>
-            <input id="contatoNome" name="contatoNome" type="text" placeholder="Nome de quem te atendeu" maxlength="120">
+            <input id="contatoNome" name="contatoNome" type="text" placeholder="Nome de quem te atendeu" data-en-ph="Name of the person who helped you" maxlength="120">
             <div class="err" id="e_contatoNome"></div>
           </div>
 
@@ -982,7 +982,7 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
               </div>
               <div class="f" data-campo="contatoEmail">
                 <label for="contatoEmail" data-en="Contact e-mail">E-mail do contato</label>
-                <input id="contatoEmail" name="contatoEmail" type="email" inputmode="email" placeholder="contato@estabelecimento.com" maxlength="140">
+                <input id="contatoEmail" name="contatoEmail" type="email" inputmode="email" placeholder="contato@estabelecimento.com" data-en-ph="contact@establishment.com" maxlength="140">
                 <div class="err" id="e_contatoEmail"></div>
               </div>
               <div class="f" data-campo="contatoFone">
@@ -991,7 +991,7 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
                      NAO TEM a tecla +, entao o numero internacional era impossivel de digitar,
                      e nada na tela dizia isso. E o maxlength subiu de 16 para 24, porque
                      "+44 20 7946 0958" ja encostava no teto antigo. -->
-                <input id="contatoFone" name="contatoFone" type="tel" inputmode="tel" placeholder="(00) 00000-0000" maxlength="24">
+                <input id="contatoFone" name="contatoFone" type="tel" inputmode="tel" placeholder="(00) 00000-0000" data-en-ph="(00) 00000-0000" maxlength="24">
                 <div class="hint" id="dicaContatoFone"></div>
                 <div class="err" id="e_contatoFone"></div>
               </div>
@@ -1027,12 +1027,15 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
                  ⚠ E pede o CONTEXTO no mesmo lugar, porque é a mesma pergunta
                  do ponto de vista de quem vai negociar: "o que eu já sei antes
                  de ligar?". Dois recados separados viravam dois que ninguém lê. -->
-            <div class="hint atencao" data-en="<b>No terms agreed yet?</b> Write <b>&quot;condição a combinar com o estabelecimento&quot;</b> — that is enough. And add anything the contact said that helps HR negotiate: who to ask for, the best time to call, whether they have already partnered with other companies.">
+            <!-- 🔴 A FRASE-CHAVE FICA EM PORTUGUÊS TAMBÉM NO INGLÊS, de propósito:
+                 ela é o TEXTO QUE A PESSOA VAI DIGITAR, e o painel procura por ele
+                 para saber quais cards precisam de negociação. Traduzir a frase
+                 quebraria a busca; traduzir o resto da frase, não. -->
+            <div class="hint atencao" data-en="<b>No terms agreed yet?</b> Write <b>&quot;condição a combinar com o estabelecimento&quot;</b> or, if you prefer, add your notes or anything that is relevant for HR when contacting the establishment.">
               <b>Ainda não combinaram nada?</b> Escreva
-              <b>“condição a combinar com o estabelecimento”</b>, e já está bom.
-              E conte o que o contato disse que possa ajudar o RH a negociar:
-              com quem falar, melhor horário para ligar, se já tem parceria com
-              outras empresas.</div>
+              <b>“condição a combinar com o estabelecimento”</b> ou, se preferir,
+              inclua suas observações ou informações que sejam relevantes para o
+              RH na hora de entrar em contato com o estabelecimento.</div>
             <div class="ajuda" id="aj_condicao" hidden data-en="<h4>What to write here</h4><p>The more detail you put here, the less HR has to go back to the establishment to ask. Try to answer these four things:</p><ul><li><b>How much</b>: 20%, R$ 10 off, a free gift;</li><li><b>On what</b>: the whole menu, lunch only, services over R$ 100 only;</li><li><b>When it applies</b>: days of the week, times, whether public holidays are excluded;</li><li><b>What the person shows</b>: employee badge, company e-mail, nothing.</li></ul><p>If you know until when the terms are valid, write that too.</p><div class=&quot;ex bom&quot;><span class=&quot;lbl&quot;>Works</span>20% off lunch from Monday to Friday, 11am to 3pm, on showing the employee badge. Not valid on public holidays.</div><div class=&quot;ex ruim&quot;><span class=&quot;lbl&quot;>Does not work</span>They give us a good discount.</div>">
               <h4>O que escrever aqui</h4>
               <p>Quanto mais detalhe você puser aqui, menos o RH precisa voltar ao estabelecimento para
@@ -1049,7 +1052,7 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
               <div class="ex ruim"><span class="lbl">Não serve</span>Eles dão um desconto bom para a
               gente.</div>
             </div>
-            <textarea id="condicao" name="condicao" placeholder="Descreva a condição combinada" maxlength="600"></textarea>
+            <textarea id="condicao" name="condicao" placeholder="Descreva a condição combinada" data-en-ph="Describe the agreed terms" maxlength="600"></textarea>
             <div class="conta"><span id="condicaoConta"></span></div>
             <div class="err" id="e_condicao"></div>
           </div>
@@ -1179,7 +1182,6 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
     </div>
   </div>
 </div>
-
 <script>
 (function(){
 'use strict';
@@ -2417,6 +2419,9 @@ function montarCampoDeEnderecos(){
     var linha = novo('div','hr-linha en-linha');
     var t = novo('input','en-txt'); t.type = 'text'; t.value = l.endereco || '';
     t.placeholder = 'Rua, número, bairro'; t.maxLength = 220;
+    /* ⚠ este campo NASCE NO JS e por isso ficou sem tradução até 28/09: em
+       inglês ele pedia o endereço com "Rua, número, bairro". */
+    t.setAttribute('data-en-ph', 'Street, number, neighbourhood');
     t.setAttribute('aria-label', grupo.dataset.cidade
       ? 'Endereço em ' + nomeDaCidade(grupo.dataset.cidade)
       : 'Endereço de ponto de atendimento');
@@ -3233,17 +3238,23 @@ function montarCampoDeContatoDoIndicador(){
   dica.setAttribute('data-en', 'Both your e-mail and your phone number. They can be personal: this is how HR ' +
     'tells you whether the partnership moved forward and credits whoever brought it. It never goes to the Partnership Club.');
   var dupla = document.createElement('div'); dupla.className = 'dupla';
-  function campo(id, rot, rotEn, ph, tipo){
+  /* 🔴 phEn E' NOVO (28/09): estes dois campos nascem no JS, entao o meu
+     exame do CODIGO-FONTE nao os viu e eles ficaram sem traducao de
+     placeholder. Quem pegou foi a BATERIA, que mede o DOM: o formulario em
+     ingles pedia o e-mail com o exemplo voce@exemplo.com.
+     ⚠ Licao: varredura em arquivo nao alcanca o que o JS cria. */
+  function campo(id, rot, rotEn, ph, tipo, phEn){
     var cx = document.createElement('div');
     var h = document.createElement('div'); h.className = 'hint'; h.textContent = rot;
     h.setAttribute('data-en', rotEn);
     var i = document.createElement('input');
     i.id = id; i.type = tipo; i.placeholder = ph; i.maxLength = 120; i.autocomplete = 'off';
+    i.setAttribute('data-en-ph', phEn || ph);
     i.setAttribute('aria-label', rot);
     cx.appendChild(h); cx.appendChild(i);
     return { caixa:cx, campo:i };
   }
-  var e1 = campo('offEmail', 'E-mail', 'E-mail', 'voce@exemplo.com', 'email');
+  var e1 = campo('offEmail', 'E-mail', 'E-mail', 'voce@exemplo.com', 'email', 'you@example.com');
   var e2 = campo('offFone', 'Telefone ou WhatsApp', 'Phone or WhatsApp', '(00) 00000-0000', 'tel');
   e1.campo.addEventListener('input', function(){ R.indicadorEmail = e1.campo.value; atualizarProgresso(); });
   e2.campo.addEventListener('input', function(){ R.indicadorFone = e2.campo.value; atualizarProgresso(); });
@@ -4019,6 +4030,11 @@ function repintarTextosDoJS(){
   if($('arqDica')){ $('arqDica').textContent = avisoEvidencia(); n++; }
   if($('ajudaEvidenciaLimite')){ $('ajudaEvidenciaLimite').textContent = avisoEvidencia(); n++; }
   if($('avisoEnvio')){ $('avisoEnvio').textContent = textoAviso(); n++; }
+  /* 🔴 O CONTADOR TAMBÉM (28/09): `contarCondicao` já escrevia pelo `T()`, mas
+     ele só roda ao digitar, e quem trocava de idioma sem digitar continuava
+     lendo "0 de 600 caracteres" em inglês. Texto que o JS escreve tem de ser
+     REPINTADO na troca, e não só traduzido no momento em que nasce. */
+  if($('condicaoConta')){ contarCondicao(); n++; }
   /* o botão de enviar muda de texto conforme o modo, e o modo não muda aqui */
   if($('btnTxt') && !$('btnEnviar').classList.contains('busy')){
     $('btnTxt').textContent = ENVIO.modo === 'arquivo'
@@ -4034,6 +4050,19 @@ function aplicarIdioma(cod){
   Array.prototype.forEach.call(document.querySelectorAll('[data-en]'), function(e){
     if(e.dataset.pt === undefined) e.dataset.pt = e.innerHTML;
     e.innerHTML = ing ? e.dataset.en : e.dataset.pt;
+    /* 🔴 O `*` DE OBRIGATÓRIO SOBREVIVE À TROCA (conserto de 28/09, achado
+       pela foto). Esta linha reescreve o label INTEIRO, e o
+       `<span class="req">*</span>` ia junto: em inglês o formulário deixava de
+       dizer quais campos são obrigatórios, em 8 dos 9 campos.
+       ⚠ Consertado AQUI, e não escrevendo o `*` dentro de cada `data-en`: um
+       campo já tinha sido remendado assim, e remendo por campo não alcança o
+       próximo campo que alguém criar. E não duplica: só repoe quando o lado que
+       entrou perdeu a marca que o lado guardado tinha. */
+    if(/class="req"/.test(e.dataset.pt || '') && !e.querySelector('.req')){
+      var rq = document.createElement('span');
+      rq.className = 'req'; rq.textContent = '*';
+      e.appendChild(rq);
+    }
   });
   Array.prototype.forEach.call(document.querySelectorAll('[data-en-ph]'), function(e){
     if(e.dataset.ptPh === undefined) e.dataset.ptPh = e.getAttribute('placeholder') || '';
@@ -4199,7 +4228,10 @@ function contarCondicao(){
   $('condicaoConta').innerHTML = '';
   var b = document.createElement('b'); b.textContent = n;
   $('condicaoConta').appendChild(b);
-  $('condicaoConta').appendChild(document.createTextNode(' de 600 caracteres'));
+  /* ⚠ pelo `T()`, como todo texto que o JS escreve: em inglês a tela dizia
+     "0 de 600 caracteres". */
+  $('condicaoConta').appendChild(document.createTextNode(
+    T(' de 600 caracteres', ' of 600 characters')));
 }
 
 function ligar(){
@@ -5208,6 +5240,73 @@ function selftest(){
     porArquivo(null);
   })();
 
+  out.push('== O inglês inteiro: o asterisco, os placeholders e o contador ==');
+  /* 🔴 TRÊS VAZAMENTOS QUE A BATERIA NÃO PEGAVA, achados pela FOTO em 28/09,
+     quando ele pediu "confirma se a versão EN e PT estão todas certas".
+     Nenhum deles aparece lendo o código: aparecem trocando o idioma e OLHANDO.
+     Por isso as asserções abaixo trocam o idioma de verdade e leem a TELA. */
+  (function(){
+    var g = document.documentElement.getAttribute('lang');
+    function req(){
+      return Array.prototype.filter.call(document.querySelectorAll('label'),
+        function(l){ return !!l.querySelector('.req'); });
+    }
+    aplicarIdioma('pt');
+    var nPt = req().length;
+    t('o formulário tem campos obrigatórios marcados em português', nPt >= 8, nPt + ' labels');
+    aplicarIdioma('en');
+    var nEn = req().length;
+    /* 🔴 ERA ISTO: a troca reescreve o `innerHTML` do label e levava o
+       `<span class="req">*</span>` junto. Em inglês o formulário deixava de
+       dizer quais campos são obrigatórios, em 8 dos 9. */
+    t('★ e o "*" de obrigatório SOBREVIVE ao inglês, em TODOS eles',
+      nEn === nPt, nPt + ' em PT contra ' + nEn + ' em EN');
+    t('   e ele não DUPLICA ao voltar e ir de novo',
+      (function(){ aplicarIdioma('pt'); aplicarIdioma('en');
+        return !document.querySelectorAll('label').length ? false :
+          Array.prototype.every.call(document.querySelectorAll('label'), function(l){
+            return l.querySelectorAll('.req').length <= 1; }); })());
+
+    /* --- os placeholders --- */
+    var campos = document.querySelectorAll('input[placeholder], textarea[placeholder]');
+    var semMarca = Array.prototype.filter.call(campos, function(e){
+      return !e.hasAttribute('data-en-ph'); });
+    /* 🔴 O DETALHE VAI NO NOME: a 	() deste arquivo recebe SO' (nome, cond)
+       e ignora o terceiro argumento. Eu passei o diagnostico nele e ele nunca
+       foi impresso: duas asseracoes reprovaram sem dizer QUEM. */
+    t('★ TODO campo com placeholder tem tradução declarada' +
+      (semMarca.length ? ' [faltam: ' + Array.prototype.map.call(semMarca, function(e){
+        return (e.id || e.name || '?') + '=' + e.getAttribute('placeholder'); }).join(' | ') + ']' : ''),
+      semMarca.length === 0);
+    /* e ela é APLICADA, não só declarada: medir o atributo depois da troca */
+    aplicarIdioma('en');
+    var emPt = Array.prototype.filter.call(campos, function(e){
+      var ph = e.getAttribute('placeholder') || '';
+      /* palavra com acento OU palavra só-portuguesa: o "(00) 00000-0000" é
+         igual nas duas línguas de propósito e não conta como vazamento. */
+      return /[ãõáéíóúâêôç]/i.test(ph) || /\b(Nome|Exemplo|Descreva|quem|te)\b/.test(ph);
+    });
+    t('★ e em inglês NENHUM placeholder fica em português' +
+      (emPt.length ? ' [' + Array.prototype.map.call(emPt, function(e){
+        return (e.id||'?') + '=' + e.getAttribute('placeholder'); }).join(' | ') + ']' : ''),
+      emPt.length === 0);
+
+    /* --- o contador --- */
+    t('★ o contador de caracteres também vira inglês na troca',
+      !!$('condicaoConta') && /characters/.test($('condicaoConta').textContent) &&
+      !/caracteres/.test($('condicaoConta').textContent),
+      $('condicaoConta') ? $('condicaoConta').textContent : '(sem contador)');
+    aplicarIdioma('pt');
+    t('   e volta para português quando se volta',
+      !!$('condicaoConta') && /caracteres/.test($('condicaoConta').textContent),
+      $('condicaoConta') ? $('condicaoConta').textContent : '(sem contador)');
+
+    aplicarIdioma(g === 'en' ? 'en' : 'pt');
+    t('   e o bloco devolveu a tela no idioma em que a encontrou',
+      document.documentElement.getAttribute('lang') === g,
+      document.documentElement.getAttribute('lang') + ' vs ' + g);
+  })();
+
   out.push('== O nome novo do campo, e o limite de 23/09 ==');
   (function(){
     /* 🔴 "Evidência" saiu da TELA (pedido dele, 23/09). Só da tela: as chaves do
@@ -5953,8 +6052,16 @@ function selftest(){
       t('★ ele dita a frase exata que o RH procura depois',
         av.textContent.indexOf('condição a combinar com o estabelecimento') >= 0,
         av.textContent.slice(0, 90));
-      t('★ e pede o contexto para quem vai negociar',
-        /ajudar o RH a negociar|com quem falar/.test(av.textContent));
+      /* 🔴 COBRA A PROPRIEDADE, NÃO A MINHA REDAÇÃO. A primeira versão pedia
+         "ajudar o RH a negociar|com quem falar", que eram as palavras que EU
+         tinha escrito: quando ele reescreveu o aviso em 28/09, a asserção
+         reprovou um texto melhor. O que tem de continuar verdadeiro é que o
+         aviso ofereça a saída (a frase exata, cobrada acima) E convide a
+         escrever o que ajuda o RH no contato. */
+      t('★ e convida a escrever o que ajuda o RH no contato',
+        /\bRH\b/.test(av.textContent) &&
+        /observa|contexto|informa|relevante|ajud/i.test(av.textContent),
+        av.textContent.replace(/\s+/g, ' ').slice(-90));
       t('★ e é amarelo, a única cor de atenção da tela',
         getComputedStyle(av).borderLeftColor !== getComputedStyle(campo).borderLeftColor,
         getComputedStyle(av).borderLeftColor);
