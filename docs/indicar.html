@@ -223,6 +223,15 @@ label .opt{color:var(--muted);font-weight:400}
   border-left:3px solid var(--amber);border-radius:0 8px 8px 0;padding:8px 10px;margin-top:2px}
 .hint.aviso-forte b{color:var(--warn-txt)}
 .hint{font-size:10.5px;color:var(--muted);line-height:1.55}
+/* 🔴 O RECADO ÂMBAR DE UM CAMPO (pedido dele, 28/09). Fica DENTRO do campo,
+   logo abaixo da dica cinza, e não numa caixa à parte: ele responde uma dúvida
+   que só aparece com o cursor já no campo ("e se não combinaram condição?").
+   Amarelo porque é a única cor de atenção que a tela usa, e a dica cinza ao
+   lado dele já ensina o caso normal. */
+.hint.atencao{margin-top:6px;padding:8px 10px;border-left:3px solid var(--amber);
+  border-radius:0 8px 8px 0;background:var(--creme);color:var(--warn-txt);
+  font-size:11px;font-weight:500}
+.hint.atencao b{font-weight:700}
 
 /* ---------- ajuda ("tooltip") ----------
    Abre por CLIQUE, não por passar o mouse: no celular não existe hover e
@@ -476,10 +485,23 @@ body.js .lang-btn{display:inline-flex}
 .lang-menu button .lg-dot{width:8px;height:8px;border-radius:50%;background:currentColor;opacity:0;flex:none}
 .lang-menu button[aria-checked="true"] .lg-dot{opacity:1}
 .suc-acoes{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center;margin:4px 0 14px}
-.suc-app{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;
-  text-decoration:none;color:var(--btn-txt);background:var(--btn-bg);border:1px solid var(--btn-bg);
-  border-radius:10px;padding:11px 18px;transition:opacity .15s}
-.suc-app:hover{opacity:.88}
+/* 🔴 OS DOIS BOTÕES DO FIM SÃO IRMÃOS (pedido dele, 28/09): "o layout do botão
+   é um pouco mais quadrado que o outro, os dois precisam ser iguais", e o de
+   ver o Clube "vem estático", sem a entrada suave do outro.
+   Eram três diferenças: raio 10px contra 999px, fonte 13,5 contra 12,5, e a
+   animação de entrada só num deles. Agora a FORMA é a mesma e o que distingue
+   é só o papel: um é cheio (ver o Clube) e o outro é contorno (indicar outra).
+   ⚠ A medida que vale é `.suc-acoes a, .suc-acoes button`: escrever de novo em
+   cada um é como as três diferenças nasceram. */
+.suc-acoes a, .suc-acoes button{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;
+  border-radius:999px;padding:11px 22px;margin:0;cursor:pointer;text-decoration:none;
+  display:inline-flex;align-items:center;gap:8px;line-height:1;
+  transition:background .16s,color .16s,opacity .16s,transform .16s,box-shadow .16s;
+  animation:up .45s .78s both}
+.suc-acoes a:hover, .suc-acoes button:hover{transform:translateY(-2px);
+  box-shadow:0 6px 16px rgba(27,45,37,.18)}
+.suc-app{color:var(--btn-txt);background:var(--btn-bg);border:1px solid var(--btn-bg)}
+.suc-app:hover{opacity:.9}
 /* as etapas do "como usar": numeradas na tela, como ficam no card */
 .et-bloco{display:flex;flex-direction:column;gap:5px}
 .et-cab{display:flex;align-items:center;gap:8px}
@@ -626,9 +648,9 @@ body.js .lang-btn{display:inline-flex}
 /* 🔴 CENTRADOS E NA MESMA LINHA (ele viu, 17/09): o botão trazia `margin:auto`
    e `display:block` de quando era o único da tela, e dentro do flex isso o
    empurrava para um lado. Quem centra agora é o `.suc-acoes`. */
-#btnOutra{font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:700;color:var(--txt);
-  background:transparent;border:1px solid var(--txt);border-radius:999px;padding:11px 22px;cursor:pointer;
-  margin:0;display:inline-flex;align-items:center;animation:up .45s .78s both}
+/* só o que o distingue do irmão: contorno em vez de cheio. Forma, tamanho e
+   entrada vêm da regra de `.suc-acoes`, logo acima. */
+#btnOutra{color:var(--txt);background:transparent;border:1px solid var(--txt)}
 #btnOutra:hover{background:var(--txt);color:var(--bg)}
 
 /* ---------- rodapé e painel de teste ---------- */
@@ -994,6 +1016,23 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
                  balcão é o RH, que vai negociar, e depois o colaborador, no card. -->
             <div class="hint" data-en="Describe in as much detail as possible what the partnership is and also the conditions to use it.">Escreva com a maior quantidade de detalhes qual é a parceria e também
             as condições para usufruir dela.</div>
+            <!-- 🔴 O CASO EM QUE NÃO HÁ CONDIÇÃO (pedido dele, 28/09). Acontece
+                 muito: a pessoa conversa, o gerente diz que depois combina, e
+                 ela trava porque o campo é obrigatório e ela não tem número
+                 para escrever. Sem esta linha, o resultado é campo em branco,
+                 indicação abandonada, ou um desconto inventado.
+                 ⚠ A frase EXATA está aqui de propósito: o RH filtra por ela no
+                 painel para saber quais cards precisam de negociação. Mudar o
+                 texto quebra essa busca.
+                 ⚠ E pede o CONTEXTO no mesmo lugar, porque é a mesma pergunta
+                 do ponto de vista de quem vai negociar: "o que eu já sei antes
+                 de ligar?". Dois recados separados viravam dois que ninguém lê. -->
+            <div class="hint atencao" data-en="<b>No terms agreed yet?</b> Write <b>&quot;condição a combinar com o estabelecimento&quot;</b> — that is enough. And add anything the contact said that helps HR negotiate: who to ask for, the best time to call, whether they have already partnered with other companies.">
+              <b>Ainda não combinaram nada?</b> Escreva
+              <b>“condição a combinar com o estabelecimento”</b>, e já está bom.
+              E conte o que o contato disse que possa ajudar o RH a negociar:
+              com quem falar, melhor horário para ligar, se já tem parceria com
+              outras empresas.</div>
             <div class="ajuda" id="aj_condicao" hidden data-en="<h4>What to write here</h4><p>The more detail you put here, the less HR has to go back to the establishment to ask. Try to answer these four things:</p><ul><li><b>How much</b>: 20%, R$ 10 off, a free gift;</li><li><b>On what</b>: the whole menu, lunch only, services over R$ 100 only;</li><li><b>When it applies</b>: days of the week, times, whether public holidays are excluded;</li><li><b>What the person shows</b>: employee badge, company e-mail, nothing.</li></ul><p>If you know until when the terms are valid, write that too.</p><div class=&quot;ex bom&quot;><span class=&quot;lbl&quot;>Works</span>20% off lunch from Monday to Friday, 11am to 3pm, on showing the employee badge. Not valid on public holidays.</div><div class=&quot;ex ruim&quot;><span class=&quot;lbl&quot;>Does not work</span>They give us a good discount.</div>">
               <h4>O que escrever aqui</h4>
               <p>Quanto mais detalhe você puser aqui, menos o RH precisa voltar ao estabelecimento para
@@ -1140,6 +1179,7 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
     </div>
   </div>
 </div>
+
 <script>
 (function(){
 'use strict';
@@ -3616,6 +3656,21 @@ function recomecar(){
   $('sucesso').classList.remove('on');
   $('regras').style.display = '';
   $('tela').style.display = '';
+  /* 🔴 O BOTÃO DE ENVIAR VOLTA AO NORMAL (defeito que ele viu, 28/09): "quando
+     a pessoa clica em indicar nova, o botão enviar fica em um looping, sendo
+     necessário recarregar a página".
+     A causa: no SUCESSO ninguém tirava o `.busy`. Só o `.catch` tirava, porque
+     lá o formulário continua na tela. No caminho bom o formulário some, e
+     ninguém percebeu que ele voltaria escrito "Enviando" e com
+     `pointer-events:none` — ou seja, morto, sem parecer quebrado.
+     ⚠ O conserto é AQUI e não no `.then`: quem devolve o formulário para a
+     tela é esta função, e é ela que tem de devolvê-lo inteiro. Consertar no
+     `.then` deixaria a tela de sucesso mostrando um botão escondido sendo
+     "arrumado" por trás, e qualquer caminho novo até aqui repetiria o defeito. */
+  var bt = $('btnEnviar');
+  if(bt) bt.classList.remove('busy');
+  var bx = $('btnTxt');
+  if(bx) bx.textContent = T('Enviar indicação', 'Submit suggestion');
   atualizarProgresso();
   window.scrollTo(0,0);
 }
@@ -4344,7 +4399,7 @@ window.FP = {
      `ReferenceError` e parava, o que faz parecer que o arquivo está quebrado.
      Nenhum destes muda comportamento: são os mesmos que a tela já usa. */
   aplicarIdioma: aplicarIdioma, idiomaAtual: idiomaAtual, T: T,
-  montarTermo: montarTermo, mostrarSucesso: mostrarSucesso,
+  montarTermo: montarTermo, mostrarSucesso: mostrarSucesso, recomecar: recomecar,
   definirTituloSucesso: definirTituloSucesso,
   foneValido: foneValido, mascaraFone: mascaraFone,
   modoDeEntrega: modoDeEntrega, ehAparelhoDeToque: ehAparelhoDeToque,
@@ -5332,6 +5387,15 @@ function selftest(){
            a dica em inglês cita ele entre aspas, e citar é o certo. Trocar a
            citação faria a tela prometer um texto de card que não existe. */
         if(txt.indexOf(HORARIO_PADRAO) >= 0) continue;
+        /* 🔴 MESMO CASO, outro texto (28/09): o recado da condição manda
+           escrever a frase "condição a combinar com o estabelecimento", e ela
+           fica em PORTUGUÊS na versão em inglês de propósito. É a frase que a
+           pessoa vai DIGITAR no campo, e é por ela que o RH filtra os cards
+           que ainda precisam de negociação. Traduzir criaria duas frases para
+           a mesma coisa e quebraria a busca de quem negocia.
+           ⚠ A exceção é a frase INTEIRA, e não a palavra "condição": assim ela
+           não vira uma porta para português de verdade escapar por aqui. */
+        if(txt.indexOf('condição a combinar com o estabelecimento') >= 0) continue;
         if(UNIDADES.some(function(u){ return !u.ampla && txt.indexOf(u.nome) >= 0; })) continue;  /* cidade é nome próprio */
         olhados++;
         if(ACENTO.test(txt) || FUNC.test(txt)){
@@ -5823,6 +5887,81 @@ function selftest(){
       })();
       R.indicadorEmail = gE; R.indicadorFone = gF;
     })();
+
+    /* ---- 🔴 O BOTÃO VOLTA VIVO DEPOIS DE "INDICAR OUTRA" (defeito dele, 28/09)
+       "o botão enviar fica em um looping, sendo necessário recarregar a
+       página". No sucesso ninguém tirava o `.busy`, que tem
+       `pointer-events:none`: o formulário voltava com um botão morto escrito
+       "Enviando", e morto sem parecer quebrado é o pior dos dois mundos. */
+    (function(){
+      /* 🔴 `recomecar()` ZERA O `R` GLOBAL, e asserções mais abaixo leem dele.
+         Sem guardar e devolver, este bloco reprova a vizinha, que está certa:
+         foi o que aconteceu com a de "a autoria vai como DIGITADA". Quarta vez
+         nesta semana que um teste meu suja o sujeito do teste seguinte. */
+      var gR = JSON.parse(JSON.stringify(R));
+      var b = $('btnEnviar'), bx = $('btnTxt');
+      var gCls = b.className, gTxt = bx.textContent;
+      /* o estado exato em que o sucesso deixava a tela */
+      b.classList.add('busy'); bx.textContent = 'Enviando';
+      t('a bateria conseguiu pôr o botão no estado do envio',
+        b.classList.contains('busy'));
+      recomecar();
+      t('★ depois de "indicar outra", o botão NÃO fica travado',
+        b.classList.contains('busy') === false, b.className);
+      t('★ e volta a dizer "Enviar indicação", não "Enviando"',
+        /Enviar/.test(bx.textContent), bx.textContent);
+      /* ⚠ `pointer-events:none` é o que o fazia parecer "em looping": clicar
+         não fazia nada e a tela não dizia por quê. */
+      t('★ e volta a aceitar clique',
+        getComputedStyle(b).pointerEvents !== 'none', getComputedStyle(b).pointerEvents);
+      b.className = gCls; bx.textContent = gTxt;
+      Object.keys(gR).forEach(function(k){ R[k] = gR[k]; });
+      t('   e o bloco devolveu o formulário como encontrou',
+        R.identificadoPor === gR.identificadoPor);
+    })();
+
+    /* ---- 🔴 OS DOIS BOTÕES DO FIM SÃO IGUAIS (pedido dele, 28/09) ---- */
+    (function(){
+      var app = $('btnVerApp'), outra = $('btnOutra');
+      t('os dois botões do fim existem', !!app && !!outra);
+      if(!app || !outra) return;
+      var a = getComputedStyle(app), o = getComputedStyle(outra);
+      t('★ mesmo formato: o "ver o Clube" era quadrado e o outro pílula',
+        a.borderTopLeftRadius === o.borderTopLeftRadius,
+        a.borderTopLeftRadius + ' x ' + o.borderTopLeftRadius);
+      t('★ mesmo tamanho de letra', a.fontSize === o.fontSize,
+        a.fontSize + ' x ' + o.fontSize);
+      t('★ mesmo enchimento', a.padding === o.padding, a.padding + ' x ' + o.padding);
+      /* 🔴 "ele vem estático": só um tinha a animação de entrada. */
+      t('★ os DOIS entram com a mesma animação, nenhum aparece seco',
+        a.animationName === o.animationName && a.animationName !== 'none',
+        a.animationName + ' x ' + o.animationName);
+      t('★ e os dois têm transição suave no hover',
+        a.transitionDuration !== '0s' && o.transitionDuration !== '0s',
+        a.transitionDuration + ' x ' + o.transitionDuration);
+    })();
+
+    /* ---- 🔴 O RECADO DA CONDIÇÃO A COMBINAR (pedido dele, 28/09) ---- */
+    (function(){
+      var campo = document.querySelector('[data-campo="condicao"]');
+      var av = campo ? campo.querySelector('.hint.atencao') : null;
+      t('★ o campo da condição tem o recado em destaque', !!av);
+      if(!av) return;
+      /* 🔴 A FRASE EXATA: o RH filtra por ela no painel para achar os cards que
+         ainda precisam de negociação. Mudar o texto quebra essa busca, e é por
+         isso que a asserção cobra a frase, e não "alguma coisa sobre combinar". */
+      t('★ ele dita a frase exata que o RH procura depois',
+        av.textContent.indexOf('condição a combinar com o estabelecimento') >= 0,
+        av.textContent.slice(0, 90));
+      t('★ e pede o contexto para quem vai negociar',
+        /ajudar o RH a negociar|com quem falar/.test(av.textContent));
+      t('★ e é amarelo, a única cor de atenção da tela',
+        getComputedStyle(av).borderLeftColor !== getComputedStyle(campo).borderLeftColor,
+        getComputedStyle(av).borderLeftColor);
+      t('   e vem DEPOIS da dica cinza, não no lugar dela',
+        !!campo.querySelector('.hint:not(.atencao)'));
+    })();
+
     /* 🔴 A LEGENDA SAIU DA TELA (16/09): virou dois popups */
     t('★ a legenda não fica mais no meio do formulário',
       !$('offAviso') && typeof montarInstrucoesOffline === 'undefined');
