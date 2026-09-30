@@ -122,6 +122,48 @@ def lista_de_enderecos(card):
     return out
 
 
+def endereco_do_site(v):
+    """🔴 o SITE do card (30/09), pronto para virar link. Devolve (texto, href).
+
+    O texto é o DOMÍNIO e o href é a URL inteira: o card da Flash tem um link de
+    guia com 80 letras, e um link desses escrito por extenso ocupa três linhas
+    do card e não diz mais do que "faq.flashapp.com.br".
+    ⚠ Sem esquema, assume https: o RH digita "site.com.br" e um href sem
+    esquema viraria caminho relativo, abrindo uma página nossa que não existe.
+    """
+    t = re.sub(r"\s+", "", str(v or "")).strip()
+    if not t or "@" in t: return ("", "")
+    href = t if re.match(r"^https?://", t, re.I) else "https://" + t
+    dom = re.sub(r"^https?://", "", href, flags=re.I).split("/")[0]
+    dom = re.sub(r"^www\.", "", dom, flags=re.I)
+    if "." not in dom: return ("", "")
+    return (dom, href)
+
+
+def rede_social_do_card(v):
+    """🔴 a REDE SOCIAL do card (30/09). Devolve (texto, href), e o href pode
+    vir vazio DE PROPÓSITO: "@estabelecimento" não diz qual rede é, e chutar
+    Instagram mandaria quem clica para um perfil que pode não existir. Handle
+    vira texto; URL vira link."""
+    # ⚠ COLAPSA o espaço, não TIRA: "Instagram: Mikelly Oliveira Beauty" é
+    # texto que o RH escreveu num card de verdade, e tirar o espaço antes de
+    # decidir virava uma palavra colada sem ponto, que sumia do card.
+    t = re.sub(r"\s+", " ", str(v or "")).strip()
+    if not t: return ("", "")
+    if t.find("@") > 0: return ("", "")   # e-mail disfarçado de rede social
+    colado = re.sub(r"\s+", "", t)
+    if t.startswith("@"):
+        return ("", "") if "@" in colado[1:] else (colado, "")
+    dom, href = endereco_do_site(t) if " " not in t else ("", "")
+    if dom:
+        # o nome do perfil diz mais que o domínio: "instagram.com/casadopao"
+        caminho = re.sub(r"^https?://", "", href, flags=re.I).split("/", 1)
+        txt = dom + ("/" + caminho[1].strip("/") if len(caminho) > 1 and caminho[1].strip("/") else "")
+        return (txt[:60], href)
+    # 🔴 NEM HANDLE NEM ENDEREÇO: vale como TEXTO, do jeito que foi digitado.
+    return (t[:60], "")
+
+
 def lista_de_etapas(card):
     """🔴 as etapas do "como utilizar" (17/09), limpas pela MESMA regra do
     formulário e do painel: oito no máximo, 140 letras cada, sem vazias."""
@@ -199,6 +241,25 @@ def card_html(c, cidade):
     if fone_txt:
         wa = ('<a class="d-wa" target="_blank" rel="noopener" title="Abrir conversa no WhatsApp" aria-label="WhatsApp" href="https://wa.me/55%s"><svg class="ic"><use href="#i-wa"/></svg></a>' % fone) if (fone and card.get("whatsapp")) else ""
         linhas.append('          <div class="d-row"><svg class="ic"><use href="#i-phone"/></svg><span class="d-txt">%s%s</span></div>' % (escape(fone_txt), wa))
+    # 🔴 SITE E REDE SOCIAL (30/09). Os dois eram campos do card desde 17/09 e
+    # NUNCA chegavam ao app: a função não os mandava e o gerador não os
+    # desenhava. O RH preenchia e o card publicado não mostrava nada, que é o
+    # MESMO defeito do "como usar" de 17/09.
+    # ⚠ Ficam DEPOIS do telefone e ANTES do "como usar": são informação de onde
+    # achar o lugar, como o endereço e o horário; o "como usar" responde outra
+    # pergunta e fecha o card.
+    # ⚠ E não têm texto padrão: sem site, a linha não existe. Endereço e horário
+    # têm padrão porque todo lugar tem os dois; site, não.
+    site_txt, site_href = endereco_do_site(card.get("site"))
+    if site_txt:
+        linhas.append('          <div class="d-row"><svg class="ic"><use href="#i-link"/></svg><a class="d-txt d-www" href="%s" target="_blank" rel="noopener">%s</a></div>'
+                      % (escape(site_href, quote=True), escape(site_txt)))
+    soc_txt, soc_href = rede_social_do_card(card.get("social"))
+    if soc_txt and soc_href:
+        linhas.append('          <div class="d-row"><svg class="ic"><use href="#i-at"/></svg><a class="d-txt d-www" href="%s" target="_blank" rel="noopener">%s</a></div>'
+                      % (escape(soc_href, quote=True), escape(soc_txt)))
+    elif soc_txt:
+        linha("at", soc_txt)
     # 🔴 COMO USAR O BENEFÍCIO (17/09): bloco próprio, numerado, e SEMPRE O ÚLTIMO
     # do card (pedido dele). Ele responde a outra pergunta ("o que eu faço no
     # balcão?") e fecha o card; o telefone é informação do lugar e fica junto do

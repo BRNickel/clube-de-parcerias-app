@@ -502,6 +502,28 @@ body.js .lang-btn{display:inline-flex}
   box-shadow:0 6px 16px rgba(27,45,37,.18)}
 .suc-app{color:var(--btn-txt);background:var(--btn-bg);border:1px solid var(--btn-bg)}
 .suc-app:hover{opacity:.9}
+/* 🔴 A FAIXA DA PÁGINA PÚBLICA, na capa (pedido dele, 29/09): "um icone mais
+   largo chamado 'visite nossa página de parcerias!'". LARGA de propósito, e não
+   um botão do tamanho do texto: ela não disputa com o formulário, ela oferece
+   outra coisa, e um alvo largo é o que faz alguém reparar antes de começar a
+   preencher.
+   ⚠ Ela não é verde cheio: verde cheio nesta tela é ENVIAR, e uma segunda peça
+   verde ao lado do envio faria as duas parecerem o mesmo caminho. */
+.capa-app{display:flex;align-items:center;gap:11px;width:100%;box-sizing:border-box;
+  margin-top:18px;padding:13px 16px;border-radius:13px;text-decoration:none;
+  background:var(--green-dim);border:1px solid rgba(0,232,131,.35);color:var(--ok-txt);
+  font-size:14px;font-weight:700;letter-spacing:-.01em;
+  transition:background .16s,border-color .16s,transform .12s}
+.capa-app:hover{background:rgba(0,232,131,.2);border-color:rgba(0,232,131,.55);
+  transform:translateY(-1px)}
+.capa-app:active{transform:none}
+.capa-app svg{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;
+  stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.capa-app span{flex:1 1 auto;min-width:0}
+/* a seta empurra para a direita e anda um pouco quando a mão chega perto */
+.capa-app .seta{width:17px;height:17px;transition:transform .16s}
+.capa-app:hover .seta{transform:translateX(3px)}
+@media(max-width:520px){ .capa-app{font-size:13px;padding:12px 13px;gap:9px} }
 /* as etapas do "como usar": numeradas na tela, como ficam no card */
 .et-bloco{display:flex;flex-direction:column;gap:5px}
 .et-cab{display:flex;align-items:center;gap:8px}
@@ -760,6 +782,25 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
     <p data-en="Use this form to suggest an establishment that could become a Brazilian Nickel partner. HR will contact the establishment, assess whether a partnership is feasible and, if an agreement is reached, publish the terms in the Partnership Club.">Use este formulário para indicar um estabelecimento que possa se tornar parceiro da
     Brazilian Nickel. O RH entra em contato com o estabelecimento, avalia a viabilidade da parceria
     e, havendo acordo, publica a condição no Clube de Parcerias.</p>
+    <!-- 🔴 A VISITA À PÁGINA PÚBLICA (pedido dele, 29/09: "inclua o link para a
+         página de parcerias que fica publico. pensei em um icone mais largo
+         chamado 'visite nossa página de parcerias!'").
+         O link para o app já existia, mas SÓ na tela de sucesso, ou seja, só
+         para quem acabou de indicar. Quem abre o formulário e descobre que a
+         parceria dele já existe não tinha como ver isso, e indicava de novo.
+         ⚠ Fica na CAPA, antes das regras: a pergunta "o que já tem no Clube?"
+         vem antes de "como eu indico". -->
+    <a class="capa-app" id="btnCapaApp" href="#" target="_blank" rel="noopener"
+       data-en="Visit our partnership page!">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <circle cx="12" cy="12" r="9"/><path d="M3 12h18"/>
+        <path d="M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18z"/>
+      </svg>
+      <span>Visite nossa página de parcerias!</span>
+      <svg class="seta" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M5 12h14"/><path d="M13 6l6 6-6 6"/>
+      </svg>
+    </a>
   </div>
 
   <!-- ===================== EXPLICAÇÃO ===================== -->
@@ -1079,6 +1120,14 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
             <div class="hint" data-en="For example: a screenshot of the conversation, an audio message, a photo, an e-mail, a proposal or the contract. <b>It lets HR pick the negotiation up where you left it</b> instead of starting over. It is optional, stays with HR and never appears in the Partnership Club.">Exemplo: print da conversa, áudio, foto, e-mail, proposta ou contrato.
             <b>Serve para o RH retomar a negociação de onde você parou</b>, em vez de começar do
             zero. É opcional e fica restrito ao RH: não aparece no Clube de Parcerias.</div>
+            <!-- 🔴 ITEM 5 DO DPO (30/09), frase dele: o campo aceitava qualquer
+                 arquivo sem dizer nada sobre o conteúdo, e print de conversa
+                 costuma trazer dado de terceiro que a análise não precisa.
+                 ⚠ Fica COLADO no campo, e não no termo: o termo se lê uma vez,
+                 no fim; a escolha do arquivo acontece aqui. -->
+            <div class="hint aviso-forte" id="arqLgpd" data-en="Only send documents, images or other material related to the suggestion and needed to assess the partnership. Avoid sending personal documents, third-party data or information that is not necessary for this purpose.">Envie apenas documentos, imagens ou outros materiais relacionados à indicação e
+            necessários para a análise da parceria. Evite o envio de documentos pessoais, dados de
+            terceiros ou informações que não sejam necessárias para essa finalidade.</div>
             <div class="ajuda" id="aj_evidencia" hidden data-en="<h4>What counts as a supporting file</h4><p>Anything that shows the conversation happened and what was agreed:</p><ul><li>a screenshot of the WhatsApp conversation with the contact person;</li><li>an audio message the contact person sent;</li><li>an e-mail, proposal or contract the establishment sent;</li><li>a photo of the menu, the price list or the poster with the terms;</li><li>a photo of you at the place with whoever served you.</li></ul><p>It is optional, but it changes how long the answer takes: with a supporting file HR picks the conversation up where you left it, instead of starting from scratch.</p><p id=&quot;ajudaEvidenciaLimite&quot;></p>">
               <h4>O que serve como arquivo de apoio</h4>
               <p>Qualquer coisa que mostre que a conversa aconteceu e o que foi combinado:</p>
@@ -1107,9 +1156,33 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
         </div>
       </div>
 
+      <!-- ===================== 6. CONFLITO DE INTERESSES =====================
+           🔴 ITEM 6 DO DPO (30/09). Indicar o próprio negócio ou o de um
+           familiar CONTINUA PERMITIDO: o que faltava era o RH ter como saber,
+           para fazer a análise que o fluxo já previa. O DPO foi direto: "a
+           indicação continua permitida, mas o RH passa a contar com uma
+           informação objetiva".
+           ⚠ Fica ANTES do termo (pedido dele): é pergunta sobre a indicação, e
+           o termo é a última coisa que se lê antes de enviar.
+           ⚠ E a pergunta NÃO acusa ninguém: o texto de apoio diz em voz alta
+           que responder "Sim" não impede nada. Pergunta que parece armadilha é
+           respondida errado. -->
+      <div class="sec">
+        <div class="sec-h"><div class="sec-n">6</div><div class="sec-t" data-en="Conflict of interest">Conflito de interesses</div></div>
+        <div class="grid">
+          <div class="f wide" data-campo="conflito">
+            <label data-en="Do you or a family member have any stake, employment relationship or business relationship with this establishment?">Você ou algum familiar possui participação, vínculo empregatício ou relação comercial com este estabelecimento?<span class="req">*</span></label>
+            <div class="hint" data-en="Answering &quot;Yes&quot; does not prevent the suggestion: the partnership is still assessed in the same way. HR only needs to know in order to record it.">Responder "Sim" <b>não impede a indicação</b>: a parceria é avaliada do mesmo
+            jeito. O RH só precisa saber para registrar.</div>
+            <div class="ops duas" id="opsConflito" role="group" aria-label="Conflito de interesses"></div>
+            <div class="err" id="e_conflito"></div>
+          </div>
+        </div>
+      </div>
+
       <!-- ===================== LEIA ANTES DE ENVIAR ===================== -->
       <div class="sec">
-        <div class="sec-h"><div class="sec-n">6</div><div class="sec-t" data-en="Read before submitting">Leia antes de enviar</div></div>
+        <div class="sec-h"><div class="sec-n">7</div><div class="sec-t" data-en="Read before submitting">Leia antes de enviar</div></div>
         <div class="f" data-campo="consent">
           <div class="consent" id="consent">
             <div class="consent-top">
@@ -1247,6 +1320,12 @@ function descDeExibicao(it){
    A resposta vai escrita no card ("Indo até o lugar", "Online..."). Desde
    16/09 ela NÃO liga mais exigência de endereço: endereço é sempre opcional.
    `presencial` fica só como descrição da opção. */
+/* 🔴 A ORDEM É A DO DPO: Sim antes de Não. Deixar "Não" primeiro é o caminho
+   de menor esforço, e numa pergunta de conflito isso empurra a resposta. */
+var CONFLITOS = [
+  { cod:'sim', nome:'Sim', nomeEn:'Yes' },
+  { cod:'nao', nome:'Não', nomeEn:'No' }
+];
 var ATENDIMENTOS = [
   { cod:'presencial', nome:'Indo até o lugar', nomeEn:'By going there',
     desc:'Loja, restaurante, clínica, oficina: tem endereço físico.',
@@ -1362,8 +1441,27 @@ var REGRAS = {
   /* 🔴 Para onde o colaborador escreve se tiver dúvida. Em 19/09 deixou de ser
      `rh@brnickel.com`, que era uma caixa que ninguém confirmou que existe, e
      passou a ser a pessoa que de fato recebe. Endereço de e-mail escrito numa
-     tela pública é promessa: se ninguém lê, a promessa é falsa. */
-  contatoRH: 'ldias@brnickel.com'
+     tela pública é promessa: se ninguém lê, a promessa é falsa.
+     🔴 E EM 30/09 DEIXOU DE SER PESSOA (item 3 do DPO). Ele pediu que o contato
+     com o colaborador saia de canal corporativo, e não de conta pessoal da
+     equipe: uma tela pública que manda escrever para a caixa de alguém é
+     exatamente o contrário disso, e ainda deixa o programa dependendo de quem
+     está de férias. `rh.informa@brnickel.com` existe e já tem acesso ao app
+     (medido em 29/09, na lista de permissões). */
+  contatoRH: 'rh.informa@brnickel.com',
+  /* 🔴 O CANAL DO ENCARREGADO (item 2 do DPO): a LGPD pede que ele seja
+     identificável, e "escreva ao RH" não identifica ninguém. É outro canal, com
+     outra função, e por isso é outra constante. */
+  dpo: 'dpo@brnickel.com'
+  /* 🔴 NÃO EXISTE PRAZO DE GUARDA AQUI, e a ausência é decisão dele (30/09).
+     Existiu por algumas horas um `mesesGuardaRecusada: 24`, proposta minha para
+     o item 4 do DPO. Ele derrubou: o registro de quem indicou fica atrelado ao
+     card e fica enquanto o Clube existir, inclusive na indicação não aprovada.
+     ⚠ E é melhor assim por um motivo que eu não tinha visto: prazo escrito em
+     termo é promessa de APAGAR, e não existe job agendado nesta plataforma para
+     apagar nada. O termo prometeria uma eliminação que ninguém executa.
+     ⚠ Se algum dia voltar a existir prazo, ele volta PARA CÁ, e não escrito no
+     meio da frase: o termo existe em dois idiomas. */
 };
 
 /* --- 1.4.1 QUEM ESTÁ PREENCHENDO (login do portal) ---------------
@@ -1433,7 +1531,11 @@ var TERMO = [
    ['A Brazilian Nickel é a **controladora** dos dados deste formulário: é ela quem decide para que eles servem e responde por eles, nos termos da **Lei nº 13.709/2018 (LGPD)**.',
     'Ao enviar esta indicação, passamos a tratar:',
     'LISTA',
-    'o seu nome e, quando você não entra pelo e-mail corporativo, o contato que você informar para retorno;',
+    /* 🔴 ITEM 1 DO DPO (30/09): na versão restrita o acesso É pelo e-mail
+       corporativo, então ele também é dado tratado e tem de constar. O texto
+       antigo só citava o contato de quem NÃO entra por ele, e assim omitia o
+       dado mais usado dos dois. Frase do próprio DPO. */
+    'o seu nome e o seu e-mail corporativo ou, quando você não entrar por ele, o contato que você informar para retorno;',
     'os dados do estabelecimento: nome, endereço, site e rede social;',
     'o nome e o contato do responsável com quem você conversou;',
     'a condição combinada e os arquivos de apoio que você anexar.',
@@ -1442,8 +1544,32 @@ var TERMO = [
     'A **base legal** é o **legítimo interesse** da Brazilian Nickel em manter o programa de parcerias (**art. 7º, IX da LGPD**). Não pedimos consentimento para isso, e **não indicar não traz nenhuma consequência para você**.',
     'Quem acessa é a **equipe de RH** responsável pelo Clube de Parcerias, numa **base de dados restrita**. Os dados **não são vendidos, cedidos nem usados para publicidade**.',
     'Se a parceria for publicada, o que aparece no site do Clube é **apenas o cartão da parceria**: estabelecimento, categoria, cidade, condição e contato comercial do estabelecimento. **O seu nome, o seu contato e os arquivos de apoio nunca saem da base de dados do RH.**',
-    'Guardamos enquanto a indicação estiver em análise e, se a parceria for fechada, enquanto ela estiver valendo. Encerrada a parceria, os dados são **eliminados ou anonimizados**, salvo o que a lei exigir manter.',
-    'Você pode pedir, a qualquer momento e sem custo, **confirmação** de que tratamos os seus dados, **acesso**, **correção**, **anonimização**, **bloqueio**, **eliminação** e **oposição** ao tratamento (**art. 18 da LGPD**). Para isso, escreva ao RH em __CONTATO__.']],
+    /* 🔴 ITEM 4 DO DPO (30/09), e a DECISÃO DELE sobre ele. O DPO apontou que o
+       termo falava da indicação em análise e da parceria fechada, e ficava
+       calado sobre a que NÃO é aprovada, que é a maioria: pediu finalidade e
+       prazo escritos. Eu propus 24 meses e ele derrubou, porque o registro de
+       quem indicou fica atrelado ao card e fica.
+       ⚠ ISTO MEXEU EM DUAS FRASES. Esta primeira prometia eliminar os dados
+       "encerrada a parceria", o oposto do que ele decidiu: trocar só a frase do
+       "não aprovada" deixaria duas regras contrárias na mesma lista, e o termo
+       responderia diferente para a mesma pergunta em dois parágrafos.
+       ⚠ E NÃO SE ESCREVE "por tempo indeterminado", que foi como ele falou: o
+       art. 9º, I da LGPD manda informar a DURAÇÃO do tratamento, e
+       "indeterminado" é o que se lê como "para sempre, sem motivo dito". O
+       critério diz a mesma coisa, com duração e com um fim natural. */
+    'Guardamos o registro desta indicação **enquanto o Clube de Parcerias existir**, com o seu nome ligado a ele. Ele é o histórico do programa: é o que permite saber quais parcerias já foram propostas, o que foi decidido em cada uma e por quem ela foi trazida. **Não apagamos o registro** só porque a parceria terminou.',
+    /* 🔴 E A SEGUNDA METADE É A QUE IMPORTA PARA QUEM PREENCHE: guardar o
+       registro não é criar lista negra. A frase antiga dizia o contrário sem
+       querer ("para não procurar o mesmo estabelecimento outra vez"), e quem
+       lesse entenderia que uma reprovação queima o lugar para sempre. É o
+       ponto que ele fez questão de explicitar. */
+    'Se a indicação **não for aprovada ou for cancelada**, o registro continua guardado, pelo mesmo motivo. E isso **não bloqueia nada**: o RH pode retomar a conversa com o mesmo estabelecimento quando fizer sentido, e **você pode indicá-lo outra vez**, se a condição mudar ou se as circunstâncias mudarem.',
+    'Encerrado o Clube de Parcerias, os dados são **eliminados ou anonimizados**, salvo o que a lei exigir manter.',
+    /* 🔴 ITEM 2 DO DPO (30/09): o canal existia, mas não dizia que é o do
+       ENCARREGADO. A LGPD pede que o encarregado seja identificável, e "escreva
+       ao RH" não identifica ninguém. Os DOIS canais ficam: o do RH resolve a
+       dúvida do dia a dia, o do Encarregado é o que a lei exige existir. */
+    'Você pode pedir, a qualquer momento e sem custo, **confirmação** de que tratamos os seus dados, **acesso**, **correção**, **anonimização**, **bloqueio**, **eliminação** e **oposição** ao tratamento (**art. 18 da LGPD**). Para exercer esses direitos ou para falar com o **Encarregado pelo Tratamento de Dados Pessoais** da Brazilian Nickel, escreva para __DPO__. Para dúvidas sobre o Clube de Parcerias, o RH atende em __CONTATO__.']],
 
   ['Sobre o contato do estabelecimento',
    ['O nome, o e-mail e o telefone que você informar são de **uma pessoa de fora da Brazilian Nickel**, que não preencheu este formulário e não está diante desta tela.',
@@ -1480,7 +1606,7 @@ var TERMO_EN = [
    ['Brazilian Nickel is the **controller** of the data in this form: it decides what the data is for and is accountable for it, under **Brazilian Law No. 13,709/2018 (LGPD)**.',
     'When you submit this suggestion, we process:',
     'LISTA',
-    'your name and, when you are not signed in with a company e-mail, the contact details you provide so we can get back to you;',
+    'your name and your company e-mail or, when you do not sign in with it, the contact details you provide so we can get back to you;',
     'the details of the establishment: name, address, website and social media;',
     'the name and contact details of the person you spoke to;',
     'the terms agreed and the supporting files you attach.',
@@ -1489,8 +1615,10 @@ var TERMO_EN = [
     'The **legal basis** is Brazilian Nickel’s **legitimate interest** in running the partnership programme (**art. 7, IX of the LGPD**). We do not ask for your consent for this, and **not submitting a suggestion has no consequences for you**.',
     'Access is limited to the **HR team** responsible for the Partnership Club, through a **restricted database**. The data is **not sold, shared or used for advertising**.',
     'If the partnership is published, what appears on the Club website is **only the partnership card**: establishment, category, city, terms and the establishment’s business contact. **Your name, your contact details and the supporting files never leave the HR database.**',
-    'We keep the data while the suggestion is under review and, if the partnership goes ahead, for as long as it is valid. Once the partnership ends, the data is **deleted or anonymised**, except where the law requires us to keep it.',
-    'At any time and free of charge, you may request **confirmation** that we process your data, **access**, **correction**, **anonymisation**, **blocking**, **deletion** and **objection** to the processing (**art. 18 of the LGPD**). To do so, write to HR at __CONTATO__.']],
+    'We keep the record of this suggestion **for as long as the Partnership Club exists**, with your name attached to it. It is the history of the programme: it is what tells us which partnerships have been proposed, what was decided about each one and who brought it in. **We do not delete the record** merely because a partnership has ended.',
+    'If the suggestion is **not approved or is cancelled**, the record stays, for the same reason. And it **blocks nothing**: HR may pick the conversation with that establishment up again whenever it makes sense, and **you may suggest it again**, if the terms change or the circumstances do.',
+    'Once the Partnership Club itself ends, the data is **deleted or anonymised**, except where the law requires us to keep it.',
+    'At any time and free of charge, you may request **confirmation** that we process your data, **access**, **correction**, **anonymisation**, **blocking**, **deletion** and **objection** to the processing (**art. 18 of the LGPD**). To exercise these rights or to contact Brazilian Nickel’s **Data Protection Officer**, write to __DPO__. For questions about the Partnership Club, HR can be reached at __CONTATO__.']],
 
   ['About the establishment’s contact person',
    ['The name, e-mail and phone number you provide belong to **someone outside Brazilian Nickel**, who did not fill in this form and is not in front of this screen.',
@@ -1593,7 +1721,12 @@ var PLATAFORMA = {
 /* v3 (15/09): `evidencias` (lista, até 3, com áudio) e `horario` opcional. Os
    campos `evidenciaNome/Tipo/Bytes` continuam com o PRIMEIRO arquivo, para quem
    lê o pacote antigo. O painel aceita v2 e v3. */
-var CONTRATO_VERSAO = 3;
+/* 🔴 v4 (30/09): entrou `conflitoInteresse`, por causa do item 6 do DPO.
+   ⚠ A versão sobe porque o pacote GANHOU uma chave, e é ela que diz ao painel
+   se pode esperar a resposta ou se o arquivo é de antes da pergunta existir.
+   Pacote v3 continua entrando: a chave vem ausente e a ficha diz isso, em vez
+   de fingir que a pessoa respondeu "Não". */
+var CONTRATO_VERSAO = 4;
 
 /* ==================================================================
    BLOCO 2 · DAQUI PARA BAIXO É MECÂNICA (não precisa mexer)
@@ -2514,12 +2647,15 @@ function camposAtivos(){
   if(caixaLigada('temEndereco')) l.push('endereco');
   if(caixaLigada('temSite'))     l.push('siteOuSocial');
   if(caixaLigada('temHorario'))  l.push('horario');
-  l.push('contatoNome','contato','condicao','consent');
+  l.push('contatoNome','contato','condicao','conflito','consent');
   return l;
 }
 
 function respondido(c){
   switch(c){
+    /* ⚠ 'nao' é resposta, e é a mais comum: comparar com truthy daria
+       "não respondido" para quem respondeu Não. */
+    case 'conflito':     return R.conflito === 'sim' || R.conflito === 'nao';
     case 'colaborador':  return nomeValido(R.colaborador);
     case 'tipo':         return !!nomeTipo(R.tipo);
     case 'tipoOutro':    return String(R.tipoOutro||'').trim().length >= 3;
@@ -2564,16 +2700,24 @@ function validar(){
      falar com essa pessoa), e por isso é cobrado aqui, e não atrás do tipo. */
   if(R.semLogin){
     if(!contatoDoIndicadorResolvido())
-      /* 🔴 a mensagem diz OS DOIS, e não "um ou outro" (25/09): mensagem que
-         descreve a regra antiga faz a pessoa preencher um e não entender por
-         que o formulário continua reclamando. */
-      p('retorno', T('Informe o e-mail E o telefone, os dois, para o RH dar retorno.',
-                   'Give BOTH your e-mail and your phone number so HR can get back to you.'));
+      /* 🔴 A MENSAGEM SEGUE A REGRA, e a regra virou em 30/09: o e-mail basta,
+         o telefone é opcional. Mensagem que descreve a regra antiga faz a
+         pessoa preencher o campo errado e não entender a reclamação. */
+      p('retorno', T('Informe o seu e-mail para o RH dar retorno. O telefone é opcional.',
+                   'Give your e-mail so HR can get back to you. The phone number is optional.'));
     else marcar('retorno', true, '');
   }
 
   if(!nomeTipo(R.tipo)) p('tipo', T('Escolha o tipo de parceria.', 'Choose the type of partnership.'));
   else marcar('tipo', true, '');
+
+  /* 🔴 ITEM 6 DO DPO: obrigatória, e sem padrão. Marcar "Não" sozinho seria o
+     formulário respondendo por quem preenche, numa pergunta em que a resposta
+     errada tem consequência. */
+  if(R.conflito !== 'sim' && R.conflito !== 'nao')
+    p('conflito', T('Responda se você ou algum familiar tem relação com este estabelecimento.',
+                  'Please answer whether you or a family member has any relationship with this establishment.'));
+  else marcar('conflito', true, '');
 
   if(ehOutros()){
     if(String(R.tipoOutro||'').trim().length < 3) p('tipoOutro', T('Escreva de que tipo de parceria se trata.',
@@ -2751,6 +2895,10 @@ function montarPacote(){
        entra pelo login, e medir só quem preenche papel seria pior que não
        medir). O campo deixou de ser perguntado aqui também. */
     genero: null,
+    /* 🔴 ITEM 6 DO DPO (30/09), contrato v4: a declaração de conflito viaja no
+       pacote e aparece na ficha do painel. Sem a segunda metade, a pessoa
+       declararia o conflito e quem decide nunca veria. */
+    conflitoInteresse: R.conflito || null,
     consentimento: true,
     termoLidoAteOFim: true,
     versaoTermo: TERMO_VERSAO,
@@ -3215,12 +3363,21 @@ function ligarModoOffline(){
 /* 🔴 O CONTATO DE QUEM INDICA (pedido dele, 17/09) toma o lugar de "Sua área ou
    empresa". O arquivo chegava ao RH com o nome da pessoa e nenhum jeito de falar
    com ela: não dava para avisar do andamento nem reconhecer quem trouxe a
-   parceria. 🔴 Desde 25/09 pede-se e-mail E telefone, os DOIS (decisão dele).
-   A regra anterior era "um ou outro", e o motivo dela continua verdadeiro:
-   exigir os dois barra quem só tem um, e este formulário existe para quem tem
-   menos. Ele decidiu assim mesmo, porque o RH precisa dos dois para dar
-   retorno. Qualquer um dos dois pode ser pessoal: aqui não existe conta da
-   empresa para consultar.
+   parceria. 🔴 A REGRA FOI E VOLTOU, e vale guardar as três voltas:
+   era "um ou outro"; virou "os DOIS" em 25/09, por decisão dele, porque o RH
+   precisava dos dois para dar retorno; e em 30/09 virou "o E-MAIL basta, o
+   telefone é opcional", por causa do item 3 do DPO.
+   O que mudou não foi a opinião: o DPO pediu que o retorno saia de canal
+   CORPORATIVO, e sem WhatsApp corporativo o telefone deixou de ser um canal de
+   retorno para virar uma cortesia. A razão de 25/09 sempre reconheceu o preço
+   que cobrava, e é ele que se deixa de pagar: exigir os dois barra quem só tem
+   um, e este formulário existe para quem tem menos.
+   ⚠ SÃO QUATRO LUGARES, e eu já esqueci um: o rótulo do campo, a função
+   `contatoDoIndicadorResolvido`, a mensagem de erro e ESTA DICA. Em 30/09
+   troquei os três primeiros, a bateria ficou verde e a dica continuou dizendo
+   "os dois" para quem abria a tela. Qualquer volta futura mexe nos quatro.
+   Qualquer um dos dois pode ser pessoal: aqui não existe conta da empresa para
+   consultar.
    ⚠ A área digitada SAIU junto. Ela alimentava o gráfico "Por área" do painel
    para as indicações públicas, e essas passam a entrar sem área. */
 function montarCampoDeContatoDoIndicador(){
@@ -3233,10 +3390,16 @@ function montarCampoDeContatoDoIndicador(){
   lb.innerHTML = 'Seu contato, para o RH dar retorno<span class="req">*</span>';
   lb.setAttribute('data-en', 'Your contact details, so HR can get back to you<span class="req">*</span>');
   var dica = document.createElement('div'); dica.className = 'hint';
-  dica.textContent = 'E-mail e telefone, os dois. Podem ser pessoais: é por aqui que o RH avisa se a ' +
-    'parceria avançou e reconhece quem a trouxe. Não vai para o Clube de Parcerias.';
-  dica.setAttribute('data-en', 'Both your e-mail and your phone number. They can be personal: this is how HR ' +
-    'tells you whether the partnership moved forward and credits whoever brought it. It never goes to the Partnership Club.');
+  /* 🔴 A DICA SEGUE A REGRA, e a regra virou em 30/09 (item 3 do DPO): o
+     e-mail basta, o telefone é cortesia. Esta frase dizia "os dois" e sobreviveu
+     à virada por dois dias, com a bateria verde: é a primeira coisa que a
+     pessoa lê, e ela ensinava o contrário do que o formulário aceita. */
+  dica.textContent = 'O e-mail é o que o RH usa para responder; o telefone é opcional. ' +
+    'Podem ser pessoais: é por aqui que o RH avisa se a parceria avançou e reconhece ' +
+    'quem a trouxe. Não vai para o Clube de Parcerias.';
+  dica.setAttribute('data-en', 'HR replies by e-mail; the phone number is optional. They can be personal: ' +
+    'this is how HR tells you whether the partnership moved forward and credits whoever brought it. ' +
+    'It never goes to the Partnership Club.');
   var dupla = document.createElement('div'); dupla.className = 'dupla';
   /* 🔴 phEn E' NOVO (28/09): estes dois campos nascem no JS, entao o meu
      exame do CODIGO-FONTE nao os viu e eles ficaram sem traducao de
@@ -3255,7 +3418,16 @@ function montarCampoDeContatoDoIndicador(){
     return { caixa:cx, campo:i };
   }
   var e1 = campo('offEmail', 'E-mail', 'E-mail', 'voce@exemplo.com', 'email', 'you@example.com');
-  var e2 = campo('offFone', 'Telefone ou WhatsApp', 'Phone or WhatsApp', '(00) 00000-0000', 'tel');
+  /* 🔴 SEM "WHATSAPP", E OPCIONAL (decisão dele, 30/09, sobre o item 3 do DPO).
+     O DPO pediu que o retorno saia de canal corporativo, e não de conta ou
+     aparelho pessoal de alguém da equipe. Sem WhatsApp corporativo, prometer
+     WhatsApp é prometer que alguém vai responder do celular dele.
+     ⚠ E o telefone virou OPCIONAL, o que REVERTE a decisão de 25/09 ("os dois,
+     porque o RH precisa dos dois"). A razão de reverter é a mesma que aquela
+     decisão já reconhecia e aceitava pagar: exigir os dois barra quem só tem
+     um, e este formulário existe justamente para quem tem menos. Com o retorno
+     saindo por e-mail corporativo, o telefone deixou de ser necessário. */
+  var e2 = campo('offFone', 'Telefone (opcional)', 'Phone (optional)', '(00) 00000-0000', 'tel');
   e1.campo.addEventListener('input', function(){ R.indicadorEmail = e1.campo.value; atualizarProgresso(); });
   e2.campo.addEventListener('input', function(){ R.indicadorFone = e2.campo.value; atualizarProgresso(); });
   dupla.appendChild(e1.caixa); dupla.appendChild(e2.caixa);
@@ -3273,13 +3445,23 @@ function montarCampoDeContatoDoIndicador(){
    barraria mais gente ainda, e é uma linha em `foneValido` se ele quiser. */
 function contatoDoIndicadorResolvido(){
   var em = String(R.indicadorEmail||'').trim(), fo = String(R.indicadorFone||'').trim();
-  return !!(em && emailValido(em) && fo && foneValido(fo));
+  /* 🔴 O E-MAIL BASTA (30/09): ver a nota do campo. O telefone, quando vier,
+     continua sendo cobrado no formato, senão um número torto entraria sem
+     ninguém reparar; o que mudou é que a ausência dele não barra mais. */
+  return !!(em && emailValido(em)) && (!fo || foneValido(fo));
 }
 
 /* 🔴 QUEM CHEGA AQUI NÃO TEM CONTA DA EMPRESA: não sabe o que é o brnapps, não
    sabe quem é o RH e não tem a quem perguntar. A instrução tem o e-mail ESCRITO
    e aparece no momento em que serve: depois de baixar. */
-var EMAIL_DO_RH = 'ldias@brnickel.com';
+/* 🔴 UMA FONTE SÓ (30/09). Eram duas constantes com o mesmo endereço escrito
+   duas vezes, e duas cópias do mesmo endereço divergem no dia em que alguém
+   muda uma. Esta aponta para aquela.
+   🔴 E o endereço deixou de ser de PESSOA (item 3 do DPO): este aqui é o
+   destino do ARQUIVO que o formulário offline gera, ou seja, é por onde os
+   dados pessoais de verdade entram. Mandar isso para a caixa de alguém é o
+   caso mais forte do que o DPO pediu para acabar. */
+var EMAIL_DO_RH = REGRAS.contatoRH;
 /* o formulário de dentro do portal, para quem tem login: é para onde o público
    manda quem tem e-mail da empresa */
 var URL_FORMULARIO_PORTAL = 'https://brnapps.brnickel.com/apps/clube-de-parcerias/formulario.html';
@@ -3730,6 +3912,7 @@ function montarTermo(){
          aparece também na abertura e na tela de sucesso, e escrevê-lo aqui à mão
          criaria a quarta cópia do mesmo número. */
       var t = txt.replace('__CONTATO__', REGRAS.contatoRH)
+                 .replace('__DPO__', REGRAS.dpo)
                  .replace('__PRAZO__', prazoRespostaTexto());
       if(ul){ var li = document.createElement('li'); comDestaque(li, t); ul.appendChild(li); }
       else { var pp = document.createElement('p'); comDestaque(pp, t); c.appendChild(pp); }
@@ -4244,6 +4427,7 @@ function ligar(){
 
   montarOpcoes($('opsTipo'), TIPOS, 'tipo', function(){ revelar(); });
   montarOpcoes($('opsAtendimento'), ATENDIMENTOS, 'atendimento', function(){});
+  montarOpcoes($('opsConflito'), CONFLITOS, 'conflito', function(){});
   montarUnidades();
 
   $('evidencia').setAttribute('accept', REGRAS.evidenciaTipos);
@@ -4367,6 +4551,12 @@ function ligar(){
 
   $('btnOutra').addEventListener('click', recomecar);
   if($('btnVerApp')) $('btnVerApp').href = URL_APP;
+  /* ⚠ a faixa da capa usa a MESMA constante do botão da tela de sucesso: dois
+     endereços para a mesma página divergem no dia em que um muda. E some se a
+     constante estiver vazia, porque link para lugar nenhum é pior que nada. */
+  if($('btnCapaApp')){
+    if(URL_APP) $('btnCapaApp').href = URL_APP; else $('btnCapaApp').hidden = true;
+  }
 
   $('form').addEventListener('submit', function(ev){
     ev.preventDefault();
@@ -4519,7 +4709,14 @@ function selftest(){
 
     try{ localStorage.removeItem(K); }catch(e){}
     aplicarIdentidade();
-    t('★ o contrato continua na versão 3', CONTRATO_VERSAO === 3 && montarPacote().contratoVersao === 3);
+    /* 🔴 v4 em 30/09: o pacote ganhou `conflitoInteresse` (item 6 do DPO). A
+       versão sobe quando a FORMA muda, e é ela que diz ao painel se pode
+       esperar a resposta ou se o arquivo é anterior à pergunta. */
+    t('★ o contrato subiu para a versão 4, com a declaração de conflito',
+      CONTRATO_VERSAO === 4 && montarPacote().contratoVersao === 4);
+    t('   e a resposta viaja no pacote',
+      ['sim','nao',null].indexOf(montarPacote().conflitoInteresse) >= 0,
+      JSON.stringify(montarPacote().conflitoInteresse));
   })();
 
   out.push('== O contrato com o painel ==');
@@ -4801,9 +4998,74 @@ function selftest(){
     /* 🔴 `rh@brnickel.com` era uma caixa que ninguém confirmou que existe, e ela
        estava escrita numa tela PÚBLICA. Endereço que ninguém lê é promessa
        falsa. */
-    t('★ o contato escrito na tela é o de quem recebe de verdade (19/09)',
-      REGRAS.contatoRH === 'ldias@brnickel.com' && EMAIL_DO_RH === 'ldias@brnickel.com' &&
+    /* 🔴 E EM 30/09 ELE DEIXOU DE SER PESSOA (item 3 do DPO): o retorno ao
+       colaborador tem de sair de canal corporativo, não de conta de alguém da
+       equipe. A asserção passou a cobrar isso, e a regra de 19/09 continua de
+       pé por dentro: o endereço tem de ser UM SÓ e tem de existir. */
+    t('★ o contato da tela é uma caixa CORPORATIVA, não a de uma pessoa',
+      REGRAS.contatoRH === 'rh.informa@brnickel.com' &&
       !/rh@brnickel\.com/.test($('form').textContent), REGRAS.contatoRH);
+    t('   e o destino do arquivo offline é o MESMO endereço, sem segunda cópia',
+      EMAIL_DO_RH === REGRAS.contatoRH, EMAIL_DO_RH);
+    /* ⚠ e nenhum endereço de pessoa sobrou escrito na tela: é o que o DPO
+       chamou de "contas ou aparelhos pessoais dos integrantes da equipe". */
+    /* 🔴 SEM O `<script>`. `document.body.textContent` inclui o texto das tags
+       de script, e este arquivo é single-file: a asserção encontrava o endereço
+       DENTRO DELA MESMA e falhava sozinha. Sonda que se mede não mede nada. */
+    (function(){
+      var visivel = '';
+      Array.prototype.forEach.call(document.body.children, function(n){
+        if(n.tagName === 'SCRIPT' || n.tagName === 'STYLE') return;
+        visivel += ' ' + n.textContent;
+      });
+      t('★ nenhuma caixa pessoal da equipe sobrou escrita no formulário',
+        !/ldias@|fleandro@|fjcampos@|jpiovezana@/.test(visivel),
+        (visivel.match(/[a-z.]+@brnickel\.com/g) || []).join(', ') || 'nenhum endereço na tela');
+    })();
+    /* 🔴 ITEM 2 DO DPO: o canal do Encarregado aparece no termo, identificado. */
+    (function(){
+      montarTermo();
+      var txt = $('corpoTermo').textContent;
+      t('★ o termo identifica o Encarregado pelo Tratamento de Dados Pessoais',
+        /Encarregado pelo Tratamento de Dados Pessoais/i.test(txt) &&
+        txt.indexOf(REGRAS.dpo) >= 0, REGRAS.dpo);
+      /* 🔴 ITEM 1: o e-mail corporativo entrou na lista de dados tratados. */
+      t('★ o termo lista o e-mail corporativo como dado tratado',
+        /seu e-mail corporativo/i.test(txt));
+      /* 🔴 ITEM 4: a indicação NÃO aprovada tem finalidade e duração escritas.
+         ⚠ ESTA ASSERÇÃO VIROU no mesmo dia em que nasceu, e é a segunda vez
+         nesta sessão: ela cobrava que o termo trouxesse o NÚMERO de meses, e
+         passou a cobrar que não traga nenhum, porque ele decidiu que o registro
+         fica. Guarda de texto que não vira junto com a decisão passa a defender
+         o texto velho, que foi o que aconteceu com a dica do campo de retorno. */
+      t('★ o termo diz o que acontece com a indicação que NÃO é aprovada',
+        /não for aprovada ou for cancelada/i.test(txt) &&
+        /enquanto o Clube de Parcerias existir/i.test(txt),
+        (txt.match(/[^.]*não for aprovada[^.]*\./i) || ['(não achei)'])[0].slice(0, 120));
+      /* 🔴 E NÃO PROMETE APAGAR NUM PRAZO: não existe job agendado nesta
+         plataforma, então prazo escrito em termo é promessa que ninguém cumpre.
+         A asserção procura a FORMA da promessa, e não uma palavra: "por até 24
+         meses", "após 12 meses", "pelo prazo de 5 anos". */
+      t('★ e não promete eliminar dentro de um prazo que ninguém executa',
+        !/(por at[ée]|ap[óo]s|pelo prazo de|durante)\s+\d+\s*(m[êe]s|meses|ano|anos|dias?)/i.test(txt) &&
+        !/tempo indeterminado/i.test(txt),
+        (txt.match(/[^.]*\d+\s*(?:m[êe]s|meses|anos?)[^.]*/i) || ['(nenhum prazo)'])[0].slice(0, 110));
+      /* 🔴 e o outro lado da decisão dele: guardar NÃO é lista negra. Sem esta
+         frase, "guardamos o registro para sempre" se lê como o estabelecimento
+         ficar queimado depois de uma reprovação. */
+      t('★ e diz que a reprovação não bloqueia: dá para indicar o mesmo lugar de novo',
+        /não bloqueia nada/i.test(txt) && /indicá-lo outra vez/i.test(txt));
+      /* ⚠ e a frase de cima virou junto: ela prometia eliminar "encerrada a
+         parceria", o contrário do que ele decidiu. Duas regras opostas na mesma
+         lista fariam o termo responder diferente em dois parágrafos. */
+      t('   e a frase de cima não promete mais apagar quando a parceria terminar',
+        !/Encerrada a parceria, os dados/i.test(txt) &&
+        /Não apagamos o registro/i.test(txt));
+      /* ⚠ e nenhum marcador sobrou por substituir: `__DPO__` na tela é o tipo de
+         defeito que passa despercebido porque parece parte do texto. */
+      t('   e nenhum marcador sobrou na tela',
+        !/__[A-Z]+__/.test(txt), (txt.match(/__[A-Z]+__/g) || []).join(','));
+    })();
 
     var av = document.querySelector('[data-campo="contatoNome"] .hint.aviso-forte');
     t('★ o aviso "é esta a pessoa que o RH vai procurar" está em destaque, não como dica comum',
@@ -4814,6 +5076,36 @@ function selftest(){
       var comum = getComputedStyle(document.querySelector('[data-campo="estab"] .hint')).color;
       t('★ e ele é lido em vermelho, diferente das outras dicas', cor !== comum, cor + ' vs ' + comum);
     }
+  })();
+
+  out.push('== A faixa que leva à página pública de parcerias (29/09) ==');
+  (function(){
+    var a = $('btnCapaApp');
+    t('★ a faixa existe na CAPA, antes das regras',
+      !!a && !!a.closest('.capa'), a ? (a.closest('.capa') ? 'na capa' : 'fora da capa') : 'não existe');
+    t('★ e leva à página pública, em outra aba',
+      !!a && a.href === URL_APP && a.target === '_blank' && /noopener/.test(a.rel),
+      a ? a.href : '-');
+    t('★ e o texto é o que ele pediu',
+      !!a && /visite nossa p[áa]gina de parcerias/i.test(a.textContent),
+      a ? a.textContent.replace(/\s+/g, ' ').trim() : '-');
+    /* 🔴 LARGA, e não um botão do tamanho do texto: "um icone mais largo" foi o
+       pedido. A asserção mede contra a CAPA, não um número fixo, senão ela
+       quebraria na primeira mudança de largura da página. */
+    if(a){
+      var ra = a.getBoundingClientRect(), rc = a.closest('.capa').getBoundingClientRect();
+      t('★ ela ocupa a largura da capa, em vez de ser um botãozinho',
+        ra.width > rc.width * 0.75,
+        Math.round(ra.width) + ' de ' + Math.round(rc.width));
+    }
+    /* ⚠ e o MESMO endereço do botão da tela de sucesso: dois links para a
+       mesma página divergem no dia em que um deles muda. */
+    t('   e usa o mesmo endereço do botão da tela de sucesso',
+      !!a && !!$('btnVerApp') && a.href === $('btnVerApp').href);
+    /* ⚠ o inglês: a faixa é texto visível, então ela tem de ter tradução. */
+    t('★ e tem versão em inglês, como todo texto visível desta tela',
+      !!a && !!a.getAttribute('data-en') && a.getAttribute('data-en').length > 6,
+      a ? a.getAttribute('data-en') : '-');
   })();
 
   out.push('== O atalho para a versão sem e-mail corporativo (16/09, texto de 23/09) ==');
@@ -5132,6 +5424,10 @@ function selftest(){
     R.site='www.madameunderground.com.br'; R.social='@madameunderground';
     R.contatoNome='Ronald'; R.contatoEmail='ronald@madame.com.br'; R.contatoFone='';
     R.unidades=['BHZ']; R.condicao='20% de desconto no almoço de segunda a sexta, apresentando o crachá.';
+    /* 🔴 a declaração de conflito entrou em 30/09 (item 6 do DPO) e é
+       OBRIGATÓRIA: um fixture que não a responde mede um formulário que
+       ninguém consegue enviar. */
+    R.conflito='nao';
     R.consent=true;
     t('formulário completo passa sem problema', validar().length === 0);
 
@@ -5948,13 +6244,20 @@ function selftest(){
       /RH avisa se a parceria avançou/.test(campoEl('retorno').textContent) &&
       /pessoa(l|is)/.test(campoEl('retorno').textContent),
       campoEl('retorno').textContent.replace(/\s+/g,' ').slice(0, 90));
-    /* 🔴 e a dica diz OS DOIS, desde 25/09: ela descrevia "um dos dois", e dica
-       que descreve a regra antiga faz a pessoa preencher um só e não entender a
-       reclamação que vem depois. */
-    t('★ e a dica pede os DOIS, não "um dos dois"',
-      /os dois/i.test(campoEl('retorno').textContent) &&
-      !/um dos dois/i.test(campoEl('retorno').textContent));
-    /* 🔴 OS DOIS canais são obrigatórios (decisão dele, 25/09): é o que liga a
+    /* 🔴 ESTA ASSERÇÃO VIROU DO AVESSO EM 30/09, e é ela que prova a lição.
+       Ela nasceu em 25/09 cobrando que a dica dissesse "os dois", porque dica
+       que descreve a regra antiga faz a pessoa preencher errado e não entender
+       a reclamação. Em 30/09 a regra virou (item 3 do DPO) e esta linha passou
+       a DEFENDER o texto velho: foi ela que reprovou quando eu enfim corrigi a
+       dica, e é por isso que a dica ficou dois dias mentindo com a bateria
+       verde. Guarda de texto tem de virar junto com a regra que a criou.
+       ⚠ O par dela está mais abaixo e mede a dica pelo `.hint`, e não pelo
+       container: ver a nota de "MEDE A DICA". */
+    t('★ e a dica NÃO pede mais os dois: o e-mail é o canal, o telefone é cortesia',
+      !/os dois/i.test(campoEl('retorno').textContent) &&
+      /opcional/i.test(campoEl('retorno').textContent),
+      campoEl('retorno').textContent.replace(/\s+/g,' ').slice(0, 95));
+    /* 🔴 O E-MAIL é obrigatório (item 3 do DPO, 30/09): é o que liga a
        indicação pública à pessoa, para dar notícia e reconhecer quem trouxe. */
     (function(){
       var gE = R.indicadorEmail, gF = R.indicadorFone;
@@ -5963,21 +6266,76 @@ function selftest(){
         validar().some(function(x){ return x.campo === 'retorno'; }) && contatoDoIndicadorResolvido() === false);
       R.indicadorEmail = 'nao-e-email'; R.indicadorFone = '(31) 99999-8888';
       t('e contato inválido também barra', contatoDoIndicadorResolvido() === false);
-      /* 🔴 25/09: OS DOIS, e não "um ou outro". A regra virou o contrário da de
-         antes, e estas duas asserções são as que provam a virada: com um só,
-         BARRA. Antes elas cobravam exatamente o oposto. */
+      /* 🔴 TERCEIRA VERSÃO DESTA REGRA, e vale guardar as três porque ela foi e
+         voltou: era "um ou outro"; virou "os dois" em 25/09 ("o RH precisa dos
+         dois para dar retorno"); e em 30/09 virou "o e-mail basta", por causa
+         do item 3 do DPO. O que mudou não foi a opinião: o DPO pediu que o
+         retorno saia de canal CORPORATIVO, e sem WhatsApp corporativo o
+         telefone deixou de ser um canal de retorno para virar uma cortesia.
+         A razão de 25/09 dizia que exigir os dois barra quem só tem um, e que
+         este formulário existe para quem tem menos: era verdade e o preço
+         deixou de valer a pena. */
       R.indicadorEmail = 'maria@exemplo.com'; R.indicadorFone = '';
-      t('★ só com o e-mail, BARRA', contatoDoIndicadorResolvido() === false);
+      t('★ só com o e-mail, LIBERA: o telefone virou opcional',
+        contatoDoIndicadorResolvido() === true);
       R.indicadorEmail = ''; R.indicadorFone = '(31) 99999-8888';
-      t('★ só com o telefone, BARRA', contatoDoIndicadorResolvido() === false);
-      R.indicadorEmail = 'maria@exemplo.com';
-      t('★ com os DOIS, libera', contatoDoIndicadorResolvido() === true);
-      /* 🔴 e a MENSAGEM tem de falar dos dois: mensagem que descreve a regra
-         antiga faz a pessoa preencher um e não entender a reclamação. */
-      R.indicadorFone = '';
-      var msgRet = (validar().filter(function(x){ return x.campo === 'retorno'; })[0] || {}).msg || '';
-      t('★ e a mensagem de erro fala dos DOIS', /E o telefone|os dois/i.test(msgRet), msgRet);
+      t('★ mas só com o telefone, BARRA: o retorno sai por e-mail',
+        contatoDoIndicadorResolvido() === false);
+      /* ⚠ telefone TORTO continua barrando: o campo deixou de ser obrigatório,
+         não deixou de ser um telefone. Preenchido errado, ninguém repara. */
+      R.indicadorEmail = 'maria@exemplo.com'; R.indicadorFone = '123';
+      t('   e telefone preenchido torto barra, mesmo sendo opcional',
+        contatoDoIndicadorResolvido() === false);
       R.indicadorFone = '(31) 99999-8888';
+      t('★ com os dois, libera', contatoDoIndicadorResolvido() === true);
+      /* 🔴 e a TELA não pode mais prometer WhatsApp: sem número corporativo,
+         prometer WhatsApp é prometer que alguém responde do celular dele. */
+      t('★ o campo de retorno não fala mais em WhatsApp',
+        !/whatsapp/i.test((document.getElementById('offFone') || {}).placeholder || '') &&
+        !/whatsapp/i.test(campoEl('retorno') ? campoEl('retorno').textContent : ''),
+        campoEl('retorno') ? campoEl('retorno').textContent.replace(/\s+/g, ' ').slice(0, 90) : '-');
+      /* 🔴 MEDE A DICA, não o container (defeito meu, 30/09). Esta linha
+         procurava "opcional" em `campoEl('retorno')`, que é a caixa INTEIRA, e
+         o rótulo "Telefone (opcional)" mora dentro dela: a asserção ficava
+         verde com a dica dizendo "os dois". Agora ela lê o primeiro `.hint`,
+         que é a frase que a pessoa lê antes de preencher. */
+      var dicaRet = campoEl('retorno') ? campoEl('retorno').querySelector('.hint') : null;
+      t('★ e a DICA do campo diz que o e-mail é o canal e o telefone é opcional',
+        !!dicaRet && /opcional/i.test(dicaRet.textContent) &&
+        !/os dois/i.test(dicaRet.textContent),
+        dicaRet ? dicaRet.textContent.replace(/\s+/g, ' ').slice(0, 95) : '(não achei)');
+      t('   e a versão em inglês dela virou junto',
+        !!dicaRet && /optional/i.test(dicaRet.getAttribute('data-en') || '') &&
+        !/both/i.test(dicaRet.getAttribute('data-en') || ''),
+        dicaRet ? (dicaRet.getAttribute('data-en') || '').slice(0, 95) : '-');
+      /* ⚠ e nenhum canto do campo ficou ensinando a regra velha: são quatro
+         lugares (rótulo, função, erro e dica) e eu já esqueci um deles. */
+      t('   e "os dois" não sobrou em canto nenhum do campo de retorno',
+        !!campoEl('retorno') &&
+        !/os dois/i.test(campoEl('retorno').textContent),
+        (campoEl('retorno').textContent.match(/[^.]*os dois[^.]*/i) || ['(limpo)'])[0].slice(0, 80));
+      /* 🔴 ITEM 5 DO DPO: a orientação sobre o conteúdo do anexo, colada no campo. */
+      /* ⚠ NOS DOIS IDIOMAS. A bateria troca a língua no meio e não volta: medir
+         só a frase em português faz a asserção falhar por causa da asserção
+         anterior, e não por causa do produto. Foi o que aconteceu aqui. */
+      (function(){
+        var al = document.getElementById('arqLgpd');
+        /* 🔴 NORMALIZAR O ESPAÇO ANTES DE COMPARAR. O HTML quebra a frase em
+           três linhas indentadas, e no `textContent` isso vira
+           "dados de
+            terceiros": o regex com UM espaço não casa, e
+           a asserção acusa um texto que está lá inteiro. Foi o que aconteceu, e
+           a versão anterior desta linha chegou a caçar idioma achando que era
+           outra coisa. Toda comparação com texto de TELA passa por aqui. */
+        var txt = al ? al.textContent.replace(/\s+/g, ' ').trim() : '';
+        t('★ o campo de arquivo orienta a não mandar dado de terceiro',
+          !!al && (/dados de terceiros/i.test(txt) || /third-party data/i.test(txt)) &&
+          (/necessárias para essa finalidade/i.test(txt) || /necessary for this purpose/i.test(txt)),
+          al ? ('texto: ' + JSON.stringify(txt.replace(/\s+/g, ' ').slice(0, 120))) : '(não existe)');
+      })();
+      t('   e ela tem versão em inglês, como todo texto visível desta tela',
+        !!document.getElementById('arqLgpd') &&
+        !!document.getElementById('arqLgpd').getAttribute('data-en'));
       (function(){
         var pac = montarPacote();
         t('★ e os dois viajam no pacote',
@@ -6813,8 +7171,12 @@ function selftest(){
        a bateria; o que não pode sumir é o assunto. */
     t('cobre o que é guardado',        /passamos a tratar/.test(txt) && /condição combinada/.test(txt));
     t('cobre para que serve',          /avaliar, negociar, publicar e acompanhar esta parceria/.test(txt));
-    t('cobre por quanto tempo guarda', /enquanto a indicação estiver em análise/.test(txt) &&
-                                       /enquanto ela estiver valendo/.test(txt));
+    /* 🔴 A DURAÇÃO VIROU EM 30/09 (decisão dele): era "enquanto estiver em
+       análise, e enquanto a parceria estiver valendo", com eliminação no fim.
+       Passou a ser "enquanto o Clube de Parcerias existir", com o nome de quem
+       indicou atrelado ao card, inclusive na indicação não aprovada. */
+    t('cobre por quanto tempo guarda', /enquanto o Clube de Parcerias existir/.test(txt) &&
+                                       /Encerrado o Clube de Parcerias/.test(txt));
     t('cobre o contato de terceiro',   /pessoa de fora da Brazilian Nickel/.test(txt) && /Avise a ela/.test(txt));
     t('cita a LGPD pelo número da lei', /13\.709\/2018/.test(txt));
     t('o contato do RH sai da configuração, não está chumbado no texto',
@@ -6913,8 +7275,11 @@ function selftest(){
         /leg[ií]timo interesse/i.test(todo) && /art\. 7º, IX/.test(todo));
       t('★ lista os direitos do titular pelo artigo', /art\. 18/.test(todo) &&
         /confirma/i.test(todo) && /elimina/i.test(todo) && /oposição/i.test(todo));
+      /* 🔴 o "depois" mudou de gatilho em 30/09: era o fim da PARCERIA, passou a
+         ser o fim do CLUBE. A anonimização continua sendo o destino, e é ela que
+         não pode sumir do texto. */
       t('★ diz por quanto tempo guarda e o que acontece depois',
-        /anonimizad/i.test(todo) && /encerrada a parceria/i.test(todo));
+        /anonimizad/i.test(todo) && /encerrado o clube de parcerias/i.test(todo));
       /* 🔴 "painel do RH" SAIU do texto (pedido dele, 23/09): é jargão nosso, e
          quem lê não sabe o que é "o painel". Virou "base de dados", que diz a
          mesma coisa em palavra de todo mundo. A asserção cobra a IDEIA (o que
