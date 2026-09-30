@@ -164,6 +164,22 @@ def rede_social_do_card(v):
     return (t[:60], "")
 
 
+def texto_do_detalhe(v):
+    """🔴 A MESMA faxina de `textoDoDetalhe` do painel (30/09), e ela existe
+    porque o card passou a respeitar as quebras de linha (`white-space:pre-wrap`).
+    Com tudo preservado, o que era invisível passa a aparecer:
+    1. `\r\n` vira `\n`, senão sobra um caractere por linha;
+    2. espaço no fim da linha sai: ele empurra a quebra no card estreito;
+    3. três ou mais linhas em branco viram uma: uma é organização, três é buraco;
+    4. apara as pontas.
+    ⚠ A paridade cobra que esta função e a do painel continuem casando: prévia
+    que limpa diferente do app é prévia que mente."""
+    t = str(v or "").replace("\r\n", "\n").replace("\r", "\n")
+    t = re.sub(r"[ \t]+$", "", t, flags=re.M)
+    t = re.sub(r"\n{3,}", "\n\n", t)
+    return t.strip()
+
+
 def lista_de_etapas(card):
     """🔴 as etapas do "como utilizar" (17/09), limpas pela MESMA regra do
     formulário e do painel: oito no máximo, 140 letras cada, sem vazias."""
@@ -213,7 +229,7 @@ def card_html(c, cidade):
                           % (simbolo, escape(href, quote=True), escape(txt)))
         else:
             linhas.append('          <div class="d-row"><svg class="ic"><use href="#i-%s"/></svg><span class="d-txt">%s</span></div>' % (simbolo, escape(txt)))
-    linha("tag", (card.get("detalhe") or "").strip())
+    linha("tag", texto_do_detalhe(card.get("detalhe")))
     at = (c.get("atendimento") or "").strip()
     linha("shop", ATENDIMENTO_NO_CARD.get(at, at))
     # 🔴 VÁRIOS ENDEREÇOS (16/09): uma linha por endereço, com o nome curto na
