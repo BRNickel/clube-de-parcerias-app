@@ -228,9 +228,11 @@ label .opt{color:var(--muted);font-weight:400}
    que só aparece com o cursor já no campo ("e se não combinaram condição?").
    Amarelo porque é a única cor de atenção que a tela usa, e a dica cinza ao
    lado dele já ensina o caso normal. */
+/* ⚠ e o PESO também é um só: esta caixa era 500 contra 400 das outras. O que
+   a destaca é a borda âmbar e o negrito da primeira frase, não meio grau de
+   peso, que ninguém identifica como intenção. */
 .hint.atencao{margin-top:6px;padding:8px 10px;border-left:3px solid var(--amber);
-  border-radius:0 8px 8px 0;background:var(--creme);color:var(--warn-txt);
-  font-size:11px;font-weight:500}
+  border-radius:0 8px 8px 0;background:var(--creme);color:var(--warn-txt)}
 .hint.atencao b{font-weight:700}
 
 /* ---------- ajuda ("tooltip") ----------
@@ -509,13 +511,22 @@ body.js .lang-btn{display:inline-flex}
    preencher.
    ⚠ Ela não é verde cheio: verde cheio nesta tela é ENVIAR, e uma segunda peça
    verde ao lado do envio faria as duas parecerem o mesmo caminho. */
+/* 🔴 O BOTÃO ERA QUASE INVISÍVEL, e dá para medir: 2,05:1 (pedido dele, 30/09,
+   com print). A causa: a CAPA é escura nos DOIS temas, e o botão pintava o
+   texto com `--ok-txt`, que segue o tema e no claro é verde ESCURO. Verde
+   escuro sobre verde escuro.
+   ⚠ A lição: peça que vive num fundo FIXO não pode usar token que muda com o
+   tema. As cores daqui são literais de propósito.
+   ⚠ E ele pediu MAIS VISÍVEL, não só legível: virou botão CHEIO, que é a única
+   coisa clicável da capa e agora se lê como botão à distância. */
 .capa-app{display:flex;align-items:center;gap:11px;width:100%;box-sizing:border-box;
   margin-top:18px;padding:13px 16px;border-radius:13px;text-decoration:none;
-  background:var(--green-dim);border:1px solid rgba(0,232,131,.35);color:var(--ok-txt);
+  background:#00E883;border:1px solid #00E883;color:#0B2318;
   font-size:14px;font-weight:700;letter-spacing:-.01em;
   transition:background .16s,border-color .16s,transform .12s}
-.capa-app:hover{background:rgba(0,232,131,.2);border-color:rgba(0,232,131,.55);
+.capa-app:hover{background:#4DF2A8;border-color:#4DF2A8;
   transform:translateY(-1px)}
+.capa-app:focus-visible{outline:2px solid #E9EFEA;outline-offset:2px}
 .capa-app:active{transform:none}
 .capa-app svg{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;
   stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
@@ -624,7 +635,13 @@ body.js .lang-btn{display:inline-flex}
   padding:18px 20px;gap:8px}
 .f.destaque > .rot label{font-size:14px;font-weight:700;letter-spacing:-.01em}
 .f.destaque > .rot label .req{font-size:14px}
-.f.destaque .hint{font-size:11.5px}
+/* 🔴 O TAMANHO DA LEGENDA É UM SÓ (pedido dele, 30/09: "parece que as legendas
+   estão em tamanho e fonte diferente, dá para deixar mais igual?").
+   Aqui havia `font-size:11.5px`, que deixava a legenda do campo de condição
+   maior que as outras doze. Era ênfase de propósito e leu como descuido.
+   ⚠ MEDIDO: 37 legendas visíveis, em 5 variações; esta regra respondia por
+   duas delas. O destaque do campo continua, pelo FUNDO e pela borda, que é
+   como o resto da tela destaca. A bateria passa a cobrar tamanho único. */
 .f.destaque textarea{min-height:118px;background:var(--card)}
 .f.destaque .marca{font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;font-weight:700;
   color:var(--ok-txt);display:flex;align-items:center;gap:6px}
@@ -1049,8 +1066,6 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
           <div class="f wide destaque" data-campo="condicao">
             <div class="rot">
               <label for="condicao" data-en="What are the terms?">Qual é a condição?<span class="req">*</span></label>
-              <button type="button" class="ajuda-btn" data-ajuda="condicao" aria-expanded="false"
-                      aria-controls="aj_condicao" aria-label="O que escrever na condição">?</button>
             </div>
             <!-- 🔴 A DICA PEDE AS DUAS COISAS (pedido dele, 19/09): com o campo de
                  etapas fora, é aqui que o detalhe tem de caber. Quem lê isto no
@@ -1077,22 +1092,13 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
               <b>“condição a combinar com o estabelecimento”</b> ou, se preferir,
               inclua suas observações ou informações que sejam relevantes para o
               RH na hora de entrar em contato com o estabelecimento.</div>
-            <div class="ajuda" id="aj_condicao" hidden data-en="<h4>What to write here</h4><p>The more detail you put here, the less HR has to go back to the establishment to ask. Try to answer these four things:</p><ul><li><b>How much</b>: 20%, R$ 10 off, a free gift;</li><li><b>On what</b>: the whole menu, lunch only, services over R$ 100 only;</li><li><b>When it applies</b>: days of the week, times, whether public holidays are excluded;</li><li><b>What the person shows</b>: employee badge, company e-mail, nothing.</li></ul><p>If you know until when the terms are valid, write that too.</p><div class=&quot;ex bom&quot;><span class=&quot;lbl&quot;>Works</span>20% off lunch from Monday to Friday, 11am to 3pm, on showing the employee badge. Not valid on public holidays.</div><div class=&quot;ex ruim&quot;><span class=&quot;lbl&quot;>Does not work</span>They give us a good discount.</div>">
-              <h4>O que escrever aqui</h4>
-              <p>Quanto mais detalhe você puser aqui, menos o RH precisa voltar ao estabelecimento para
-              perguntar. Tente responder a estas quatro coisas:</p>
-              <ul>
-                <li><b>Quanto</b>: 20%, R$ 10 de desconto, um brinde;</li>
-                <li><b>Sobre o quê</b>: todo o cardápio, só o almoço, só serviços acima de R$ 100;</li>
-                <li><b>Quando vale</b>: dias da semana, horário, se exclui feriado;</li>
-                <li><b>O que a pessoa apresenta</b>: crachá, e-mail da empresa, nada.</li>
-              </ul>
-              <p>Se souber até quando a condição vale, escreva também.</p>
-              <div class="ex bom"><span class="lbl">Serve</span>20% de desconto no almoço de segunda a
-              sexta, das 11h às 15h, apresentando o crachá. Não vale em feriado.</div>
-              <div class="ex ruim"><span class="lbl">Não serve</span>Eles dão um desconto bom para a
-              gente.</div>
-            </div>
+            <!-- 🔴 O PAINEL DE AJUDA DA CONDIÇÃO SAIU (pedido dele, 30/09: "tire o
+                 tooltip, acho desnecessário agora"). Ele tinha as quatro perguntas
+                 e dois exemplos, e nasceu quando o campo era só "escreva a condição".
+                 Desde 19/09 a legenda do campo já pede o detalhe, e desde 28/09 a
+                 caixa âmbar diz o que fazer quando não há condição combinada: o
+                 painel virou a terceira explicação do mesmo campo.
+                 ⚠ O da EVIDÊNCIA fica: aquele campo continua com uma legenda só. -->
             <textarea id="condicao" name="condicao" placeholder="Descreva a condição combinada" data-en-ph="Describe the agreed terms" maxlength="600"></textarea>
             <div class="conta"><span id="condicaoConta"></span></div>
             <div class="err" id="e_condicao"></div>
@@ -7110,55 +7116,132 @@ function selftest(){
       !icos.some(function(l){ return /polygon|<svg/i.test(decodeURIComponent(l.getAttribute('href') || '')); }));
   })();
 
-  out.push('== Ajuda dos campos (o "tooltip") ==');
+  out.push('== Ajuda dos campos (sobrou UMA, a da evidência) ==');
   (function(){
     fecharAjudas(null);
-    t('as duas existem, na condição e na evidência',
-      !!$('aj_condicao') && !!$('aj_evidencia') &&
-      !!document.querySelector('.ajuda-btn[data-ajuda="condicao"]') &&
-      !!document.querySelector('.ajuda-btn[data-ajuda="evidencia"]'));
-    t('nascem fechadas',            ajudasAbertas().length === 0);
-    alternarAjuda('condicao');
-    t('o clique abre',              $('aj_condicao').hasAttribute('hidden') === false);
-    t('e avisa o leitor de tela',
-      document.querySelector('.ajuda-btn[data-ajuda="condicao"]').getAttribute('aria-expanded') === 'true');
-    t('abre de verdade na tela, não só no atributo', $('aj_condicao').offsetParent !== null);
+    /* 🔴 ERA "AS DUAS EXISTEM" E VIROU "SÓ UMA" (decisão dele, 30/09: "tire o
+       tooltip, acho desnecessário agora", sobre a condição). A asserção virou
+       do avesso de propósito: ela existe agora para o painel da condição não
+       VOLTAR, e é a terceira vez nesta semana que uma guarda de texto precisa
+       virar junto com a decisão que ela guardava. */
+    t('\u2605 a ajuda da condição SAIU: o campo já tem legenda e caixa âmbar',
+      !$('aj_condicao') && !document.querySelector('.ajuda-btn[data-ajuda="condicao"]'));
+    t('   e sobrou só a da evidência',
+      !!$('aj_evidencia') && !!document.querySelector('.ajuda-btn[data-ajuda="evidencia"]') &&
+      document.querySelectorAll('.ajuda').length === 1 &&
+      document.querySelectorAll('.ajuda-btn').length === 1);
+    t('nasce fechada',              ajudasAbertas().length === 0);
     alternarAjuda('evidencia');
-    t('abrir a outra FECHA a primeira, uma por vez', ajudasAbertas().length === 1 &&
-      $('aj_condicao').hasAttribute('hidden') === true);
+    t('o clique abre',              $('aj_evidencia').hasAttribute('hidden') === false);
+    t('e avisa o leitor de tela',
+      document.querySelector('.ajuda-btn[data-ajuda="evidencia"]').getAttribute('aria-expanded') === 'true');
+    t('abre de verdade na tela, não só no atributo', $('aj_evidencia').offsetParent !== null);
     alternarAjuda('evidencia');
     t('clicar de novo fecha',       ajudasAbertas().length === 0);
-    alternarAjuda('condicao'); fecharAjudas(null);
+    alternarAjuda('evidencia'); fecharAjudas(null);
     t('fecharAjudas fecha tudo',    ajudasAbertas().length === 0);
     t('não usa o atributo `title`, que no celular não abre',
       !document.querySelector('.ajuda-btn[title]'));
     var dicaCond = campoEl('condicao').querySelector('.hint').textContent.replace(/\s+/g,' ').trim();
     var dicaEvi  = campoEl('evidencia').querySelector('.hint').textContent.replace(/\s+/g,' ').trim();
     out.push('       dica na tela: condição ' + dicaCond.length + ' caracteres · evidência ' + dicaEvi.length);
-    /* 🔴 17/09: a dica da evidência deixou de ser só "print, foto, e-mail" e
-       passou a dizer PARA QUE ela serve (pedido dele): sem isso ela lia como
-       desconfiança de quem indica. Ficou maior de propósito; a da condição, que
-       tem painel de ajuda ao lado, continua curta. */
-    /* 🔴 19/09: a dica deixou de ser curta DE PROPÓSITO. Com o campo de etapas
-       fora, é ela que tem de pedir o detalhe, e o teto antigo (60 letras) passou
-       a cobrar o contrário do que a tela precisa. O teto continua existindo,
-       porque dica que vira parágrafo ninguém lê: subiu para 160. */
+    /* 🔴 19/09: a dica da condição deixou de ser curta DE PROPÓSITO. Com o campo
+       de etapas fora, é ela que tem de pedir o detalhe. Com o painel de ajuda
+       fora (30/09), ela e a caixa âmbar são TUDO o que explica o campo: o teto
+       continua existindo, porque dica que vira parágrafo ninguém lê. */
     t('a dica da condição pede o detalhe, e ainda assim cabe em duas linhas',
       dicaCond.length > 60 && dicaCond.length <= 160, dicaCond.length + ' letras');
+    /* ⚠ e a caixa âmbar continua de pé: era a SEGUNDA das três explicações, e
+       com a terceira fora ela passou a ser a única que diz o que fazer quando
+       ninguém combinou nada. */
+    t('\u2605 e a caixa que resolve o "ainda não combinamos nada" continua lá',
+      !!campoEl('condicao').querySelector('.hint.atencao') &&
+      campoEl('condicao').textContent.indexOf('condição a combinar com o estabelecimento') >= 0);
     /* 🔴 23/09: a legenda passou a começar por EXEMPLO (pedido dele), porque
        "Arquivos de apoio" é um nome mais largo que "Evidência da conversa" e
        sozinho não diz o que serve. O que ela NÃO pode perder é o para quê. */
-    t('★ e a dos arquivos de apoio dá EXEMPLO e explica PARA QUE eles servem',
+    t('\u2605 e a dos arquivos de apoio dá EXEMPLO e explica PARA QUE eles servem',
       /^exemplo:/i.test(dicaEvi.trim()) &&
       /retomar a negociação de onde você parou/i.test(dicaEvi) && /restrito ao RH/i.test(dicaEvi),
       dicaEvi.slice(0, 70));
-    var txt = $('aj_condicao').textContent.replace(/\s+/g,' ');
-    t('a ajuda da condição cobra as 4 coisas',
-      /Quanto/.test(txt) && /Sobre o quê/.test(txt) && /Quando vale/.test(txt) && /apresenta/.test(txt));
-    t('a ajuda da condição mostra um exemplo que serve e um que não serve',
-      $('aj_condicao').querySelector('.ex.bom') && $('aj_condicao').querySelector('.ex.ruim'));
     t('a ajuda da evidência repete o limite de tamanho do arquivo',
       $('ajudaEvidenciaLimite').textContent.indexOf(String(REGRAS.evidenciaMaxMB)) >= 0);
+  })();
+
+  out.push('== As legendas: um tamanho só, e o botão da capa visível ==');
+  (function(){
+    /* 🔴 PEDIDO DELE (30/09): "parece que as legendas estão em tamanho e fonte
+       diferente, dá para deixar mais igual?". MEDIDO antes de mexer: 37
+       legendas visíveis em 5 variações, e a que destoava era a do campo de
+       condição, 11.5px contra 10.5px, por causa de `.f.destaque .hint`.
+       ⚠ A asserção varre a TELA, não o CSS: regra nova em qualquer lugar do
+       arquivo volta a quebrar o tamanho único, e é isso que ela pega. */
+    var ls = Array.prototype.filter.call(document.querySelectorAll('.hint'),
+      function(e){ return e.offsetHeight > 0; });
+    function estilo(e){
+      var c = getComputedStyle(e);
+      return c.fontSize + '/' + c.fontWeight + '/' + c.fontFamily.split(',')[0];
+    }
+    var variacoes = {};
+    ls.forEach(function(e){
+      var k = estilo(e);
+      (variacoes[k] = variacoes[k] || []).push(
+        ((e.closest('[data-campo]') || {}).dataset || {}).campo || e.className);
+    });
+    var chaves = Object.keys(variacoes);
+    t('\u2605 toda legenda da tela tem o MESMO tamanho, peso e família',
+      ls.length > 8 && chaves.length === 1,
+      ls.length + ' legendas em ' + chaves.length + ' variação(ões): ' +
+      chaves.map(function(k){ return k + ' (' + variacoes[k].length + ')'; }).join(' | '));
+    /* ⚠ a caixa âmbar continua se distinguindo, mas pela BORDA e pelo fundo, que
+       é como o resto da tela destaca. Se ela deixar de se distinguir de algum
+       jeito, o aviso vira parágrafo comum. */
+    var amb = document.querySelector('.hint.atencao');
+    var comum = document.querySelector('[data-campo="colaborador"] .hint');
+    t('   e a caixa de atenção ainda se distingue, pela borda e pelo fundo',
+      !!amb && !!comum &&
+      getComputedStyle(amb).backgroundColor !== getComputedStyle(comum).backgroundColor &&
+      parseFloat(getComputedStyle(amb).borderLeftWidth) >= 2);
+
+    /* 🔴 O BOTÃO DA CAPA (pedido dele, 30/09, com print): ele estava em 2,05:1,
+       ou seja, verde escuro sobre verde escuro. A CAPA é escura nos dois temas e
+       o botão usava `--ok-txt`, que segue o TEMA.
+       ⚠ A asserção mede o CONTRASTE, e não "a cor mudou": trocar por outra cor
+       ruim passaria em qualquer teste de igualdade. */
+    function lum(c){
+      var m = c.match(/[\d.]+/g).map(Number);
+      var f = m.slice(0,3).map(function(v){ v/=255; return v<=0.03928 ? v/12.92 : Math.pow((v+0.055)/1.055, 2.4); });
+      return 0.2126*f[0] + 0.7152*f[1] + 0.0722*f[2];
+    }
+    function fundoReal(e){
+      var x = e;
+      while(x){
+        var c = getComputedStyle(x).backgroundColor;
+        if(c && c !== 'rgba(0, 0, 0, 0)' && !/,\s*0\)$/.test(c)) return c;
+        x = x.parentElement;
+      }
+      return 'rgb(255, 255, 255)';
+    }
+    var bt = $('btnCapaApp');
+    if(bt && bt.offsetHeight > 0){
+      var st = getComputedStyle(bt);
+      var L1 = lum(st.color), L2 = lum(fundoReal(bt));
+      var raz = (Math.max(L1, L2) + 0.05) / (Math.min(L1, L2) + 0.05);
+      t('\u2605 o botão da página pública tem contraste de verdade (4.5:1 ou mais)',
+        raz >= 4.5, Math.round(raz * 100) / 100 + ':1  ' + st.color + ' sobre ' + fundoReal(bt));
+      /* 🔴 e a cor NÃO pode seguir o tema: a capa é escura nos dois, e foi
+         exatamente isso que produziu o 2,05:1. A asserção liga o tema claro e o
+         escuro e cobra que o botão fique IGUAL nos dois. */
+      var antes = document.documentElement.getAttribute('data-theme');
+      document.documentElement.setAttribute('data-theme', 'dark');
+      var corEscuro = getComputedStyle(bt).color + '|' + getComputedStyle(bt).backgroundColor;
+      document.documentElement.setAttribute('data-theme', 'light');
+      var corClaro = getComputedStyle(bt).color + '|' + getComputedStyle(bt).backgroundColor;
+      if(antes) document.documentElement.setAttribute('data-theme', antes);
+      else document.documentElement.removeAttribute('data-theme');
+      t('   e ela não segue o tema, porque a capa é escura nos dois',
+        corClaro === corEscuro, 'claro ' + corClaro + '  ·  escuro ' + corEscuro);
+    }
   })();
 
   out.push('== Leia antes de enviar: caixa com leitura obrigatória ==');
