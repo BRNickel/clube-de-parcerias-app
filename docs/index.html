@@ -346,7 +346,12 @@ body.js .chips.on{display:flex}
 .p-details{display:flex;flex-direction:column;gap:7px}
 .d-row{display:flex;align-items:flex-start;gap:9px;font-size:13px;line-height:1.45;color:var(--txt)}
 .d-row .ic{width:15px;height:15px;stroke:var(--muted);flex-shrink:0;margin-top:2px}
-.d-row .d-txt{flex:1;min-width:0;overflow-wrap:anywhere}
+/* 🔴 `pre-wrap` (30/09): sem ele o navegador transforma toda quebra de linha
+   em espaço, e o detalhe que o RH organizou em parágrafo e lista chegava ao
+   card como um bloco só. A MESMA regra existe no painel, e a paridade cobra.
+   ⚠ MEDIDO: `pre-line` também guarda a linha em branco, mas come o recuo do
+   começo da linha; `pre-wrap` guarda os dois. */
+.d-row .d-txt{flex:1;min-width:0;overflow-wrap:anywhere;white-space:pre-wrap}
 /* 🔴 ENDEREÇO É LINK (16/09): a própria linha abre o mapa; saiu o botão. O MESMO
    no painel. Sublinhado discreto, verde no hover. */
 .d-row a.d-txt{color:var(--txt);text-decoration:underline;text-decoration-color:rgba(27,45,37,.28);text-underline-offset:3px;transition:color .15s,text-decoration-color .15s}
@@ -517,7 +522,7 @@ body.js .chips.on{display:flex}
         <div class="city-ico"><svg class="ic"><use href="#i-city"/></svg></div>
         <div class="city-info">
           <div class="city-name">Belo Horizonte <span class="uf-pill">MG</span></div>
-          <div class="city-sub"><span class="i18 lg-pt">3 parceiros</span><span class="i18 lg-en">3 partners</span></div>
+          <div class="city-sub"><span class="i18 lg-pt">4 parceiros</span><span class="i18 lg-en">4 partners</span></div>
         </div><svg class="ic chev"><use href="#i-chev"/></svg>
       </a>
       <a class="city-card" href="#c-capitao-gervasio-oliveira">
@@ -589,7 +594,7 @@ body.js .chips.on{display:flex}
   <a class="back-btn" href="#home"><svg class="ic"><use href="#i-back"/></svg><span class="i18 lg-pt">Todas as localidades</span><span class="i18 lg-en">All locations</span></a>
   <div class="city-head">
     <h2>Belo Horizonte <span class="uf-pill">MG</span></h2>
-    <div class="city-sub"><span class="i18 lg-pt">3 parceiros disponíveis nesta localidade</span><span class="i18 lg-en">3 partners available in this location</span></div>
+    <div class="city-sub"><span class="i18 lg-pt">4 parceiros disponíveis nesta localidade</span><span class="i18 lg-en">4 partners available in this location</span></div>
   </div>
   <div class="chips"></div>
   <div class="partners">
@@ -609,6 +614,29 @@ body.js .chips.on{display:flex}
           <div class="d-row"><svg class="ic"><use href="#i-clock"/></svg><span class="d-txt"><span class="i18 lg-pt">Consultar horário de funcionamento</span><span class="i18 lg-en">Check the opening hours</span></span></div>
           <div class="d-row"><svg class="ic"><use href="#i-link"/></svg><a class="d-txt d-www" href="https://faq.flashapp.com.br/kb/guide/pt-BR/como-usar-cupons-e-comprar-vale-presente-clube-flash-6FIqFXYBSp/Steps/4973961" target="_blank" rel="noopener">faq.flashapp.com.br</a></div>
           <div class="p-como"><div class="p-como-t"><span class="i18 lg-pt">Como usar o benefício</span><span class="i18 lg-en">How to use it</span></div><ol class="p-como-l"><li>Abra o aplicativo da Flash e entre com o seu acesso.</li><li>Na página inicial, toque em &quot;Parceiros&quot;.</li><li>Escolha &quot;Ver todos os parceiros&quot; ou navegue por categoria.</li><li>Abra o parceiro, leia as condições e use o cupom ou compre o vale-presente. O desconto é aplicado pelo parceiro, no ato da compra.</li><li>As marcas mudam com o tempo e variam conforme as categorias habilitadas: o que aparece no seu app é o que vale.</li><li>Este clube é administrado pela Flash, e não pela Brazilian Nickel: as condições e os parceiros são definidos por ela e podem mudar.</li></ol></div>
+        </div>
+      </details>
+    </article>
+
+    <article class="p-card" data-nome="Outback Steakhouse BH Shopping" data-ramo="Alimentação Indo até o lugar" data-cat="alimentacao" data-cidade="Belo Horizonte" data-uf="MG">
+      <div class="p-agua" aria-hidden="true"><svg class="ic"><use href="#i-alimentacao"/></svg></div>
+      <details class="p-det">
+        <summary class="p-sum">
+          <div class="p-ico"><svg class="ic"><use href="#i-alimentacao"/></svg></div>
+          <div class="p-sum-txt"><div class="p-name">Outback Steakhouse BH Shopping</div><div class="p-cat">Alimentação <svg class="ic p-cat-ico"><use href="#i-alimentacao"/></svg></div></div>
+          <div class="p-cond-box"><div class="p-cond">Desconto exclusivo para pratos selecionados</div></div>
+          <svg class="ic p-chev"><use href="#i-chev"/></svg>
+        </summary>
+        <div class="p-mais">
+          <div class="d-row"><svg class="ic"><use href="#i-tag"/></svg><span class="d-txt">Pratos selecionados por R$ 49,90, com 1 acompanhamento + refil de refrigerante.
+
+-Chicken On The Barbie + 1 acompanhamento
+-Chicken Gorgonzola Sauce + 1 acompanhamento
+-Mate&#x27;s Fettuccine Veggie</span></div>
+          <div class="d-row"><svg class="ic"><use href="#i-shop"/></svg><span class="d-txt">Indo até o lugar</span></div>
+          <div class="d-row"><svg class="ic"><use href="#i-pin"/></svg><span class="d-txt"><span class="i18 lg-pt">Consultar endereço na internet</span><span class="i18 lg-en">Check the address online</span></span></div>
+          <div class="d-row"><svg class="ic"><use href="#i-clock"/></svg><span class="d-txt"><span class="i18 lg-pt">Consultar horário de funcionamento</span><span class="i18 lg-en">Check the opening hours</span></span></div>
+          <div class="p-como"><div class="p-como-t"><span class="i18 lg-pt">Como usar o benefício</span><span class="i18 lg-en">How to use it</span></div><ol class="p-como-l"><li>Apresente o crachá funcional e informe o convênio com a Brazilian Nickel.</li><li>Confirme a condição vigente com o responsável do estabelecimento antes de usufruir do benefício.</li></ol></div>
         </div>
       </details>
     </article>
