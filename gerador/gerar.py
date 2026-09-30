@@ -236,9 +236,17 @@ def card_html(c, cidade):
     # frente para casar com o botão; sem nenhum, o texto padrão (o MESMO do painel)
     # 🔴 ENDEREÇO DENTRO DA CIDADE (16/09): esta seção é UMA cidade, então só os
     # endereços dela entram; endereço sem cidade (dado antigo) entra em todas.
+    # 🔴 TEXTO DE ATENDIMENTO GANHA DO ENDEREÇO (30/09): quando o RH escreve um
+    # texto próprio, é ele que aparece na linha, SEM link de mapa, e os
+    # endereços continuam guardados sem aparecer. A MESMA regra da prévia do
+    # painel, e a paridade cobra que continuem iguais.
+    at_txt = re.sub(r"\s+", " ", str(card.get("atendimentoTexto") or "")).strip()
     ends = [e for e in lista_de_enderecos(card) if not e["cidade"] or e["cidade"] == cidade["cod"]]
-    if not ends: linha("pin", None, None, d("Consultar endereço na internet", "Check the address online"))
-    for e in ends:
+    if at_txt:
+        linha("pin", at_txt)
+    elif not ends:
+        linha("pin", None, None, d("Consultar endereço na internet", "Check the address online"))
+    for e in (ends if not at_txt else []):
         end = e["endereco"]
         q = end if slug(cidade["nome"]) in slug(end) else end + ", " + cidade["nome"]
         linha("pin", end, "https://www.google.com/maps/search/?api=1&query=" + urllib.request.quote(q))
