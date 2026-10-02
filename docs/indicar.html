@@ -412,22 +412,37 @@ select{background-image:url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http:
 .hr-campo{display:flex;flex-direction:column;gap:8px}
 .hr-linhas{display:flex;flex-direction:column;gap:7px}
 .hr-linha{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
-.hr-dias,.hr-h,.hr-txt,.en-txt{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--txt);
+.hr-h,.hr-txt,.en-txt{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--txt);
   background:var(--campo);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
-/* 🔴 BASE DECLARADA, não `auto` (pedido dele, 16/09). Com `flex:1 1 auto` numa
-   linha que pode quebrar, o seletor de dias crescia até a largura inteira (686px
-   medidos numa janela de 1371) e empurrava as horas para a linha de baixo, em
-   qualquer tamanho de tela. Com uma base de 190px ele DIVIDE a linha em vez de
-   tomá-la, e as cinco peças cabem juntas, que é como se lê um horário. */
-.hr-dias{flex:1 1 190px;min-width:110px}
+/* 🔴 OS DIAS SÃO SETE CHIPS, Seg a Dom (pedido dele, 02/10), os MESMOS do editor
+   do card no painel, e não mais um dropdown de quatro faixas. A caixa de marcar
+   de verdade fica invisível e o `span` é o que se vê: é ela que guarda o estado e
+   recebe o foco do teclado. Numa linha só com as horas e o ×: medido, o campo
+   tem 671px no computador e o conjunto pede ~590. */
+.hr-dias{display:flex;flex-wrap:nowrap;gap:3px;flex:0 0 auto}
+.hr-dia{position:relative;display:inline-flex}
+.hr-dia input{position:absolute;opacity:0;width:0;height:0;margin:0}
+.hr-dia span{display:inline-block;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;
+  letter-spacing:0;padding:7px 7px;border-radius:999px;border:1px solid var(--line);
+  background:var(--campo);color:var(--muted);cursor:pointer;user-select:none;
+  transition:background .14s,border-color .14s,color .14s}
+.hr-dia:hover span{border-color:var(--muted)}
+.hr-dia input:checked + span{background:var(--green-dim);border-color:var(--ok-txt);color:var(--ok-txt)}
+/* dia já coberto por OUTRA linha: fica visível, riscado, e não se marca */
+.hr-dia input:disabled + span{opacity:.38;cursor:not-allowed;text-decoration:line-through}
+.hr-dia input:focus-visible + span{outline:2px solid var(--green);outline-offset:2px}
 /* 🔴 LARGURA MEDIDA (foto dele, 15/09): com 108px o campo cortava "08:00" e
    mostrava "08:0" (o Chrome reserva espaço para o ícone do relógio dentro do
-   campo). 128px cabe o texto inteiro; abaixo de 560px a linha quebra em duas,
-   porque dias + duas horas + o × não cabem em 400px. */
-.hr-h{flex:0 0 128px;min-width:0;padding:9px 8px}
+   campo). 118px é o piso que cabe o texto inteiro, o mesmo do painel. */
+.hr-h{flex:0 0 118px;min-width:0;padding:9px 7px}
+/* 🔴 NO CELULAR (até 560px) são duas linhas: os dias em cima, com o × no canto,
+   e as duas horas embaixo, dividindo a linha. Medido em 390px reais: o campo tem
+   298px. ⚠ `#horario` na frente porque o ENDEREÇO também usa `.hr-linha`. */
 @media(max-width:560px){
-  .hr-dias{flex:1 1 100%}
-  .hr-h{flex:1 1 calc(50% - 46px)}
+  #horario .hr-linha{position:relative}
+  #horario .hr-linha .hr-x{position:absolute;top:0;right:0}
+  .hr-dias{flex:1 1 100%;flex-wrap:wrap;padding-right:36px}
+  .hr-h{flex:1 1 calc(50% - 16px)}
 }
 .hr-txt{flex:1 1 auto;min-width:0}
 /* linhas de ENDEREÇO (16/09): só o endereço; o nome curto do botão é do RH, no painel.
@@ -544,7 +559,7 @@ body.js .lang-btn{display:inline-flex}
   font-size:11.5px;font-weight:700;display:flex;align-items:center;justify-content:center}
 .et-txt{flex:1 1 auto;min-width:0}
 .hr-sep{flex:none;font-size:11.5px;color:var(--muted)}
-.hr-dias:focus,.hr-h:focus,.hr-txt:focus,.en-txt:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px var(--ring)}
+.hr-h:focus,.hr-txt:focus,.en-txt:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px var(--ring)}
 .hr-mais{align-self:flex-start;font-family:'DM Sans',sans-serif;font-size:11.5px;font-weight:700;
   color:var(--ok-txt);background:var(--green-dim);border:1px solid rgba(0,232,131,.34);
   border-radius:999px;padding:7px 14px;cursor:pointer}
@@ -1261,6 +1276,7 @@ footer{margin-top:26px;text-align:center;font-size:11px;color:var(--muted);line-
     </div>
   </div>
 </div>
+
 <script>
 (function(){
 'use strict';
@@ -2103,21 +2119,65 @@ function pintarPar(){
    ================================================================== */
 /* ⚠ NAO se traduz: este texto vai GRAVADO no card e o app publica ele. */
 var HORARIO_PADRAO = 'Consultar horário de funcionamento';
-/* 🔴 CADA OPÇÃO DECLARA OS DIAS QUE COBRE (pedido dele, 17/09), num mapa de bits:
-   domingo 1, segunda 2, terça 4, quarta 8, quinta 16, sexta 32, sábado 64. É isso
-   que permite ao seletor não oferecer duas faixas que se pisam ("Seg a Sex" duas
-   vezes, ou "Todos os dias" junto de qualquer outra). Sem isso o card saía com
-   dois horários contraditórios e quem lê não sabe qual vale. */
-var DIAS_HORARIO = [
-  { cod:'',            rot:'(sem dias)',    dias:0 },
-  { cod:'Seg a Sex',   rot:'Seg a Sex',     dias:62 },
-  { cod:'Seg a Sáb',   rot:'Seg a Sáb',     dias:126 },
-  { cod:'Todos os dias', rot:'Todos os dias', dias:127 },
-  { cod:'Sáb e Dom',   rot:'Fim de semana', dias:65 }
+/* 🔴 OS DIAS SÃO ESCOLHA DIA A DIA (pedido dele, 02/10): sete chips (Seg a
+   Dom) que a pessoa marca, no editor do card E no formulário (que trocou o
+   dropdown de quatro faixas no mesmo dia). Num mapa de bits: domingo 1, segunda
+   2, terça 4, quarta 8, quinta 16, sexta 32, sábado 64.
+   O TEXTO do card continua na mesma gramática ("Seg a Sex", "Sáb e Dom"):
+   `rotuloDosDias` escreve a partir do mapa e `mascaraDosDias` lê de volta,
+   inclusive os rótulos que o dropdown antigo gravava. Três ou mais dias
+   seguidos viram "X a Y"; dois, "X e Y"; o resto, lista ("Seg, Qua e Sex"); os
+   sete, "Todos os dias".
+   ⚠ ESTE BLOCO É IGUAL NO FORMULÁRIO, palavra por palavra: `comum/paridade.py`
+   cobra `DIAS_SEMANA` e as três funções. Quem preenche e quem edita têm de
+   escrever o mesmo texto. `DIAS_HORARIO` (as quatro faixas) saiu dos dois. */
+var DIAS_SEMANA = [
+  { cod:'Seg', bit:2 }, { cod:'Ter', bit:4 }, { cod:'Qua', bit:8 }, { cod:'Qui', bit:16 },
+  { cod:'Sex', bit:32 }, { cod:'Sáb', bit:64 }, { cod:'Dom', bit:1 }
 ];
-function diasDaOpcao(cod){
-  for(var i=0;i<DIAS_HORARIO.length;i++) if(DIAS_HORARIO[i].cod === cod) return DIAS_HORARIO[i].dias || 0;
+function bitDoDia(nome){
+  var n = String(nome||'').trim().toLowerCase().replace(/^sab$/, 'sáb');
+  for(var i=0;i<DIAS_SEMANA.length;i++) if(DIAS_SEMANA[i].cod.toLowerCase() === n) return DIAS_SEMANA[i].bit;
   return 0;
+}
+function rotuloDosDias(mask){
+  mask = (mask || 0) & 127;
+  if(!mask) return '';
+  if(mask === 127) return 'Todos os dias';
+  var idx = [];
+  DIAS_SEMANA.forEach(function(d, i){ if(mask & d.bit) idx.push(i); });
+  var seguidos = idx.length >= 3 && (idx[idx.length - 1] - idx[0]) === idx.length - 1;
+  if(seguidos) return DIAS_SEMANA[idx[0]].cod + ' a ' + DIAS_SEMANA[idx[idx.length - 1]].cod;
+  var nomes = idx.map(function(i){ return DIAS_SEMANA[i].cod; });
+  if(nomes.length === 1) return nomes[0];
+  return nomes.slice(0, -1).join(', ') + ' e ' + nomes[nomes.length - 1];
+}
+/* devolve 0 para texto que não é lista de dias: quem chama trata como texto livre */
+function mascaraDosDias(txt){
+  var t = String(txt||'').trim();
+  if(!t) return 0;
+  if(/^todos os dias$/i.test(t)) return 127;
+  var m = /^(\S+)\s+a\s+(\S+)$/i.exec(t);
+  if(m){
+    var ba = bitDoDia(m[1]), bb = bitDoDia(m[2]);
+    if(!ba || !bb) return 0;
+    var i = 0, fim = 0, mask = 0;
+    DIAS_SEMANA.forEach(function(d, k){ if(d.bit === ba) i = k; if(d.bit === bb) fim = k; });
+    /* roda a semana: "Sáb a Seg" também é uma faixa */
+    for(var passo = 0; passo < 7; passo++){
+      mask |= DIAS_SEMANA[i].bit;
+      if(i === fim) break;
+      i = (i + 1) % 7;
+    }
+    return mask;
+  }
+  var partes = t.split(/\s*,\s*|\s+e\s+/i), mk = 0;
+  for(var k = 0; k < partes.length; k++){
+    var b = bitDoDia(partes[k]);
+    if(!b) return 0;
+    mk |= b;
+  }
+  return mk;
 }
 /* 🔴 "08:00" vira "08h", e não "08h00": o zero dos minutos é ruído em toda
    linha de horário comercial, e só aparece quando existe ("08h30"). */
@@ -2354,6 +2414,9 @@ function ligarInterruptores(){
     function(){ R.horario = ''; });
   return true;
 }
+/* o nome do dia na TELA em inglês. ⚠ Só a tela: o valor do chip (e o texto que
+   vai para o card) é sempre o código em português, porque o app publica ele. */
+var DIA_EN = { 'Seg':'Mon', 'Ter':'Tue', 'Qua':'Wed', 'Qui':'Thu', 'Sex':'Fri', 'Sáb':'Sat', 'Dom':'Sun' };
 function montarCampoDeHorario(){
   var w = document.getElementById('horario');
   if(!w) return false;
@@ -2361,13 +2424,28 @@ function montarCampoDeHorario(){
   var corpo = document.createElement('div'); corpo.className = 'hr-linhas';
   w.appendChild(corpo);
   var estado = linhasDeHorario(R.horario || '');
+  /* 🔴 dias que a gramática não entende ("Seg-Sex") viram linha de TEXTO inteira,
+     em vez de uma linha sem chip marcado que perderia o "Seg-Sex" (mesma regra
+     do editor do card no painel). */
+  estado = estado.map(function(l){
+    if(!l.livre && l.dias && !mascaraDosDias(l.dias))
+      return { dias:'', de:'', ate:'', livre: montarHorario(l.dias, l.de, l.ate) };
+    return l;
+  });
+  function mascaraMarcada(linha){
+    var m = 0;
+    Array.prototype.forEach.call(linha.querySelectorAll('.hr-dia input'), function(cx){
+      if(cx.checked) m |= bitDoDia(cx.value);
+    });
+    return m;
+  }
 
   function lerLinhas(){
     return Array.prototype.map.call(corpo.querySelectorAll('.hr-linha'), function(linha){
       var liv = linha.querySelector('.hr-txt');
       if(liv) return { dias:'', de:'', ate:'', livre:liv.value };
       var hs = linha.querySelectorAll('.hr-h');
-      return { dias: linha.querySelector('.hr-dias').value,
+      return { dias: rotuloDosDias(mascaraMarcada(linha)),
                de: hs[0] ? hs[0].value : '', ate: hs[1] ? hs[1].value : '', livre:'' };
     });
   }
@@ -2379,33 +2457,27 @@ function montarCampoDeHorario(){
     atualizarOpcoesDeDias();
     atualizarProgresso();
   }
-  /* 🔴 SEM FAIXAS QUE SE PISAM (pedido dele, 17/09): cada seletor passa a oferecer
-     só os dias que as OUTRAS linhas ainda não cobriram. Escolher "Seg a Sex" tira
-     essa opção das demais, e "Todos os dias" tira todas. A opção já escolhida na
-     própria linha continua lá, senão o valor sumiria da tela ao redesenhar. */
+  /* 🔴 SEM DIAS QUE SE PISAM (pedido dele, 17/09), agora dia a dia: um dia
+     coberto por OUTRA linha aparece riscado e não se marca nesta. O dia já
+     marcado na própria linha nunca trava, senão o valor sumiria ao redesenhar;
+     e o "+ Adicionar" se desliga quando os sete já têm dono. */
   function atualizarOpcoesDeDias(){
     var lidas = lerLinhas();
     var linhas = corpo.querySelectorAll('.hr-linha');
     Array.prototype.forEach.call(linhas, function(linha, i){
-      var sel = linha.querySelector('.hr-dias'); if(!sel) return;
+      var grp = linha.querySelector('.hr-dias'); if(!grp) return;
       var usados = 0;
-      lidas.forEach(function(l, j){ if(j !== i && !l.livre) usados |= diasDaOpcao(l.dias); });
-      var atual = sel.value;
-      sel.innerHTML = '';
-      DIAS_HORARIO.forEach(function(d){
-        if(d.cod && (d.dias & usados) && d.cod !== atual) return;
-        var o = novo('option', null, d.rot); o.value = d.cod;
-        if(d.cod === atual) o.selected = true;
-        sel.appendChild(o);
+      lidas.forEach(function(l, j){ if(j !== i && !l.livre) usados |= mascaraDosDias(l.dias); });
+      Array.prototype.forEach.call(grp.querySelectorAll('.hr-dia input'), function(cx){
+        var trava = !cx.checked && !!(bitDoDia(cx.value) & usados);
+        cx.disabled = trava;
+        cx.parentNode.title = trava ? T('Já coberto em outra linha de horário', 'Already covered by another line') : '';
       });
     });
-    /* 🔴 quem decide o "+ Adicionar" é o que sobraria para uma linha NOVA, não o
-       que cada linha existente ainda vê: a própria escolha da linha continua na
-       lista dela, e contar por ali manteria o botão ligado para sempre. */
     var todos = 0;
-    lidas.forEach(function(l){ if(!l.livre) todos |= diasDaOpcao(l.dias); });
+    lidas.forEach(function(l){ if(!l.livre) todos |= mascaraDosDias(l.dias); });
     var mais = w.querySelector('.hr-mais');
-    if(mais) mais.disabled = !DIAS_HORARIO.some(function(d){ return d.cod && !(d.dias & todos); });
+    if(mais) mais.disabled = (todos & 127) === 127;
   }
   function novo(tag, cls, txt){
     var e = document.createElement(tag); if(cls) e.className = cls;
@@ -2420,23 +2492,32 @@ function montarCampoDeHorario(){
       liv.addEventListener('input', guardar);
       linha.appendChild(liv);
     } else {
-      var sel = novo('select','hr-dias');
-      DIAS_HORARIO.forEach(function(d){
-        var o = novo('option', null, d.rot); o.value = d.cod;
-        if(d.cod === l.dias) o.selected = true;
-        sel.appendChild(o);
+      /* 🔴 SETE CHIPS, Seg a Dom (pedido dele, 02/10), os mesmos do editor do
+         card. Em inglês a TELA diz "Mon", "Tue"...; o VALOR continua o código em
+         português, porque é ele que vai gravado no card e o app publica. */
+      var grp = novo('div','hr-dias');
+      grp.setAttribute('role','group');
+      grp.setAttribute('aria-label', T('Dias da semana', 'Days of the week'));
+      var mkIni = mascaraDosDias(l.dias);
+      DIAS_SEMANA.forEach(function(dd){
+        var lab = novo('label','hr-dia');
+        var cx = novo('input'); cx.type = 'checkbox'; cx.value = dd.cod; cx.checked = !!(mkIni & dd.bit);
+        var rotDia = T(dd.cod, DIA_EN[dd.cod]);
+        cx.setAttribute('aria-label', rotDia);
+        cx.addEventListener('change', guardar);
+        lab.appendChild(cx); lab.appendChild(novo('span', null, rotDia));
+        grp.appendChild(lab);
       });
       var de = novo('input','hr-h');  de.type = 'time';  de.value = l.de || '';
       de.setAttribute('aria-label', T('Abre às', 'Opens at'));
       var ate = novo('input','hr-h'); ate.type = 'time'; ate.value = l.ate || '';
       ate.setAttribute('aria-label', T('Fecha às', 'Closes at'));
-      sel.addEventListener('change', guardar);
       de.addEventListener('change', guardar);
       ate.addEventListener('change', guardar);
-      linha.appendChild(sel);
-      linha.appendChild(novo('span','hr-sep','das'));
+      linha.appendChild(grp);
+      /* o "das" saiu (02/10), como no painel: ao lado das pílulas ele não diz nada */
       linha.appendChild(de);
-      linha.appendChild(novo('span','hr-sep','às'));
+      linha.appendChild(novo('span','hr-sep', T('às', 'to')));
       linha.appendChild(ate);
     }
     var x = novo('button','hr-x','×'); x.type = 'button';
@@ -2453,8 +2534,8 @@ function montarCampoDeHorario(){
   function desenhar(){
     corpo.innerHTML = '';
     estado.forEach(function(l, i){ corpo.appendChild(desenharLinha(l, i)); });
+    atualizarOpcoesDeDias();
   }
-  desenhar();
 
   var mais = novo('button','hr-mais', T('+ Adicionar horário', '+ Add opening hours')); mais.type = 'button';
   mais.addEventListener('click', function(){
@@ -2462,6 +2543,7 @@ function montarCampoDeHorario(){
     desenhar(); guardar();
   });
   w.appendChild(mais);
+  desenhar();
   var av = novo('div','hr-aviso'); av.id = 'horario_aviso'; av.hidden = true;
   av.textContent = T('Fecha antes de abrir: vai para o card como "do dia seguinte". Se não era isso, corrija as horas.',
                      'Closing time is before opening time: the card will read "next day". If that is not what you meant, fix the hours.');
@@ -4148,6 +4230,16 @@ function repintarTextosDoJS(){
   (function(){
     var mais = document.querySelector('#horario .hr-mais');
     if(mais){ mais.textContent = T('+ Adicionar horário', '+ Add opening hours'); n++; }
+    /* 🔴 os chips de dia (02/10): só o RÓTULO muda; o valor fica em português */
+    Array.prototype.forEach.call(document.querySelectorAll('#horario .hr-dia'), function(lab){
+      var cx = lab.querySelector('input'), sp = lab.querySelector('span');
+      if(!cx || !sp) return;
+      sp.textContent = T(cx.value, DIA_EN[cx.value] || cx.value);
+      cx.setAttribute('aria-label', sp.textContent); n++;
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('#horario .hr-sep'), function(sp){
+      sp.textContent = T('às', 'to'); n++;
+    });
     var av = $('horario_aviso');
     if(av){
       av.textContent = T('Fecha antes de abrir: vai para o card como "do dia seguinte". Se não era isso, corrija as horas.',
@@ -6134,6 +6226,15 @@ function selftest(){
         t('e o seletor de dias divide a linha em vez de tomá-la',
           l0.querySelector('.hr-dias').getBoundingClientRect().width < l0.getBoundingClientRect().width * 0.75);
       } else {
+        /* ⚠ no celular são DUAS linhas e o × mora no canto da dos dias; com uma
+           linha só o × não existe, então a sonda cria a segunda, mede e desfaz */
+        $('horario').querySelector('.hr-mais').click();
+        var lx = $('horario').querySelector('.hr-linha'), xx = lx.querySelector('.hr-x').getBoundingClientRect(),
+            gd = lx.querySelector('.hr-dias').getBoundingClientRect();
+        t('   e no celular o × fica no canto da linha dos dias, nunca sozinho numa linha',
+          xx.width > 0 && xx.top >= gd.top - 2 && xx.bottom <= gd.bottom + 2,
+          'x ' + Math.round(xx.top) + '-' + Math.round(xx.bottom) + ', dias ' + Math.round(gd.top) + '-' + Math.round(gd.bottom));
+        $('horario').querySelectorAll('.hr-x')[1].click();
         t('★ no celular a linha quebra de propósito, em vez de espremer a hora', alt >= 60,
           alt.toFixed(0) + 'px numa janela de ' + window.innerWidth);
       }
@@ -6146,23 +6247,62 @@ function selftest(){
     t('★ o campo de hora cabe "00:00" inteiro',
       $('horario').querySelector('.hr-h').getBoundingClientRect().width >= 118,
       Math.round($('horario').querySelector('.hr-h').getBoundingClientRect().width) + 'px');
+    /* 🔴 02/10: os dias são SETE CHIPS, e a sonda marca como a mão marca: clicando */
+    function marcarDias(grp, quais){
+      Array.prototype.forEach.call(grp.querySelectorAll('.hr-dia input'), function(cx){
+        if(cx.checked !== (quais.indexOf(cx.value) >= 0) && !cx.disabled) cx.click();
+      });
+    }
     var l1 = $('horario').querySelector('.hr-linha');
-    l1.querySelector('.hr-dias').value = 'Seg a Sex';
+    t('\u2605 os dias são sete caixas de marcar, Seg a Dom, e não um dropdown (pedido dele, 02/10)',
+      Array.prototype.map.call(l1.querySelectorAll('.hr-dias .hr-dia input[type=checkbox]'), function(c){ return c.value; }).join(',') ===
+        'Seg,Ter,Qua,Qui,Sex,Sáb,Dom' && !$('horario').querySelector('select'),
+      Array.prototype.map.call(l1.querySelectorAll('.hr-dia input'), function(c){ return c.value; }).join(','));
+    t('   e o "das" saiu: entre as horas fica só um separador',
+      l1.querySelectorAll('.hr-sep').length === 1);
     l1.querySelectorAll('.hr-h')[0].value = '08:00';
     l1.querySelectorAll('.hr-h')[1].value = '18:00';
-    l1.querySelectorAll('.hr-h')[1].dispatchEvent(new Event('change'));
+    marcarDias(l1.querySelector('.hr-dias'), ['Seg','Ter','Qua','Qui','Sex']);
     t('★ montar pelos campos escreve o texto', R.horario === 'Seg a Sex, 08h às 18h', R.horario);
     $('horario').querySelector('.hr-mais').click();
     var l2 = $('horario').querySelectorAll('.hr-linha')[1];
-    l2.querySelector('.hr-dias').value = 'Sáb e Dom';
+    t('\u2605 na segunda linha, Seg a Sex ficam travados e Sáb e Dom livres',
+      Array.prototype.every.call(l2.querySelectorAll('.hr-dia input'), function(cx){
+        return cx.disabled === (['Seg','Ter','Qua','Qui','Sex'].indexOf(cx.value) >= 0); }),
+      Array.prototype.map.call(l2.querySelectorAll('.hr-dia input'), function(cx){ return cx.value + (cx.disabled ? '!' : ''); }).join(' '));
     l2.querySelectorAll('.hr-h')[0].value = '08:00';
     l2.querySelectorAll('.hr-h')[1].value = '12:00';
-    l2.querySelectorAll('.hr-h')[1].dispatchEvent(new Event('change'));
+    marcarDias(l2.querySelector('.hr-dias'), ['Sáb','Dom']);
     t('★ duas linhas viram um texto só, separadas por ponto e vírgula',
       R.horario === 'Seg a Sex, 08h às 18h; Sáb e Dom, 08h às 12h', R.horario);
     t('e o pacote leva esse texto', montarPacote().horario === R.horario);
     $('horario').querySelectorAll('.hr-x')[1].click();
     t('★ tirar a linha tira o pedaço dela', R.horario === 'Seg a Sex, 08h às 18h', R.horario);
+    /* 🔴 O TEXTO DO CARD NÃO MUDA (pedido dele, 02/10): os chips escrevem a MESMA
+       gramática do dropdown antigo, e dias soltos viram lista */
+    (function(){
+      var l = $('horario').querySelector('.hr-linha');
+      marcarDias(l.querySelector('.hr-dias'), ['Seg','Qua','Sex']);
+      t('\u2605 dias soltos viram lista no card: "Seg, Qua e Sex"',
+        R.horario === 'Seg, Qua e Sex, 08h às 18h', R.horario);
+      marcarDias(l.querySelector('.hr-dias'), ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom']);
+      t('   e os sete viram "Todos os dias", como antes', R.horario === 'Todos os dias, 08h às 18h', R.horario);
+      marcarDias(l.querySelector('.hr-dias'), ['Seg','Ter','Qua','Qui','Sex']);
+    })();
+    t('\u2605 e cada rótulo que o dropdown antigo gravava continua sendo lido',
+      mascaraDosDias('Seg a Sex') === 62 && mascaraDosDias('Seg a Sáb') === 126 &&
+      mascaraDosDias('Todos os dias') === 127 && mascaraDosDias('Sáb e Dom') === 65);
+    /* ⚠ em inglês a TELA traduz o chip, mas o VALOR (o que vai para o card) não */
+    (function(){
+      var gIdi = idiomaAtual();
+      if(typeof definirIdioma === 'function'){
+        definirIdioma('en', false);
+        var sp = Array.prototype.map.call($('horario').querySelectorAll('.hr-linha')[0].querySelectorAll('.hr-dia span'), function(s){ return s.textContent; });
+        t('   e em inglês o chip diz "Mon", mas o card continua em português',
+          sp[0] === 'Mon' && R.horario === 'Seg a Sex, 08h às 18h', sp.join(',') + ' / ' + R.horario);
+        definirIdioma(gIdi, false);
+      }
+    })();
     /* a MESMA gramática do painel: paridade.py cobra que as funções sejam iguais */
     t('★ a gramática é a do painel', montarHorario('Seg a Sex','08:00','18:00') === 'Seg a Sex, 08h às 18h' &&
       montarHorario('Todos os dias','00:00','00:00') === 'Todos os dias, 24 horas' &&
@@ -6763,23 +6903,26 @@ function selftest(){
     /* --- horário sem faixas que se pisam --- */
     R.horario = ''; $('temHorario').checked = true; $('temHorario').dispatchEvent(new Event('change'));
     var wh = $('horario');
-    var sel1 = wh.querySelector('.hr-dias');
-    sel1.value = 'Seg a Sex'; sel1.dispatchEvent(new Event('change'));
+    function marcar2(grp, quais){
+      Array.prototype.forEach.call(grp.querySelectorAll('.hr-dia input'), function(cx){
+        if(cx.checked !== (quais.indexOf(cx.value) >= 0) && !cx.disabled) cx.click();
+      });
+    }
+    marcar2(wh.querySelector('.hr-dias'), ['Seg','Ter','Qua','Qui','Sex']);
     wh.querySelector('.hr-mais').click();
-    var sels = wh.querySelectorAll('.hr-dias');
-    var ops2 = Array.prototype.map.call(sels[1].querySelectorAll('option'), function(o){ return o.value; });
-    out.push('       depois de "Seg a Sex", a segunda linha oferece: ' + ops2.join(' | '));
-    t('★ escolhido "Seg a Sex", a segunda linha não oferece mais nenhuma faixa que pise nesses dias',
-      ops2.indexOf('Seg a Sex') < 0 && ops2.indexOf('Seg a Sáb') < 0 && ops2.indexOf('Todos os dias') < 0,
-      ops2.join(','));
-    t('e continua oferecendo o fim de semana, que não conflita', ops2.indexOf('Sáb e Dom') >= 0);
-    sels[1].value = 'Sáb e Dom'; sels[1].dispatchEvent(new Event('change'));
+    var grs = wh.querySelectorAll('.hr-dias');
+    var livres = Array.prototype.filter.call(grs[1].querySelectorAll('.hr-dia input'), function(c){ return !c.disabled; })
+      .map(function(c){ return c.value; });
+    out.push('       depois de Seg a Sex, a segunda linha deixa marcar: ' + livres.join(' | '));
+    t('★ marcados Seg a Sex, a segunda linha não deixa marcar nenhum desses dias',
+      livres.join(',') === 'Sáb,Dom', livres.join(','));
+    marcar2(grs[1], ['Sáb','Dom']);
     t('★ com a semana inteira coberta, "+ Adicionar horário" se desliga em vez de abrir linha inútil',
       wh.querySelector('.hr-mais').disabled === true);
     t('a conta dos dias é a do calendário, não a do texto',
-      diasDaOpcao('Seg a Sex') === 62 && diasDaOpcao('Todos os dias') === 127 &&
-      (diasDaOpcao('Seg a Sex') & diasDaOpcao('Sáb e Dom')) === 0 &&
-      (diasDaOpcao('Seg a Sáb') & diasDaOpcao('Sáb e Dom')) !== 0);
+      mascaraDosDias('Seg a Sex') === 62 && mascaraDosDias('Todos os dias') === 127 &&
+      (mascaraDosDias('Seg a Sex') & mascaraDosDias('Sáb e Dom')) === 0 &&
+      (mascaraDosDias('Seg a Sáb') & mascaraDosDias('Sáb e Dom')) !== 0);
 
     /* --- o caminho de volta --- */
     t('★ a tela de envio concluído leva ao Clube de Parcerias, e não termina num beco',
