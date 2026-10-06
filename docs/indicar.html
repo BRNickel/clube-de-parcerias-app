@@ -3065,6 +3065,11 @@ function ligarPlataforma(){
   sb = supabase.createClient(PLATAFORMA.url, PLATAFORMA.chaveAnon,
     { auth:{ persistSession:true, autoRefreshToken:true, detectSessionInUrl:true } });
   ENVIO.modo = 'funcao'; ENVIO.url = PLATAFORMA.funcaoEnviar;
+  /* 🔴 A SESSÃO ACOMPANHA A RENOVAÇÃO (06/10, mesmo defeito do painel: "Invalid
+     JWT"). O cliente renova o token perto de 1 hora, mas `sessaoAtual` era lida
+     uma vez e o envio mandava aquele token para sempre: quem abria o formulário
+     e enviava mais de uma hora depois tinha o envio recusado. */
+  sb.auth.onAuthStateChange(function(ev, s){ if(s) sessaoAtual = s; });
   return lerSessao().then(function(sess){
     sessaoAtual = sess;
     if(!sessaoAtual){ irParaEntrada(); return false; }
@@ -3107,6 +3112,16 @@ function lerSessao(tentativa){
     if(sess || tentativa >= 4 || !temSessaoGuardada()) return sess;
     return new Promise(function(ok){ setTimeout(ok, 500); }).then(function(){ return lerSessao(tentativa + 1); });
   });
+}
+/* a sessão do momento do ENVIO, e não a da abertura: `getSession` renova o
+   token se ele venceu (aba esquecida aberta, renovação atrasada) */
+function sessaoFresca(){
+  if(!sb || !sb.auth || !sb.auth.getSession) return Promise.resolve(sessaoAtual);
+  return sb.auth.getSession().then(function(r){
+    var nova = (r && r.data) ? r.data.session : null;
+    if(nova) sessaoAtual = nova;
+    return sessaoAtual;
+  }).catch(function(){ return sessaoAtual; });
 }
 function cabecalhosAuth(){
   var h = { 'Content-Type':'application/json', 'apikey': PLATAFORMA.chaveAnon };
@@ -3162,7 +3177,9 @@ function enviar(pacote){
     /* a função devolve { ok, id } ou { ok:false, erro }. O erro dela é uma
        frase para a pessoa ler (ex.: só o RH pode enviar por outra pessoa). */
     return lerEvidencias().then(function(evs){
-      return fetch(ENVIO.url, { method:'POST', headers: cabecalhosAuth(), body: JSON.stringify(corpoDoEnvio(pacote, evs)) });
+      return sessaoFresca().then(function(){
+        return fetch(ENVIO.url, { method:'POST', headers: cabecalhosAuth(), body: JSON.stringify(corpoDoEnvio(pacote, evs)) });
+      });
     }).then(function(r){
       return r.json().catch(function(){ return {}; }).then(function(j){
         if(!r.ok || !j.ok) throw new Error(j.erro || ('HTTP ' + r.status));
@@ -6186,6 +6203,10 @@ function selftest(){
     t('sem sessão o cabeçalho não leva Authorization', !('Authorization' in cabecalhosAuth()) && cabecalhosAuth().apikey === PLATAFORMA.chaveAnon);
     sessaoAtual = { access_token:'abc', user:{ email:'Teste@BRNickel.com', user_metadata:{ full_name:'Pessoa Teste' } } };
     t('★ com sessão o cabeçalho leva o token', cabecalhosAuth().Authorization === 'Bearer abc');
+    /* 🔴 06/10: o envio pede a sessão do MOMENTO, e não a da abertura. Medido
+       pelo texto da função (a chamada é assíncrona e a bateria é síncrona). */
+    t('★ o envio pede a sessão atual antes de mandar (token vencido não trava o envio)',
+      /sessaoFresca\(\)\.then/.test(String(enviar)) && /onAuthStateChange/.test(String(ligarPlataforma)));
     var uP = usuarioDoPortal();
     t('★ a identidade vem da SESSÃO quando ela existe, com o e-mail em minúsculas',
       IDENTIDADE.modo !== 'sso' || (uP && uP.email === 'teste@brnickel.com' && uP.nome === 'Pessoa Teste'));
